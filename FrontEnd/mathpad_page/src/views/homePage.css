@@ -1,0 +1,18 @@
+.content-wrap {
+    position: relative;
+    margin: 2cm auto;
+    background: #ecf0f1;
+    width: max-content;
+    border-radius: 5px;
+    box-shadow: 3px 3px 10px #333;
+    padding: 15px;
+  }
+
+  html .content-wrap h3 {
+    /* text-align: center; */
+    font-weight: 200;
+    font-size: 1.7em;
+    margin-top: 10px;
+    padding-left: 1cm;
+    color: #34495e;
+  }
