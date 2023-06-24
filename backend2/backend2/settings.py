@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'aiMathpad',
     'corsheaders',
     'dataAdmin',
+    'bootstrapsidebar',
 ]
 
 REST_FRAMEWORK = {
