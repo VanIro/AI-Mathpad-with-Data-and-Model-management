@@ -1,7 +1,8 @@
 # AI-Mathpad-with-Data-and-Model-management
 This project provides the ability to:
 - use the interface to recognize handdrawn math expressions, 
-- submit corrected annotations for mis-predictions, and 
-- manage the collected data and train models on collected data.
+- submit corrected annotations for mis-predictions,  
+- manage the collected data, i.e. filter and view stats, and
+- train models on collected data and manage the models.
 
 
