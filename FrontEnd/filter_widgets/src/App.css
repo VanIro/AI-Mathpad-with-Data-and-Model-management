@@ -1,0 +1,40 @@
+.widget_App {
+  text-align: center;
+  display:flex;
+  flex-direction:row;
+  /* align-items:center; */
+  flex-wrap:nowrap;
+  overflow:auto;
+  width:min-content;
+}
+
+.widget_container{
+  overflow:auto;
+  height: 9.7cm;
+  display: flex;
+  flex-direction: column;
+  position:relative;
+}
+.widget_container.dateRange{
+  overflow-x:hidden;
+}
+
+.widget_container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5); /* Translucent black layer */
+  pointer-events: none; /* Prevents the pseudo-element from capturing events */
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.3s ease; /* Smooth transition effect */
+}
+
+.widget_container.widget-disable::after {
+  opacity: 1; /* Show the overlay when the 'active' class is added to the parent */
+  pointer-events: auto;
+}
+

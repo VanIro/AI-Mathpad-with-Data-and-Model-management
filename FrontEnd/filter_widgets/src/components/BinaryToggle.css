@@ -1,0 +1,21 @@
+.custom-binary-toggle-container{
+  /* margin-left:0.5cm; */
+  /* width:min-content; */
+  padding-left: 0.43cm;
+  padding-right:-0.2cm;
+  padding-top: 0.2cm;
+  padding-bottom: 0.2cm;
+  margin-bottom:0cm;
+  /* border-top: 2px solid black; */
+  /* background-color:gradient(rgba(6, 230, 208, 0.805), rgba(60, 237, 40, 0.805)); */
+  /* background-color:red; */
+  background-image: linear-gradient(to bottom,  rgba(127, 237, 115, 0.805),rgba(28, 189, 135, 0.805));
+
+  display: inline-block;
+  /* position:absolute;
+  top:0;
+  right:0; */
+}
+.custom-binary-toggle-container Box{
+  width:3cm;
+}

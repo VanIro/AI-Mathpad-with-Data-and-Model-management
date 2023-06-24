@@ -1,0 +1,25 @@
+.region-filter-widget{
+    display:flex;
+    flex-direction:column;
+    align-items:center; 
+    position:relative;
+    background-color: rgb(210, 243, 126);
+    border: 2px solid black;
+    margin:0.4cm;
+    padding:0.2cm;
+    width:min-content;
+    height:100%;
+  }
+  .region-filter-header-container{
+    width:100%;
+    margin-bottom:0.2cm;
+  }
+  .region-filter-header{
+    padding:0.2cm;
+    left:0;
+    width:max-content;
+    background-color: rgba(6, 125, 230, 0.805);
+    text-align:center;
+    color:white;
+    font-weight: 500;
+  }

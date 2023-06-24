@@ -1,0 +1,16 @@
+.visualization-container{
+    display:flex;
+    flex-direction: row;
+}
+.country-region-visualization-container{
+    height:8cm;
+    /* width:min-content; */
+}
+.expression-type-visualization-container{
+    height:8cm;
+    /* width:min-content; */
+}
+.date-range-visualization-container{
+    height:8cm;
+    /* width:min-content; */
+}

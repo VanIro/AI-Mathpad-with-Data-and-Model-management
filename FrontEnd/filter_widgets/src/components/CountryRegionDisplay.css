@@ -1,0 +1,116 @@
+.country-region-display{
+    display:flex;
+    justify-content:space-between;
+    width: 8cm;
+    min-height: 1.5cm;
+    border: 2px solid greenyellow;
+}
+.country-list-container{
+    width: 50%;
+    margin-right: 0.2cm;
+    background-color: rgb(238, 205, 158);
+    padding: 0cm 0.2cm;
+    position:relative;
+}
+.region-list-container{
+    width: 50%;
+    margin-left: 0.2cm;
+    background-color: rgb(242, 193, 130);
+    /* text-align: center; */
+    
+    position:relative;
+}
+.country-item{
+    width: 90%;
+    /* height: 100%; */
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px 0px;
+    cursor: pointer;
+    position:relative;
+}
+.country-item.selected{
+    background-color: #dc2e2e;
+    color: white;
+}
+.country-item:hover{
+    background-color: #bfd03a;
+    color: white;
+}
+.region-list-container table {
+    border-collapse: collapse;
+    border-style: hidden;
+    width:100%;
+    margin:auto;
+}
+.region-list-container table tr {
+    text-align: center;
+    /* background-color: aqua; */
+    width:100%;
+    position:relative;
+}
+.region-list-container table td {
+    border: 2px solid black;
+    text-align: center;
+    width:100%;
+}
+.region-item{
+    cursor:pointer;
+    margin-right:auto;
+}
+.region-item:hover{
+    background-color: #bfd03a;
+}
+.country-list-header{
+    background-color: #e8730d;
+    color: white;
+    width:111.5%;
+    /* position:absolute; */
+    left:-0.8%;
+    padding:0 0.4cm;
+    margin-left:-0.2cm;
+}
+.region-list-header{
+    background-color: #95a22d;
+    color: white;
+    width:100%;
+    /* position:absolute; */
+    left:-0.8%;
+    padding:0 0.4cm;
+    
+}
+
+.country-item .country-item-delete{
+    width:1cm;
+    border: 2px solid black;
+    border-radius: 5%;
+    margin-left:auto;
+    margin-right:0;
+    display:none;
+    position:absolute;
+    right:0;
+}
+.country-item-delete:hover{
+    background-color: #bf2e2e;
+}
+.country-item:hover .country-item-delete{
+    display:inline;
+}
+
+.region-item .region-item-delete{
+    width:1cm;
+    border: 2px solid black;
+    border-radius: 5%;
+    margin-left:auto;
+    margin-right:0;
+    display:none;
+    position:absolute;
+    right:0;
+}
+.region-item-delete:hover{
+    background-color: #bf2e2e;
+}
+.region-item:hover .region-item-delete{
+    display:inline;
+}

@@ -1,0 +1,43 @@
+.search-container{
+    width:5cm;
+    height:1cm;
+    overflow: visible;
+}
+.search-container input{
+    width:90%;
+    height:80%;
+}
+
+.suggestions{
+    width:5cm;
+    max-height:4cm;
+    overflow: auto;
+    border: 1px solid black;
+    border-radius: 7%;
+    z-index:5;
+    background-color: rgb(248, 242, 242);
+    color:rgb(1, 15, 15);
+    position:absolute;
+    padding:0.2cm 0.3cm;
+    text-align: center;
+}
+.suggestion{
+    padding:0.1cm;
+    cursor: pointer;
+    width:100%;
+}
+.suggestion:hover{
+    background-color: rgb(255, 255, 255);
+    color: rgb(213, 52, 52);
+}
+
+.search-container table {
+    border-collapse: collapse;
+    width:100%;
+}
+.search-container table tr {
+    border-bottom: 1px solid black;
+}
+.search-container table tr:last-child {
+    border-bottom: none;
+}
