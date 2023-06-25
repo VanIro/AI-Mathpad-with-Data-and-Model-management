@@ -188,13 +188,13 @@ function getDateRangeVisualization(){
         y:count,
       }));
 
-    //   console.log('transformedData',transformedData)
+      // console.log('transformedData',transformedData)
       
     const numDates = transformedData.length;
 // Calculate the width of each bar
     const lineWidth = 2.5; // Set the desired width of each bar in cm
     // const tickValues = uniqueSections.map((_, index) => index + 1);
-      return <div className="date-range-visualization-container" style={{width:`${numDates*lineWidth}cm`}}>
+      return <div className="date-range-visualization-container" style={{width:`${numDates*lineWidth+2}cm`}}>
      <ResponsiveLine
     data={[{ id: 'count', data: transformedData }]}
     margin={{ top: 50, right: 60, bottom: 80, left: 60 }}
@@ -219,7 +219,7 @@ function getDateRangeVisualization(){
     }}
     enableGridX={false}
     colors={{ scheme: 'category10' }}
-    enablePoints={false}
+    enablePoints={true}
     enableGridY={true}
     curve="linear"
     enableArea={true}
