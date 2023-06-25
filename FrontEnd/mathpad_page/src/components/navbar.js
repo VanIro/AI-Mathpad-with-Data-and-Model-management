@@ -42,7 +42,14 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <li><Link to="/login">Login</Link></li>
+              <li className="userDropCont">
+                <Link ><span>Login</span></Link>
+                <span></span>
+                <ul className="dropdown">
+                  <li><Link to="/login"><span style={{textAlign:'left'}}>User Login</span></Link></li>
+                  <li><a href="/dataAdmin"><span style={{textAlign:'left'}}>Admin Login</span></a></li>
+                </ul>
+              </li>
               <li><Link to="/register">Register</Link></li>
             </>
           )}

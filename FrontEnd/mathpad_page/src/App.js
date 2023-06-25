@@ -1,12 +1,14 @@
 import { useRef, useState } from 'react';
 import './App.css';
 import DrawingComponent from './DrawingComponent';
-import Mathfield from './mathview'
+import CustomMathfield from './mathview'
+import { BASE_URL } from './backend_urls';
 
 import useAxios from './auth/useAxios'
 import PrivateRoute from './auth/privateRoute';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { BASE_URL } from './backend_urls';
 
 const TESTMODE=false;
 
@@ -19,7 +21,7 @@ function App() {
   const [cor_flag, setCor_flag] = useState(false);
 
   const mathpad = <DrawingComponent ref={canvasRef} />
-  const mathview = <Mathfield value={math_exp} ref={mathviewRef}  setCorMath_exp={setCorMath_exp} editRespFunc = {handleMathfieldEdit}/>
+  const mathview = <CustomMathfield value={math_exp} ref={mathviewRef}  setCorMath_exp={setCorMath_exp} editRespFunc = {handleMathfieldEdit}/>
   // console.log(mathviewRef)
 
   const ax_inst = useAxios();
@@ -31,9 +33,9 @@ function App() {
       img_file:img_data.split('base64,')[1]
     }
 
-    if(!TESTMODE)
+    if(!TESTMODE){
       //sending a request
-      fetch(`${BASE_URL}procImg/`,{
+      var  recProm = fetch(`${BASE_URL}procImg/`,{
             method:'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -51,6 +53,15 @@ function App() {
           setCorMath_exp('');
           mathviewRef.current.value=data.latex_exp;
         })
+        toast.promise(
+          recProm,
+          {
+            pending: 'Recognizing',
+            success: 'Done 👌',
+            error: 'Some error occured.. 🤯 Please try again'
+          }
+        );
+    }
     else{
       //for testing purposes, data is a dummy response
 
@@ -58,15 +69,27 @@ function App() {
 
   }
   function handleCorrection(event){
-    console.log('correction submitted',cor_math_exp);
     var img_data = canvasRef.current.getDataURL();
     var data = {
       img_file:img_data.split('base64,')[1],
       correct_exp:cor_math_exp
     }
-    ax_inst.post(`${BASE_URL}saveAnnot/`, data).catch((error)=>{
+    const subCor_prom = ax_inst.post(`${BASE_URL}saveAnnot/`, data).
+    then((resp)=>{
+      console.log('correction submitted',cor_math_exp,resp.status);
+
+    }).
+    catch((error)=>{
       console.log(error);
     })
+    toast.promise(
+      subCor_prom,
+      {
+        pending: 'Submitting your Correct Annotation',
+        success: 'Submitted Successfully 👌',
+        error: 'Some error occured.. 🤯'
+      }
+    )
   }
 
   function handleMathfieldEdit(event){
@@ -92,6 +115,18 @@ function App() {
       <PrivateRoute>
         <div>
         <button onClick={cor_flag?handleCorrection:()=>{}} className={(cor_flag?'active':'')+' correction_submit'}>Submit Correction</button> 
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
         </div>
       </PrivateRoute>
     </div>
