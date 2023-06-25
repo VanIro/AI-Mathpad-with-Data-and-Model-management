@@ -159,6 +159,9 @@ def dashboard_view(request):
     })
     return render(request,'dataAdmin/dashboard.html',context)
 
+def logout_dataAdmin(request):
+    logout(request)
+    return redirect('dataAdmin:login')
 class DataAdminLoginView(LoginView):
     template_name = 'dataAdmin/login.html'  # Customize this template as per your needs
 

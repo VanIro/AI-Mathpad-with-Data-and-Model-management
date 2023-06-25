@@ -1,4 +1,4 @@
-{%extends 'bootstrap_base.html' %}
+{%extends 'dataAdmin/base.html' %}
 {% load static %}
 <!-- <html> -->
     {%block head%}
@@ -8,6 +8,9 @@
     </head>
     {%endblock%}
     <!-- <body> -->
+        {%block sidebar%}
+            {{block.super}}
+        {%endblock%}
         {%block content%}
         <div id="widget-app-container"></div>
         {{country_region_data|json_script:'country-region-data'}}
@@ -20,6 +23,7 @@
         </form>
         <script src="{% static 'widget-bundle.js'%}"></script>
         {%endblock%}
+
         {%block footer%}
         
         {%endblock%}
