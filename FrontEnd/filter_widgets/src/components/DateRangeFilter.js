@@ -11,10 +11,13 @@ function DateRangeFilter(props,childern){
     // const [endDate, setEndDate] = useState(null);
 
     const handleStartDateChange = (date) => {
+        console.log('start date:',date);
         props.setStartDate(date);
     };
     
     const handleEndDateChange = (date) => {
+        date.setHours(23,59,59,999);
+        console.log('end date:',date);
         props.setEndDate(date);
     };
 

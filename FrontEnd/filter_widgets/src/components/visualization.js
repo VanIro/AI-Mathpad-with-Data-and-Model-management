@@ -201,7 +201,7 @@ function getDateRangeVisualization(){
     xScale={{ type: 'point' }}
     yScale={{
       type: 'linear',
-      min: 'auto',
+      min: '0',
       max: 'auto',
       stacked: false,
       reverse: false,
@@ -236,7 +236,8 @@ function getDateRangeVisualization(){
         Count: {slice.points[0].data.y}
       </div>
     )}
-    areaBaselineValue={minYValue}
+    areaBaselineValue={0}
+
   />
         </div>;
 }

@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
 
@@ -83,7 +82,7 @@ function App() {
         newRegionInputs[country] = newRegionInputs[country].filter(item=>item!==region);
       }
     }
-    console.log('newRegionInputs',newRegionInputs);
+    // console.log('newRegionInputs',newRegionInputs);
     setRegionInputs(newRegionInputs);
   }
 
@@ -98,7 +97,9 @@ function App() {
   }
 
   const handleSubmitWidget=(event)=>{
-    const widget_data = {countryRegionWidget:{regionInputs,regionInputsUse}, expressionTypeWidget:{expressionTypeChoices,expressionTypeUse}, dateRange:[startDate, endDate]};
+    const tz_info = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    console.log(tz_info)
+    const widget_data = {countryRegionWidget:{regionInputs,regionInputsUse}, expressionTypeWidget:{expressionTypeChoices,expressionTypeUse}, dateRange:[startDate, endDate, tz_info]};
     const widget_flag = [countryRegionEnabled, expressionTypeEnabled, dateRangeEnabled];
     // Populate the form fields with JSON data
     const form = document.getElementById('widget-data-capture-form');
