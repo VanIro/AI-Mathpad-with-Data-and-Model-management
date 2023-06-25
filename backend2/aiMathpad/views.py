@@ -71,4 +71,7 @@ def store_annot(request):
 
     return Response("Received")
 
+def index(request):
+    return render(request, 'aiMathpad/index.html')
+
 

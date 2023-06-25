@@ -1,5 +1,7 @@
 import json
 from datetime import datetime
+import pytz
+
 
 from django.shortcuts import render,HttpResponse, redirect
 from django.urls import reverse
@@ -8,13 +10,10 @@ from allauth.account.models import EmailAddress
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import logout
 from django.db.models import Q
+from django.db.models.functions import TruncDate
+from django.db.models import Func
 
 from aiMathpad.models import ImageData, ExpressionType
-
-# Create your views here.
-
-def index(request):
-    return HttpResponse("Hello World")
 
 def IsDataAdmin(view_func):
     def wrapper(request,*args,**kwargs):
@@ -24,6 +23,12 @@ def IsDataAdmin(view_func):
             return redirect(reverse('dataAdmin:login'))
     
     return wrapper
+
+# Create your views here.
+@IsDataAdmin
+def index(request):
+    return redirect(reverse('dataAdmin:dashboard'))
+
 
 @IsDataAdmin
 def dashboard_view(request):
@@ -64,12 +69,15 @@ def dashboard_view(request):
             for exp in expressionType:
                 qFilter = {'exp_type__'+str(exp):include_flag}
                 query2 = query2 | Q(**qFilter)
-        
+
         dateRange = request.POST.get('dateRange')
         try:
-            start, end = json.loads(dateRange)
+            start, end, tz_info = json.loads(dateRange)
         except TypeError:
-            start, end = None, None
+            start, end, tz_info = None, None, None
+        else:
+            print(start,end)
+            pass
         
         query3 = Q(id__lt=0) if start or end else Q()
         if start:
@@ -79,7 +87,7 @@ def dashboard_view(request):
             end= datetime.strptime(end, "%Y-%m-%dT%H:%M:%S.%fZ")
             query3 = query3 & Q(uploaded_at__lte=end)        
         
-        print(regionInputs,regionInputsUse,expressionType,expressionFilterUse,start,end)
+        print(regionInputs,regionInputsUse,expressionType,expressionFilterUse,start,end, tz_info)
 
         query = query1 & query2 & query3
         filtered_imgData = ImageData.objects.filter(query)
@@ -126,12 +134,18 @@ def dashboard_view(request):
             context.update({'expression_stat':expression_stat})
         # print('expression_stat : ',expression_stat)
 
+        # print([(date,date.isoformat()) for date in filtered_imgData.values_list('uploaded_at', flat=True).distinct()])
+
+        target_timezone = pytz.timezone(tz_info)
+        filtered_imgData = filtered_imgData.annotate(uploaded_at_date=TruncDate('uploaded_at', tzinfo=target_timezone))
+
+        print(filtered_imgData.values_list('uploaded_at_date', flat=True).distinct(),flush=True)
         dateRange_stat = {
-            json.dumps(date.isoformat()):filtered_imgData.filter(uploaded_at__date=date).count() 
-                for date in filtered_imgData.values_list('uploaded_at__date', flat=True).distinct()
+            date.isoformat():filtered_imgData.filter(uploaded_at_date=date).count() 
+                for date in filtered_imgData.values_list('uploaded_at_date', flat=True).distinct()
             }
         context.update({'dateRange_stat':dateRange_stat})
-        # print('dateRange_stat : ',dateRange_stat)
+        print('dateRange_stat : ',dateRange_stat)
 
     
     countries = ImageData.objects.values_list('country', flat=True).distinct()

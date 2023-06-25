@@ -1,0 +1,13 @@
+{% load static %}
+<html>
+    <head>
+        <title>aiMathpad</title>
+    </head>
+    <body>
+        <div id="csrf-container" style="display:hidden">
+            {%csrf_token%}
+        </div>
+        <div id="root"></div>
+        <script src="{% static 'mathpad-bundle.js'%}"></script>
+    </body>
+</html>

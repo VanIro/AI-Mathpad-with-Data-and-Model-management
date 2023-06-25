@@ -23,6 +23,7 @@ from aiMathpad import views
 
 
 urlpatterns = [
+    path('', views.index, name='index'),
     path('admin/', admin.site.urls),
     path(('users/'), include('aiMathpad.user_urls')),
     path('password-reset/', PasswordResetView.as_view()),
