@@ -1,6 +1,8 @@
 .visualization-container{
     display:flex;
     flex-direction: row;
+    flex-wrap:nowrap;
+    overflow:auto;
 }
 .country-region-visualization-container{
     height:8cm;
@@ -13,4 +15,8 @@
 .date-range-visualization-container{
     height:8cm;
     /* width:min-content; */
+}
+
+.visualization-container > div{
+
 }

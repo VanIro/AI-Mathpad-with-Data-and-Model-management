@@ -36,8 +36,14 @@ function DateRangeFilter(props,childern){
                         placeholderText="From"
                         dateFormat="yyyy-MM-dd"
                     />
+                    <div className='datepicker-label from'>
+                        <div>From</div>
+                    </div>
                 </div>
                 <div className='datepicker to'>
+                    <div className='datepicker-label to'>
+                        <div>To</div>
+                    </div>
                     <CustomDatePicker
                         showIcon
                         selected={props.endDate}

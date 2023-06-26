@@ -1,13 +1,13 @@
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 
 import CountryRegionFilter from './components/CountryRegionFilter';
 import ExpressionTypeFilter from './components/ExpressionTypeFilter';
 import DateRangeFilter from './components/DateRangeFilter';
 import ToggleEnable from './components/ToggleEnable';
-
 import Visualization from './components/visualization';
+import FormPopup from './components/FormPopup';
 
 const source2 = {
   Nepal:['Kathmandu', 'Ramechhap', 'Gorkha', 'Pokhara'],
@@ -19,6 +19,23 @@ const source2 = {
 const countryRegionData = JSON.parse(document.getElementById('country-region-data').innerHTML);
 
 const source = countryRegionData;
+
+// Helper function to get the CSRF token from the cookie
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === name + '=') {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
 
 function App() {
   const [regionInputs, setRegionInputs] = useState({});
@@ -32,6 +49,48 @@ function App() {
   const [countryRegionEnabled, setCountryRegionEnabled] = useState(true);
   const [dateRangeEnabled, setDateRangeEnabled] = useState(true);
   const [expressionTypeEnabled, setExpressionTypeEnabled] = useState(true);
+
+  const datasetNameRef = useRef();
+
+  function initializeValues(){
+    const countryRegionWidData = JSON.parse(document.getElementById('countryRegionWidData').innerHTML);
+    if(countryRegionWidData==null){
+      setCountryRegionEnabled(false);
+    }
+    else if(countryRegionWidData){
+      setRegionInputs(countryRegionWidData['regionInputs']);
+      setRegionInputsUse(countryRegionWidData['regionInputsUse']);
+    } 
+  
+    const expressionTypeWidData = JSON.parse(document.getElementById('expressionWidData').innerHTML);
+    if(expressionTypeWidData==null){
+      setExpressionTypeEnabled(false);
+    }
+    else if(expressionTypeWidData){
+      setExpressionTypeChoices(expressionTypeWidData['expressionTypeChoices']);
+      setExpressionTypeUse(expressionTypeWidData['expressionTypeUse']);
+    }
+  
+    const dateRangeWidData = JSON.parse(document.getElementById('dateRange').innerHTML);
+    if(dateRangeWidData==null){
+      setDateRangeEnabled(false);
+    }
+    else if(dateRangeWidData){
+      const startDate = new Date(dateRangeWidData[0]);
+      startDate.setHours(0,0,0,0);
+      setStartDate(startDate);
+
+      const endDate = new Date(dateRangeWidData[1]);
+      endDate.setHours(23,59,59,999);
+      setEndDate(endDate);
+    }
+  
+    console.log('initializeValues: ',regionInputs, regionInputsUse, expressionTypeChoices, expressionTypeUse, startDate, endDate);
+  };
+  useEffect(()=>{
+    initializeValues();
+  },[]);
+  
 
   const onKeyChange = event=>{
     const value = event.target.value;
@@ -96,7 +155,7 @@ function App() {
     }
   }
 
-  const handleSubmitWidget=(event)=>{
+  const handleSubmitWidget=(create)=>{
     const tz_info = Intl.DateTimeFormat().resolvedOptions().timeZone;
     console.log(tz_info)
     const widget_data = {countryRegionWidget:{regionInputs,regionInputsUse}, expressionTypeWidget:{expressionTypeChoices,expressionTypeUse}, dateRange:[startDate, endDate, tz_info]};
@@ -111,9 +170,38 @@ function App() {
       input.value = JSON.stringify(widget_data[key]);
       form.appendChild(input);
     });
-
     // Submit the form
+    
+    console.log('csrf',getCookie('csrftoken'),window.location.origin);
+    if(create){
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'createDataset';
+      input.value = create;
+      form.appendChild(input);
+      // create_url = window.location.origin+'/dataAdmin/create/';
+      // fetch(create_url, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'X-CSRFToken': getCookie('csrftoken') // Get the CSRF token from the cookie
+      //   },
+      //   body: JSON.stringify(data) // Replace 'data' with your request data
+      // })
+      //   .then(response => response.json())
+      //   .then(data => {
+      //     // Handle the response data
+      //   })
+      //   .catch(error => {
+      //     // Handle the error
+      //   });
+    }
     form.submit();
+
+  }
+
+  const handleCreateDataset=(dName)=>{
+    handleSubmitWidget(dName);
   }
 
   console.log(regionInputsUse)
@@ -146,7 +234,9 @@ function App() {
         </div>
       </div>
       <div className="widget-submit-container">
-        <button className="widget-submit" onClick={handleSubmitWidget}>Submit</button>
+        <button className="widget-submit" onClick={handleSubmitWidget}>Filter</button>
+        {/* <button className="widget-create" onClick={()=>handleSubmitWidget('create')}>Create this Dataset</button> */}
+        <FormPopup label='Create this Dataset' ref={datasetNameRef} handleSubmit={handleCreateDataset}/>
       </div>
     </div>
     <Visualization />

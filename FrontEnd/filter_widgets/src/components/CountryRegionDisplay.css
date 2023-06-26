@@ -2,7 +2,7 @@
     display:flex;
     justify-content:space-between;
     width: 8cm;
-    min-height: 1.5cm;
+    min-height: 4.5cm;
     border: 2px solid greenyellow;
 }
 .country-list-container{
@@ -17,7 +17,7 @@
     margin-left: 0.2cm;
     background-color: rgb(242, 193, 130);
     /* text-align: center; */
-    
+    /* height:3cm; */
     position:relative;
 }
 .country-item{

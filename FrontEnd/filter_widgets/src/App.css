@@ -38,3 +38,14 @@
   pointer-events: auto;
 }
 
+.widget-submit-container{
+  display:flex;
+  flex-direction:row;
+  justify-content:center;
+  margin: 0.6cm 0.2cm;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0.2cm 0;
+  gap: 0.3cm;
+}
+

@@ -12,9 +12,24 @@ function Visualization({ data }) {
   // Transform the data into the format expected by ResponsiveBar
   
   return (<div className="visualization-container">
-        {getCountryRegionVisualization()}
-        {getExpressionTypeVisualization()}
-        {getDateRangeVisualization()}
+        <div style={{width:'fit-content', marginRight:'1cm'}}>
+                <div className="visualization-label">
+                    <h4>Country Region Visualization</h4>
+                </div>
+          {getCountryRegionVisualization()}
+        </div>
+        <div style={{width:'fit-content', marginRight:'1cm'}}>
+              <div className="visualization-label">
+                  <h4>Expression Type Visualization</h4>
+              </div>
+          {getExpressionTypeVisualization()}
+        </div>
+        <div style={{width:'fit-content', marginRight:'1cm'}}>
+          <div className="visualization-label">
+            <h4>Date Range Visualization</h4>            
+          </div>
+          {getDateRangeVisualization()}
+        </div>
     </div>
   );
 }
@@ -39,12 +54,13 @@ function getCountryRegionVisualization(){
           total: totalValue,
         };
       });
-    
+    // console.log('CR transformedData', transformedData)
+    if (transformedData.length === 0) return null;
        // Calculate the width of each bar
        const barWidth = 2.5; // Set the desired width of each bar in cm
        const tickValues = uniqueRegions.map((_, index) => index + 1);
       return (
-            <div className="country-region-visualization-container" style={{width:`${numCountries*barWidth}cm`}}>
+            <div className="country-region-visualization-container" style={{width:`${numCountries*barWidth+2}cm`}}>
                 <ResponsiveBar
                 data={transformedData}
                 keys={uniqueRegions}
@@ -131,9 +147,10 @@ function getExpressionTypeVisualization(){
     const barWidth = 2.5; // Set the desired width of each bar in cm
     const tickValues = uniqueSections.map((_, index) => index + 1);
 
-    // console.log('transformedData',transformedData)
+    // console.log('eT transformedData',transformedData)
+    if (transformedData.length === 0) return null;
 
-    return <div className="expression-type-visualization-container" style={{width:`${numOperators*barWidth}cm`}}>
+    return <div className="expression-type-visualization-container" style={{width:`${numOperators*barWidth+2}cm`}}>
             <ResponsiveBar
             data={transformedData}
             keys={uniqueSections}
@@ -188,7 +205,8 @@ function getDateRangeVisualization(){
         y:count,
       }));
 
-      // console.log('transformedData',transformedData)
+      // console.log('DT transformedData',transformedData)
+      if (transformedData.length === 0) return null;
       
     const numDates = transformedData.length;
 // Calculate the width of each bar
