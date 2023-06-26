@@ -106,16 +106,7 @@ function App() {
 
   return (
     <div className="App">
-      <div className='mathpad-container'>{mathpad}</div>
-      <br/>
-      <div>
-        <button onClick={handleSubmit}>Recognize</button> 
-      </div>
-      {mathview}
-      <PrivateRoute>
-        <div>
-        <button onClick={cor_flag?handleCorrection:()=>{}} className={(cor_flag?'active':'')+' correction_submit'}>Submit Correction</button> 
-        <ToastContainer
+      <ToastContainer
           position="top-center"
           autoClose={3000}
           hideProgressBar={false}
@@ -127,6 +118,15 @@ function App() {
           pauseOnHover
           theme="colored"
         />
+      <div className='mathpad-container'>{mathpad}</div>
+      <br/>
+      <div>
+        <button onClick={handleSubmit}>Recognize</button> 
+      </div>
+      {mathview}
+      <PrivateRoute>
+        <div>
+        <button onClick={cor_flag?handleCorrection:()=>{}} className={(cor_flag?'active':'')+' correction_submit'}>Submit Correction</button> 
         </div>
       </PrivateRoute>
     </div>
