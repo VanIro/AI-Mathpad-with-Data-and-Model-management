@@ -13,6 +13,10 @@
         {%endblock%}
         {%block content%}
         <div id="widget-app-container"></div>
+        {{countryRegionWidData|json_script:'countryRegionWidData'}}
+        {{expressionWidData|json_script:'expressionWidData'}}
+        {{dateRange|json_script:'dateRange'}}
+
         {{country_region_data|json_script:'country-region-data'}}
         {{expression_chars|json_script:'expression-chars'}}
         {{country_region_stat|json_script:'country-region-stat'}}

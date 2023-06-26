@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 import pytz
 
-
+from django.conf import settings
 from django.shortcuts import render,HttpResponse, redirect
 from django.urls import reverse
 from allauth.account.views import LoginView
@@ -92,7 +92,11 @@ def dashboard_view(request):
         query = query1 & query2 & query3
         filtered_imgData = ImageData.objects.filter(query)
 
-        print('filtered_imgData',filtered_imgData,filtered_imgData.count())
+        # print('filtered_imgData',filtered_imgData,filtered_imgData.count())
+        print('filtered_imgData',filtered_imgData.count())
+        createD = request.POST.get('createDataset')
+        if createD:
+            createDataset(filtered_imgData,createD)
 
         country_region_stat = {
                 cntry:{ 
@@ -139,13 +143,34 @@ def dashboard_view(request):
         target_timezone = pytz.timezone(tz_info)
         filtered_imgData = filtered_imgData.annotate(uploaded_at_date=TruncDate('uploaded_at', tzinfo=target_timezone))
 
-        print(filtered_imgData.values_list('uploaded_at_date', flat=True).distinct(),flush=True)
+        # print(filtered_imgData.values_list('uploaded_at_date', flat=True).distinct(),flush=True)
         dateRange_stat = {
             date.isoformat():filtered_imgData.filter(uploaded_at_date=date).count() 
                 for date in filtered_imgData.values_list('uploaded_at_date', flat=True).distinct()
             }
         context.update({'dateRange_stat':dateRange_stat})
-        print('dateRange_stat : ',dateRange_stat)
+        # print('dateRange_stat : ',dateRange_stat)
+
+        server_tz = pytz.timezone(settings.TIME_ZONE)
+        client_tz = pytz.timezone(tz_info)
+
+        if start:
+            start2 = server_tz.localize(start)
+            start2 = start2.astimezone(client_tz).isoformat()
+            print(start2)
+        else: start2=None
+
+        if end:
+            end2 = server_tz.localize(end)
+            end2 = end2.astimezone(client_tz).isoformat()
+            # print(end2)
+        else: end2=None
+        # print(start2, end2)
+        context.update({
+            'countryRegionWidData':countryRegionWidData,
+            'expressionWidData':expressionWidData,
+            'dateRange':[start2,end2],
+        })
 
     
     countries = ImageData.objects.values_list('country', flat=True).distinct()
@@ -158,6 +183,33 @@ def dashboard_view(request):
         'expression_chars':expression_chars,
     })
     return render(request,'dataAdmin/dashboard.html',context)
+
+import os
+def createDataset(filtered_imgData,createD):
+    print('createDataset',createD)
+    # Get the current date and time
+    current_datetime = datetime.now().strftime('%Y%m%d%H%M%S')
+
+    dataset_path = 'datasets/'
+    # Create a folder with the dataset name and current date
+    dataset_folder = dataset_path+f"{createD}_{current_datetime}"
+    os.makedirs(dataset_folder)
+
+    annotation_path = os.path.join(dataset_folder, f"annotation.txt")
+    with open(annotation_path, 'w') as fa:
+    # Loop through the queryset and save the images and annotations
+        for index, item in enumerate(filtered_imgData):
+            image_path = os.path.join(dataset_folder, f"image_{index}.jpg")
+
+            annotation = f"Image {index+1}:\n" \
+                         f"Image file: {image_path}\n" \
+                         f"Annotation: {item.image_label}\n\n"
+            fa.write(annotation)
+
+            # Save the image file
+            with open(image_path, 'wb') as fi:
+                fi.write(item.image_file.read())
+
 
 def logout_dataAdmin(request):
     logout(request)
