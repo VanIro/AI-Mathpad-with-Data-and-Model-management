@@ -76,13 +76,16 @@ function App() {
       setDateRangeEnabled(false);
     }
     else if(dateRangeWidData){
-      const startDate = new Date(dateRangeWidData[0]);
-      startDate.setHours(0,0,0,0);
-      setStartDate(startDate);
-
-      const endDate = new Date(dateRangeWidData[1]);
-      endDate.setHours(23,59,59,999);
-      setEndDate(endDate);
+      if(dateRangeWidData[0]!=null){
+        const startDate = new Date(dateRangeWidData[0]);
+        startDate.setHours(0,0,0,0);
+        setStartDate(startDate);
+      }
+      if(dateRangeWidData[1]!=null){
+        const endDate = new Date(dateRangeWidData[1]);
+        endDate.setHours(23,59,59,999);
+        setEndDate(endDate);
+      }
     }
   
     console.log('initializeValues: ',regionInputs, regionInputsUse, expressionTypeChoices, expressionTypeUse, startDate, endDate);
@@ -155,7 +158,15 @@ function App() {
     }
   }
 
-  const handleSubmitWidget=(create)=>{
+  const createHiddenFormInput = (key, value)=>{
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;
+    input.value = JSON.stringify(value);
+    return input;
+  }
+
+  function submitWidData(create){
     const tz_info = Intl.DateTimeFormat().resolvedOptions().timeZone;
     console.log(tz_info)
     const widget_data = {countryRegionWidget:{regionInputs,regionInputsUse}, expressionTypeWidget:{expressionTypeChoices,expressionTypeUse}, dateRange:[startDate, endDate, tz_info]};
@@ -164,47 +175,24 @@ function App() {
     const form = document.getElementById('widget-data-capture-form');
     Object.keys(widget_data).forEach((key,i) => {
       if(!widget_flag[i]) return;
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = JSON.stringify(widget_data[key]);
-      form.appendChild(input);
+      form.appendChild(createHiddenFormInput(key, widget_data[key]));
     });
-    // Submit the form
-    
-    console.log('csrf',getCookie('csrftoken'),window.location.origin);
-    if(create){
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'createDataset';
-      input.value = create;
-      form.appendChild(input);
-      // create_url = window.location.origin+'/dataAdmin/create/';
-      // fetch(create_url, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'X-CSRFToken': getCookie('csrftoken') // Get the CSRF token from the cookie
-      //   },
-      //   body: JSON.stringify(data) // Replace 'data' with your request data
-      // })
-      //   .then(response => response.json())
-      //   .then(data => {
-      //     // Handle the response data
-      //   })
-      //   .catch(error => {
-      //     // Handle the error
-      //   });
-    }
-    form.submit();
+    form.appendChild(createHiddenFormInput('tz_info', tz_info));
 
+    if(create){
+      form.appendChild(createHiddenFormInput('createDataset', create));
+    }
+    // Submit the form
+    form.submit();
+  }
+
+  const handleSubmitWidget=(event)=>{
+    submitWidData();
   }
 
   const handleCreateDataset=(dName)=>{
-    handleSubmitWidget(dName);
+    submitWidData(dName);
   }
-
-  console.log(regionInputsUse)
   return (
     <>
     <div className="widget-App-container-brother">
