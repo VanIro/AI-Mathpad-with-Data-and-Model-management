@@ -12,6 +12,7 @@ import PrivateRoute from './auth/privateRoute'
 
 import Login from "./views/loginPage";
 import Register from "./views/registerPage";
+import ViewAllData from './views/viewAllData';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -22,7 +23,7 @@ ReactDOM.render(
         <Route exact Component={App} path="/" />
         <Route exact Component={Login} path="/login" />
         <Route Component={Register} path="/register" />
-
+        <Route Component={ViewAllData} path='/viewAllData' />
       </Routes>
       {/* <App /> */}
     </AuthProvider>

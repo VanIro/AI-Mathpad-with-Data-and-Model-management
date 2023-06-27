@@ -3,13 +3,19 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics
 
 from django.contrib.gis.geoip2 import GeoIP2
 from geoip2 import errors as geoip2_errors
 
 from .models import ImageData, ExpressionType
 from .image_util import img_from_base64
+from .serializers import ImageDataSerializer
 
+
+class ImageDataListView(generics.ListAPIView):
+    queryset = ImageData.objects.all()
+    serializer_class = ImageDataSerializer
 
 
 # Create your views here.

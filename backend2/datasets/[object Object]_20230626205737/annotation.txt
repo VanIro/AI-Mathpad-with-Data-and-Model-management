@@ -1,0 +1,60 @@
+Image 1:
+Image file: datasets/[object Object]_20230626205737\image_0.jpg
+Annotation: 9
+
+Image 2:
+Image file: datasets/[object Object]_20230626205737\image_1.jpg
+Annotation: 8
+
+Image 3:
+Image file: datasets/[object Object]_20230626205737\image_2.jpg
+Annotation: {{7}}
+
+Image 4:
+Image file: datasets/[object Object]_20230626205737\image_3.jpg
+Annotation: \log_75
+
+Image 5:
+Image file: datasets/[object Object]_20230626205737\image_4.jpg
+Annotation: \frac{7}{2\sum_{i}i^2f(i)}
+
+Image 6:
+Image file: datasets/[object Object]_20230626205737\image_5.jpg
+Annotation: 7
+
+Image 7:
+Image file: datasets/[object Object]_20230626205737\image_6.jpg
+Annotation: 7
+
+Image 8:
+Image file: datasets/[object Object]_20230626205737\image_7.jpg
+Annotation: 7^{7^{}}
+
+Image 9:
+Image file: datasets/[object Object]_20230626205737\image_8.jpg
+Annotation: 4
+
+Image 10:
+Image file: datasets/[object Object]_20230626205737\image_9.jpg
+Annotation: 5
+
+Image 11:
+Image file: datasets/[object Object]_20230626205737\image_10.jpg
+Annotation: 5
+
+Image 12:
+Image file: datasets/[object Object]_20230626205737\image_11.jpg
+Annotation: 9
+
+Image 13:
+Image file: datasets/[object Object]_20230626205737\image_12.jpg
+Annotation: e^{i}\pi=-1
+
+Image 14:
+Image file: datasets/[object Object]_20230626205737\image_13.jpg
+Annotation: 7
+
+Image 15:
+Image file: datasets/[object Object]_20230626205737\image_14.jpg
+Annotation: 3^2\sin\theta^2
+

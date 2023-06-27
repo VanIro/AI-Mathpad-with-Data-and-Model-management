@@ -28,6 +28,7 @@ const Navbar = () => {
           {user ? (
             <>
               <li><Link to="/"><span>Home</span></Link></li>
+              <li><Link to="/viewAllData">View Data</Link></li>
               {/* <li><Link to="/todoApp">My Todo List</Link></li> */}
               <li className="userDropCont">
                 <Link ><span>Hello, {user['username']}</span></Link>

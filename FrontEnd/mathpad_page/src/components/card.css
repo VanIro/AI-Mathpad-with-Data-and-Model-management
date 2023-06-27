@@ -1,0 +1,93 @@
+p {
+  color: #333;
+}
+.text-display {
+  font-size: 20;
+  color: black
+}
+
+.imageCard {
+  background-color: #fff;
+  color: #333;
+  border-radius: 15px;
+  padding: 40px 50px;
+  margin: 20px 0px;
+  position: relative;
+  z-index: -1;
+}
+
+/* Responsive styles for screens up to 768px */
+@media (max-width: 768px) {
+  .imageCard {
+    /* Adjust the styles for imageCard on smaller screens */
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .rating-display {
+    /* Adjust the styles for rating display on smaller screens */
+    font-size: 16px;
+  }
+
+  .image-display {
+    /* Adjust the styles for image display on smaller screens */
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .image-display img {
+    /* Adjust the styles for the image within image-display on smaller screens */
+    max-width: 100%;
+    height: auto;
+  }
+
+  .text-display {
+    /* Adjust the styles for text display on smaller screens */
+    font-size: 14px;
+  }
+
+  .submit {
+    /* Adjust the styles for the submit button on smaller screens */
+    font-size: 12px;
+  }
+}
+
+
+/* Responsive styles for three images in a row */
+@media (min-width: 768px) {
+  .imageCard {
+    /* Adjust the styles for imageCard on larger screens */
+    width: calc(33.33% - 20px);
+    margin: 0 10px 20px;
+  }
+
+  .image-display {
+    /* Adjust the styles for image display on larger screens */
+    position: relative;
+    padding-top: 75%;
+  }
+
+  .image-display img {
+    /* Adjust the styles for the image within image-display on larger screens */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5); 
+  backdrop-filter: blur(5px);
+}

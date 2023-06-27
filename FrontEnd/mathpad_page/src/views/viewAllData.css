@@ -1,0 +1,30 @@
+.content-wrap {
+    padding: 1rem;
+}
+
+.imageRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.imageRow > .imageCard {
+  flex-basis: calc(20% - 10px); /* Adjust the width as needed */
+}
+
+@media (max-width: 768px) {
+  .imageRow {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .imageRow > .imageCard {
+    flex-basis: calc(50% - 10px); /* Adjust the width as needed for smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .imageRow > .imageCard {
+    flex-basis: 100%; /* Full width for smaller screens */
+  }
+}
