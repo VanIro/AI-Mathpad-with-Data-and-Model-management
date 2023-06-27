@@ -33,11 +33,11 @@ const Navbar = () => {
               <li className="userDropCont">
                 <Link ><span>Hello, {user['username']}</span></Link>
                 <span></span>
-                <ul className="dropdown">
+                {/* <ul className="dropdown"> */}
 
                   <li onClick={handleLogOut}><Link><span>Logout</span> </Link></li>
 
-                </ul>
+                {/* </ul> */}
               </li>
               {/* <li><button onClick={logoutUser}>Logout</button></li>     */}
             </>
@@ -46,10 +46,10 @@ const Navbar = () => {
               <li className="userDropCont">
                 <Link ><span>Login</span></Link>
                 <span></span>
-                <ul className="dropdown">
+                {/* <ul className="dropdown"> */}
                   <li><Link to="/login"><span style={{textAlign:'left'}}>User Login</span></Link></li>
                   <li><a href="/dataAdmin"><span style={{textAlign:'left'}}>Admin Login</span></a></li>
-                </ul>
+                {/* </ul> */}
               </li>
               <li><Link to="/register">Register</Link></li>
             </>
