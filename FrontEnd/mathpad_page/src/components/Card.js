@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import RatingSelect from "./ratings";
 import "./Card.css";
+import useAxios from "../auth/useAxios";
+import { BACKEND_URL_updateImageLabel } from "../backend_urls";
+
 
 const ImageCard = (props) => {
   const item = props.item;
-
+  const axios_instance = useAxios();
   const [selectedRating, setSelectedRating] = useState(5);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [editedLabel, setEditedLabel] = useState(item.image_label);
+  const labelValue = editedLabel.trim();
 
   const handleSelect = (rating) => {
     setSelectedRating(rating);
@@ -26,12 +30,28 @@ const ImageCard = (props) => {
     setEditedLabel(e.target.value);
   };
 
-  const handleLabelSubmit = (e) => {
+  const handleLabelSubmit = async (e) => {
     e.preventDefault();
-    // Here, you can perform the necessary action to update the image label
-    console.log("Updated label:", editedLabel);
-    setIsPopupOpen(false);
-  };
+    // console.log("Updated label:", editedLabel);
+    
+  if (labelValue !== null && labelValue !== undefined) {
+    // Create the request payload
+    const data = {
+      image_label: labelValue
+    };
+
+    try {
+      // Send the POST request to save the updated image label
+      await axios_instance.post(`${BACKEND_URL_updateImageLabel}${item.id}`, data);
+      console.log('Image label updated successfully');
+      setIsPopupOpen(false);
+    } catch (error) {
+      console.log('Error updating image label:', error);
+    }
+  } else {
+    console.log('Invalid image label');
+  }
+};
 
   return (
     <div className="imageCard">
@@ -50,10 +70,7 @@ const ImageCard = (props) => {
       {/* <p>Country: {item.country}</p>
       <p>Creator: {item.creator}</p>
       <p>Exp Type: {item.exp_type}</p> */}
-      <button
-        className="submit edit-button"
-        onClick={handleEditButtonClick}
-      >
+      <button className="submit edit-button" onClick={handleEditButtonClick}>
         Edit
       </button>
       <RatingSelect
@@ -82,7 +99,12 @@ const ImageCard = (props) => {
                   </div>
                 </label>
                 <div className="popup-buttons">
-                  <button className="submit image-card-button">Save</button>
+                  <button
+                    className="submit image-card-button"
+                    onClick={handleLabelSubmit}
+                  >
+                    Save
+                  </button>
                   <button
                     className="submit image-card-cancel-button"
                     onClick={handlePopupClose}

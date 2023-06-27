@@ -26,7 +26,7 @@ const ViewAllData = () => {
     }
   };
 
-  const itemsPerPage = 9; // Number of items per page
+  const itemsPerPage = 6; // Number of items per page
   const totalPages = Math.ceil(allData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -70,10 +70,20 @@ const ViewAllData = () => {
       {renderData()}
       <div className="pagination">
         {currentPage > 1 && (
-          <button onClick={handlePreviousPage}>Previous</button>
+          <button
+            className="submit navigation-button prev-button"
+            onClick={handlePreviousPage}
+          >
+            Previous
+          </button>
         )}
         {currentPage < totalPages && (
-          <button onClick={handleNextPage}>Next</button>
+          <button
+            className="submit navigation-button next-button"
+            onClick={handleNextPage}
+          >
+            Next
+          </button>
         )}
       </div>
     </div>
