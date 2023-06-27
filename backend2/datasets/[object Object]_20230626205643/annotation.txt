@@ -1,8 +1,0 @@
-Image 1:
-Image file: datasets/[object Object]_20230626205643\image_0.jpg
-Annotation: 9
-
-Image 2:
-Image file: datasets/[object Object]_20230626205643\image_1.jpg
-Annotation: 8
-
