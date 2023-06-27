@@ -35,20 +35,25 @@ const ImageCard = (props) => {
 
   return (
     <div className="imageCard">
-      <div className="rating-display">{item.id}</div>
+      <div className="rating-display">{selectedRating}</div>
       <div className="image-display">
         <img
           src={item.image_file.split("/").slice(3).join("/")}
           alt={item.image_label}
         />
       </div>
-      <p className="text-display">Image Label: {item.image_label}</p>
+      <p>
+        Image Label:<p className="text-display">{item.image_label}</p>
+      </p>
       <p>Uploaded At: {item.uploaded_at}</p>
       <p>City: {item.city}</p>
-      <p>Country: {item.country}</p>
+      {/* <p>Country: {item.country}</p>
       <p>Creator: {item.creator}</p>
-      <p>Exp Type: {item.exp_type}</p>
-      <button className="submit" onClick={handleEditButtonClick}>
+      <p>Exp Type: {item.exp_type}</p> */}
+      <button
+        className="submit edit-button"
+        onClick={handleEditButtonClick}
+      >
         Edit
       </button>
       <RatingSelect
@@ -60,23 +65,33 @@ const ImageCard = (props) => {
         <div className="popup-overlay">
           <div className="popup-content">
             <img
+              className="popup-image"
               src={item.image_file.split("/").slice(3).join("/")}
               alt={item.image_label}
             />
-            <form onSubmit={handleLabelSubmit}>
-              <label>
-                Image Label:
-                <input
-                  type="text"
-                  value={editedLabel}
-                  onChange={handleLabelChange}
-                />
-              </label>
-              <div className="popup-buttons">
-                <button type="submit">Save</button>
-                <button onClick={handlePopupClose}>Cancel</button>
-              </div>
-            </form>
+            <div className="popup-form">
+              <form onSubmit={handleLabelSubmit}>
+                <label>
+                  Image Label:
+                  <div class="input-group">
+                    <input
+                      type="text"
+                      value={editedLabel}
+                      onChange={handleLabelChange}
+                    />
+                  </div>
+                </label>
+                <div className="popup-buttons">
+                  <button className="submit image-card-button">Save</button>
+                  <button
+                    className="submit image-card-cancel-button"
+                    onClick={handlePopupClose}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
