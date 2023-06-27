@@ -5,8 +5,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 
-from django.contrib.gis.geoip2 import GeoIP2
-from geoip2 import errors as geoip2_errors
+# from django.contrib.gis.geoip2 import GeoIP2
+# from geoip2 import errors as geoip2_errors
 
 from .models import ImageData, ExpressionType
 from .image_util import img_from_base64
@@ -61,8 +61,9 @@ def store_annot(request):
     g = GeoIP2(country='dbip-country-lite-2023-06.mmdb', city='dbip-city-lite-2023-06.mmdb')
 
     try:
-        user_location = g.city(request.META['REMOTE_ADDR'])
-        city, country = user_location['city'], user_location['country']
+        # user_location = g.city(request.META['REMOTE_ADDR'])
+        # city, country = user_location['city'], user_location['country']
+        city, country = '', ''
     except geoip2_errors.AddressNotFoundError as e:
         print('Ip address info not found in the database')
         city,country = '',''

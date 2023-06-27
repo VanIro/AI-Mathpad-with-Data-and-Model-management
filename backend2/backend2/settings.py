@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.gis',
+    # 'django.contrib.gis',
     'rest_framework',
     'rest_framework.authtoken',
     'django.contrib.sites',
@@ -76,7 +76,7 @@ REST_AUTH={
 }
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    # "REFRESH_TOKEN_LIFETIME": timedelta(days=1),    
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),    
 }
 SITE_ID = 1
 
@@ -103,7 +103,8 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 
 GEOIP_PATH = BASE_DIR / 'aiMathpad/geoipDatasets'
-GDAL_LIBRARY_PATH=r'C:\Users\GURAGAIN\anaconda3\envs\djangoLict\Library\bin\gdal.dll' #'C:/OSGeo4W64/bin/gdal300.dll'
+# GDAL_LIBRARY_PATH=r'/home/soy/anaconda3/envs/lict/lib/libgdal.so'
+# GDAL_LIBRARY_PATH=r'C:\Users\GURAGAIN\anaconda3\envs\djangoLict\Library\bin\gdal.dll' #'C:/OSGeo4W64/bin/gdal300.dll'
 
 
 

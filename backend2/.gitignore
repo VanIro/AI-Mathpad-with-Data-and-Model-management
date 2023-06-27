@@ -2,4 +2,6 @@ node_modules/
 __pycache__/
 .vscode/
 datasets/
+db.sqlite3
+static/
 
