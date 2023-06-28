@@ -11,8 +11,8 @@ import base64
 from django.core.files.base import ContentFile
 import uuid
 
-# from django.contrib.gis.geoip2 import GeoIP2
-# from geoip2 import errors as geoip2_errors
+from django.contrib.gis.geoip2 import GeoIP2
+from geoip2 import errors as geoip2_errors
 
 from .models import ImageData, ExpressionType
 from .image_util import img_from_base64

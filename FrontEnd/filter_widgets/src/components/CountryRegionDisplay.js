@@ -34,12 +34,12 @@ function CountryRegionDisplay(props){
             return; 
         }
 
-        console.log('hehrerher',event.target,index)
+        // console.log('hehrerher',event.target,index)
         setCountrySelected(index);
     }
 
     const deleteRegion = (event)=>{
-        console.log('deleteRegion',event.target);
+        // console.log('deleteRegion',event.target);
         // const value = event.currentTarget.id.split('-')[3];
         // const region = value.split(',')[0];
         // const country = value.split(',')[1];
@@ -50,7 +50,7 @@ function CountryRegionDisplay(props){
     }
     const deleteCountry = (event)=>{
         setCountrySelected(null);
-        console.log(event.target);
+        // console.log(event.target);
         props.deleteItem(event.currentTarget.id.split('-')[3]);
     }
 
@@ -75,7 +75,7 @@ function CountryRegionDisplay(props){
                 <div className='region-list-header'>Regions:</div>
                 {!isObjectEmpty(props.regionInputs) && countrySelected? 
                     <table style={{}}><tbody>
-                    {console.log(countrySelected, props.regionInputs)}
+                    {/* {console.log(countrySelected, props.regionInputs)} */}
                         {props.regionInputs[countrySelected].map((region, index)=>{
                             return(
                                 <tr key={index}><td>

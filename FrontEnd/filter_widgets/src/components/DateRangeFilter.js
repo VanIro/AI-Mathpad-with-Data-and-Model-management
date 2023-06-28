@@ -16,8 +16,10 @@ function DateRangeFilter(props,childern){
     };
     
     const handleEndDateChange = (date) => {
-        date.setHours(23,59,59,999);
-        console.log('end date:',date);
+        // console.log('end date:',date);
+        if(date){
+            date.setHours(23,59,59,999);
+        }
         props.setEndDate(date);
     };
 

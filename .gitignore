@@ -1,3 +1,7 @@
+node_modules/
+__pycache__/
+.vscode/
+datasets/
 # for FrontEnd
 FrontEnd/filter_widgets/node_modules/
 FrontEnd/mathpad_page/node_modules/

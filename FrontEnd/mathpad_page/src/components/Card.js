@@ -14,6 +14,7 @@ const ImageCard = (props) => {
   let labelValue = editedLabel.trim();
 
   const handleSelect = (rating) => {
+    console.log("Selected rating:", rating)
     setSelectedRating(rating);
     console.log(rating);
   };
@@ -55,12 +56,19 @@ const ImageCard = (props) => {
   }
 };
 
+  const extractImgUrl = (fullPath)=>{
+    const retStr =window.location.origin + fullPath.slice(fullPath.indexOf('/media'));
+    return retStr;
+  }
+
+  const imgUrl = extractImgUrl(item.image_file);
+
   return (
     <div className="imageCard">
       <div className="rating-display">{selectedRating}</div>
       <div className="image-display">
         <img
-          src={item.image_file.split("/").slice(3).join("/")}
+          src={imgUrl}
           alt={item.image_label}
         />
       </div>

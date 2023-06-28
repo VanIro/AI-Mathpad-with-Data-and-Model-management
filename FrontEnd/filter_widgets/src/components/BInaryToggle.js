@@ -33,7 +33,7 @@ function BinaryToggle(props){
         setSelectedValue(event.target.value);
     };
     const height=0.7;//cm
-    console.log('BinaryToggle',selectedValue);
+    // console.log('BinaryToggle',selectedValue);
     return (
         <>
             {selectedValue && <div className='custom-binary-toggle-container' style={{

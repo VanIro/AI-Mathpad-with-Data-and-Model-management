@@ -21,7 +21,7 @@ function ExpressionTypeFilter(props){
                 width:'100%', textAlign:'left'
             }}><BinaryToggle selectedValue={selectedValue} setSelectedValue={setSelectedValue}/></div>
             <div className='expression-type-choices-container'>
-                {expressionChars.map((expressionChar, index) => {
+                {['Simple',...expressionChars].map((expressionChar, index) => {
                     return <div key={index} className={'expression-type-choice'+ (props.expressionTypeChoices.includes(expressionChar)?' selected':'')}
                                 tabIndex='-1' onClick={handleSelection}
                             >

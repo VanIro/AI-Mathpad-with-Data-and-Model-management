@@ -3,7 +3,7 @@ import AuthContext from "../auth/AuthContext";
 import useAxios from "../auth/useAxios";
 import { BACKEND_URL_viewAllData } from "../backend_urls";
 
-import ImageCard from "../components/Card";
+import ImageCard from "../components/card";
 
 import "./viewAllData.css";
 
@@ -13,16 +13,18 @@ const ViewAllData = () => {
   const [allData, setAllData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
+  console.log('allData',allData);
   useEffect(() => {
+    console.log('useEffect');
     handleViewAllData();
-  }, []);
+  },[]);
 
   const handleViewAllData = async () => {
     try {
       const response = await axios_instance.get(BACKEND_URL_viewAllData);
       setAllData(response.data);
     } catch (error) {
-      console.log(error);
+      console.log('handleViewAllData : ',error);
     }
   };
 

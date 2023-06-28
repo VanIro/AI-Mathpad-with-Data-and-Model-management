@@ -67,8 +67,16 @@ def dashboard_view(request):
 
             include_flag = expressionFilterUse=='include'
             for exp in expressionType:
-                qFilter = {'exp_type__'+str(exp):include_flag}
+                qFilter = {}
+                if exp=='Simple':
+                    for exp2 in [field.name for field in ExpressionType._meta.get_fields()][2:]:
+                        qFilter .update({'exp_type__'+str(exp2):False}) 
+                else:
+                    qFilter.update( {'exp_type__'+str(exp):True})
                 query2 = query2 | Q(**qFilter)
+            
+            if not include_flag:
+                query2 = ~query2
 
         dateRange = request.POST.get('dateRange')
         try:
@@ -78,14 +86,22 @@ def dashboard_view(request):
         else:
             print(start,end)
             pass
+
+        tz_info = json.loads(request.POST.get('tz_info'))
+        # print('tz_info',tz_info)
         
-        query3 = Q(id__lt=0) if start or end else Q()
+        query3 = Q(id__lt=0) if (start or end) else Q()
         if start:
             start= datetime.strptime(start, "%Y-%m-%dT%H:%M:%S.%fZ")
             query3 = query3 | Q(uploaded_at__gte=start)
         if end:
             end= datetime.strptime(end, "%Y-%m-%dT%H:%M:%S.%fZ")
-            query3 = query3 & Q(uploaded_at__lte=end)        
+            if start:
+                print("not here")
+                query3 = query3 & Q(uploaded_at__lte=end)
+            else:
+                print('here')
+                query3 = query3 | Q(uploaded_at__lte=end)     
         
         print(regionInputs,regionInputsUse,expressionType,expressionFilterUse,start,end, tz_info)
 
@@ -94,9 +110,13 @@ def dashboard_view(request):
 
         # print('filtered_imgData',filtered_imgData,filtered_imgData.count())
         print('filtered_imgData',filtered_imgData.count())
-        createD = request.POST.get('createDataset')
-        if createD:
+        try:
+            createD = json.loads(request.POST.get('createDataset'))
+        except TypeError:
+            createD = None
+        else:
             createDataset(filtered_imgData,createD)
+            
 
         country_region_stat = {
                 cntry:{ 
@@ -110,9 +130,13 @@ def dashboard_view(request):
         # print('country_region_stat : ',country_region_stat)
 
         expression_stat = dict()
-        if expressionType!=None:
+        if True:
             expression_chars = [field.name for field in ExpressionType._meta.get_fields()][2:]
-            expression_chars1 = [Exchar for Exchar in expression_chars if ((Exchar in expressionType)==include_flag and Exchar in expression_chars)]
+            expression_chars = [Exchar for Exchar in expression_chars if filtered_imgData.filter(**{'exp_type__'+Exchar:True}).exists()]
+            if expressionType:
+                expression_chars1 = [Exchar for Exchar in expression_chars if ((Exchar in expressionType)==include_flag and Exchar in expression_chars)]
+            else:
+                expression_chars1 = expression_chars
             # print(include_flag,expression_chars1)
             simple_exp_type = {'exp_type__'+Exchar:False for Exchar in expression_chars}
             expression_stat['simple'] = filtered_imgData.filter(**simple_exp_type).count()
@@ -140,7 +164,7 @@ def dashboard_view(request):
 
         # print([(date,date.isoformat()) for date in filtered_imgData.values_list('uploaded_at', flat=True).distinct()])
 
-        target_timezone = pytz.timezone(tz_info)
+        target_timezone = pytz.timezone(tz_info) if tz_info else pytz.timezone(settings.TIME_ZONE)
         filtered_imgData = filtered_imgData.annotate(uploaded_at_date=TruncDate('uploaded_at', tzinfo=target_timezone))
 
         # print(filtered_imgData.values_list('uploaded_at_date', flat=True).distinct(),flush=True)
@@ -152,12 +176,12 @@ def dashboard_view(request):
         # print('dateRange_stat : ',dateRange_stat)
 
         server_tz = pytz.timezone(settings.TIME_ZONE)
-        client_tz = pytz.timezone(tz_info)
+        client_tz = pytz.timezone(tz_info) 
 
         if start:
             start2 = server_tz.localize(start)
             start2 = start2.astimezone(client_tz).isoformat()
-            print(start2)
+            # print(start2)
         else: start2=None
 
         if end:
@@ -169,7 +193,7 @@ def dashboard_view(request):
         context.update({
             'countryRegionWidData':countryRegionWidData,
             'expressionWidData':expressionWidData,
-            'dateRange':[start2,end2],
+            'dateRange':[start2,end2] if dateRange else None,
         })
 
     

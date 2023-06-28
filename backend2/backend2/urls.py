@@ -45,6 +45,7 @@ if settings.REST_AUTH['USE_JWT']:
 urlpatterns+=[
     path('procImg/',views.proc_image),
     path('saveAnnot/',views.store_annot),
+    path('viewAllData/',views.index),
 ]
 
 urlpatterns+=[

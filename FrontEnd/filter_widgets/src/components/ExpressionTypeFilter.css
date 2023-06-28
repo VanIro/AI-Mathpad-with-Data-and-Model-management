@@ -27,8 +27,8 @@
   display:flex;
   flex-direction:row;
   min-width: 8cm;
-  width:80%;
-  width:6cm;
+  /* width:80%; */
+  width:8.5cm;
   flex-wrap:wrap;
 
 }
