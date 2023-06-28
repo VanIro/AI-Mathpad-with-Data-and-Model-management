@@ -46,10 +46,10 @@
 
 .prev-button {
   position: fixed;
-  left: 10%;
+  left: 5px;
 }
 
 .next-button {
   position: fixed;
-  right: 10%;
+  right: 5px;
 }

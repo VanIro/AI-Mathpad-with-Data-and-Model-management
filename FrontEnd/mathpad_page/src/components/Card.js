@@ -11,7 +11,7 @@ const ImageCard = (props) => {
   const [selectedRating, setSelectedRating] = useState(5);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [editedLabel, setEditedLabel] = useState(item.image_label);
-  const labelValue = editedLabel.trim();
+  let labelValue = editedLabel.trim();
 
   const handleSelect = (rating) => {
     setSelectedRating(rating);
@@ -30,6 +30,7 @@ const ImageCard = (props) => {
     setEditedLabel(e.target.value);
   };
 
+
   const handleLabelSubmit = async (e) => {
     e.preventDefault();
     // console.log("Updated label:", editedLabel);
@@ -43,6 +44,7 @@ const ImageCard = (props) => {
     try {
       // Send the POST request to save the updated image label
       await axios_instance.post(`${BACKEND_URL_updateImageLabel}${item.id}`, data);
+
       console.log('Image label updated successfully');
       setIsPopupOpen(false);
     } catch (error) {
@@ -62,9 +64,9 @@ const ImageCard = (props) => {
           alt={item.image_label}
         />
       </div>
-      <p>
-        Image Label:<p className="text-display">{item.image_label}</p>
-      </p>
+        <p className="text-display">
+          <math-field contentEditable="false" >{item.image_label}</math-field>
+        </p>
       <p>Uploaded At: {item.uploaded_at}</p>
       <p>City: {item.city}</p>
       {/* <p>Country: {item.country}</p>
@@ -87,7 +89,7 @@ const ImageCard = (props) => {
               alt={item.image_label}
             />
             <div className="popup-form">
-              <form onSubmit={handleLabelSubmit}>
+              <form>
                 <label>
                   Image Label:
                   <div class="input-group">

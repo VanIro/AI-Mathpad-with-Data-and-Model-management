@@ -3,7 +3,7 @@ p {
 }
 .text-display {
   font-size: 20;
-  color: black
+  color: black;
 }
 
 .imageCard {
@@ -17,66 +17,51 @@ p {
   margin: 20px 0px;
 }
 
-/* Responsive styles for screens up to 768px */
 @media (max-width: 768px) {
   .imageCard {
-    /* Adjust the styles for imageCard on smaller screens */
     width: 100%;
     max-width: 100%;
   }
 
   .rating-display {
-    /* Adjust the styles for rating display on smaller screens */
     font-size: 16px;
   }
 
   .image-display {
-    /* Adjust the styles for image display on smaller screens */
     text-align: center;
     width: 100%;
     max-width: 100%;
   }
 
   .image-display img {
-    /* Adjust the styles for the image within image-display on smaller screens */
     max-width: 100%;
     height: auto;
   }
 
-  .text-display {
-    /* Adjust the styles for text display on smaller screens */
-    font-size: 14px;
-  }
-
   .submit {
-    /* Adjust the styles for the submit button on smaller screens */
     font-size: 12px;
   }
 }
 
 
-/* Responsive styles for three images in a row */
 @media (min-width: 768px) {
   .imageCard {
-    /* Adjust the styles for imageCard on larger screens */
     width: calc(33.33% - 20px);
     margin: 0 10px 20px;
   }
 
   .image-display {
-    /* Adjust the styles for image display on larger screens */
     position: relative;
     padding-top: 75%;
   }
 
   .image-display img {
-    /* Adjust the styles for the image within image-display on larger screens */
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
   }
 }
 
@@ -113,7 +98,7 @@ p {
   background-color: #fff;
   padding: 20px;
   border-radius: 5px;
-  max-width: 400px;
+  max-width: 65%;
 }
 
 .popup-image {
@@ -188,4 +173,11 @@ input:focus{
 button:hover{
   transform: scale(0.98);
   opacity: 0.9;
+}
+
+math-field{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: inherit;
 }

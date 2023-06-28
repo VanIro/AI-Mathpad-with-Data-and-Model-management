@@ -86,7 +86,7 @@ class ImageDataListView(generics.ListAPIView):
 # to update the annotated data from the view page
 @api_view(['POST'])
 def update_image_label(request, image_id):
-    new_label = request.POST.get('image_label')
+    new_label = request.data['image_label']
 
     try:
         image_data = ImageData.objects.get(id=image_id)
