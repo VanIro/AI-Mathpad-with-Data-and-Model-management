@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import RatingSelect from "./ratings";
 import "./Card.css";
 import useAxios from "../auth/useAxios";
-import { BACKEND_URL_updateImageLabel } from "../backend_urls";
+import {
+  BACKEND_URL_updateImageLabel,
+  BACKEND_URL_getImageLabel,
+} from "../backend_urls";
+import axios from "axios";
 
 
 const ImageCard = (props) => {
@@ -11,7 +15,7 @@ const ImageCard = (props) => {
   const [selectedRating, setSelectedRating] = useState(5);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [editedLabel, setEditedLabel] = useState(item.image_label);
-  let labelValue = editedLabel.trim();
+  let labelValue = editedLabel;
 
   const handleSelect = (rating) => {
     console.log("Selected rating:", rating)
@@ -34,7 +38,6 @@ const ImageCard = (props) => {
 
   const handleLabelSubmit = async (e) => {
     e.preventDefault();
-    // console.log("Updated label:", editedLabel);
     
   if (labelValue !== null && labelValue !== undefined) {
     // Create the request payload
@@ -44,7 +47,11 @@ const ImageCard = (props) => {
 
     try {
       // Send the POST request to save the updated image label
-      await axios_instance.post(`${BACKEND_URL_updateImageLabel}${item.id}`, data);
+      await axios_instance.post(`${BACKEND_URL_updateImageLabel}${item.id}`, data).then(() => {
+        axios.get(`${BACKEND_URL_getImageLabel}${item.id}`).then((res) => {
+          setEditedLabel(res.image_label);
+        })
+      });
 
       console.log('Image label updated successfully');
       setIsPopupOpen(false);

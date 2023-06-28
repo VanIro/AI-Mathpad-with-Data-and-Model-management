@@ -85,6 +85,7 @@ class ImageDataListView(generics.ListAPIView):
 
 # to update the annotated data from the view page
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def update_image_label(request, image_id):
     new_label = request.data['image_label']
 
@@ -93,6 +94,20 @@ def update_image_label(request, image_id):
         image_data.image_label = new_label
         image_data.save()
         return JsonResponse({'message': 'Image label updated successfully.'})
+    except ImageData.DoesNotExist:
+        return JsonResponse({'error': 'Image with the provided ID does not exist.'}, status=404)
+    
+
+# to update the annotated data from the view page
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_image_label(request, image_id):
+    try:
+        image_data = ImageData.objects.get(id=image_id)
+        get_image_label = {
+            'image_label': image_data.image_label
+            }
+        return JsonResponse(get_image_label)
     except ImageData.DoesNotExist:
         return JsonResponse({'error': 'Image with the provided ID does not exist.'}, status=404)
 
