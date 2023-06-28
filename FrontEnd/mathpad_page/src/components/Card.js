@@ -56,12 +56,13 @@ const ImageCard = (props) => {
   }
 };
 
-  const extractImgUrl = (fullPath)=>{
-    const retStr =window.location.origin + fullPath.slice(fullPath.indexOf('/media'));
-    return retStr;
-  }
 
-  const imgUrl = extractImgUrl(item.image_file);
+const extractImgUrl = (fullPath)=>{
+  const retStr =window.location.origin + fullPath.slice(fullPath.indexOf('/media'));
+  return retStr;
+}
+
+const imgUrl = extractImgUrl(item.image_file);
 
   return (
     <div className="imageCard">

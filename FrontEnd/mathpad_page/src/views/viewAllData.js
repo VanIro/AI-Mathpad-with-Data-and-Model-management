@@ -3,7 +3,7 @@ import AuthContext from "../auth/AuthContext";
 import useAxios from "../auth/useAxios";
 import { BACKEND_URL_viewAllData } from "../backend_urls";
 
-import ImageCard from "../components/card";
+import ImageCard from "../components/Card";
 
 import "./viewAllData.css";
 

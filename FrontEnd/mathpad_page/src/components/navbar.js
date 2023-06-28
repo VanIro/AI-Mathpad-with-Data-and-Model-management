@@ -19,24 +19,34 @@ const Navbar = () => {
     logoutUser();
   }
   return (
-
     <nav className="navbar">
-      <Link to="/"><div className="logo">AI Mathpad</div></Link>
+      <Link to="/">
+        <div className="logo">AI Mathpad</div>
+      </Link>
       <ul className="nav-links">
-        <div className="menu">  
-
+        <div className="menu">
           {user ? (
             <>
-              <li><Link to="/"><span>Home</span></Link></li>
-              <li><Link to="/viewAllData">View Data</Link></li>
+              <li>
+                <Link to="/">
+                  <span>Home</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/viewAllData">View Data</Link>
+              </li>
               {/* <li><Link to="/todoApp">My Todo List</Link></li> */}
               <li className="userDropCont">
-                <Link ><span>Hello, {user['username']}</span></Link>
+                <Link onClick={handleLogOut}>
+                  <span>Hello, {user["username"]}</span>
+                </Link>
                 <span></span>
                 <ul className="dropdown">
-
-                  <li onClick={handleLogOut}><Link><span>Logout</span> </Link></li>
-
+                  <li onClick={handleLogOut}>
+                    <Link>
+                      <span>Logout</span>{" "}
+                    </Link>
+                  </li>
                 </ul>
               </li>
               {/* <li><button onClick={logoutUser}>Logout</button></li>     */}
@@ -44,17 +54,28 @@ const Navbar = () => {
           ) : (
             <>
               <li className="userDropCont">
-                <Link ><span>Login</span></Link>
+                <Link to="/login">
+                  <span>Login</span>
+                </Link>
                 <span></span>
                 <ul className="dropdown">
-                  <li><Link to="/login"><span style={{textAlign:'left'}}>User Login</span></Link></li>
-                  <li><a href="/dataAdmin"><span style={{textAlign:'left'}}>Admin Login</span></a></li>
+                  <li>
+                    <Link to="/login">
+                      <span style={{ textAlign: "left" }}>User Login</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <a href="/dataAdmin">
+                      <span style={{ textAlign: "left" }}>Admin Login</span>
+                    </a>
+                  </li>
                 </ul>
               </li>
-              <li><Link to="/register">Register</Link></li>
+              <li>
+                <Link to="/register">Register</Link>
+              </li>
             </>
           )}
-
         </div>
       </ul>
     </nav>
