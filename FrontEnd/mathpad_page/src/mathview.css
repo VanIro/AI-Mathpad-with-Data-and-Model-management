@@ -1,10 +1,25 @@
-.mathfield{
+.mathview{
     /* background-color: brown; */
     margin:4px;
     z-index:4 ; 
+    /* width:5cm; */
+}
+
+.mathfield-container{
+    width:8cm;
+    user-select: text;
 }
 
 math-field{
-    width:8cm;
+    user-select: text;
     height:2cm;
+    width:8cm;
+    padding: 0.2cm;
+    pointer-events: bounding-box;
 }
+
+/* @media not (pointer: coarse) { */
+    math-field::part(virtual-keyboard-toggle) {
+      display: none;
+    }
+  /* } */

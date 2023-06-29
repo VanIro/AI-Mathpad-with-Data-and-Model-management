@@ -105,7 +105,7 @@ const ImageCard = (props) => {
           <div className="popup-content">
             <img
               className="popup-image"
-              src={item.image_file.split("/").slice(3).join("/")}
+              src={imgUrl}
               alt={item.image_label}
             />
             <div className="popup-form">
@@ -113,11 +113,12 @@ const ImageCard = (props) => {
                 <label>
                   Image Label:
                   <div class="input-group">
-                    <input
+                  <math-field contentEditable="true" style={{width:"100%"}}>{editedLabel}</math-field>
+                    {/* <input
                       type="text"
                       value={editedLabel}
                       onChange={handleLabelChange}
-                    />
+                    /> */}
                   </div>
                 </label>
                 <div className="popup-buttons">

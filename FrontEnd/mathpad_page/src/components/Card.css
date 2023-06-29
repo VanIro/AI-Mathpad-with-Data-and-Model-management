@@ -120,7 +120,7 @@ p {
 .input-group{
   display: flex;
   flex-direction: row;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   padding: 8px 10px;
   border-radius: 8px;
   margin-top: 15px;
@@ -175,7 +175,7 @@ button:hover{
   opacity: 0.9;
 }
 
-math-field{
+.imageCard math-field{
   display: flex;
   justify-content: center;
   align-items: center;
