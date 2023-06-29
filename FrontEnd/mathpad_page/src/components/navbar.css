@@ -128,6 +128,6 @@
     .userDropCont:hover .dropdown {
     
     display: block;
-    background-color:blue;
+    /* background-color:blue; */
     transition-duration:0s;
     }
