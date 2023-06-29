@@ -2,6 +2,7 @@ node_modules/
 __pycache__/
 .vscode/
 datasets/
+static/
 # for FrontEnd
 FrontEnd/filter_widgets/node_modules/
 FrontEnd/mathpad_page/node_modules/
@@ -12,10 +13,11 @@ FrontEnd/mathpad_page/node_modules/
 backend2/aiMathpad/__pycache__/
 backend2/backend2/__pycache__/
 backend2/dataAdmin/__pycache__/
+backend2/db.sqlite3
+backend2/static/
 .vscode
 backend2/env/
 # backend2/dl_models
 # backend2/db.sqlite3
 # backend2/media
-# backend2/static
 # backend2/dataAdmin
