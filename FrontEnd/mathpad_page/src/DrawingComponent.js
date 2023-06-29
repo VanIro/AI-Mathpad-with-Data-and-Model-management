@@ -26,11 +26,15 @@ const DrawingComponent = React.forwardRef((props,ref) => {
     console.log('getting image url')
     return (canvasRef.current && canvasRef.current.getDataURL())
   }
+  function handleClear(event){
+    canvasRef.current && canvasRef.current.clear();
+    props.clearMathview();
+  }
 
   return (
     <div>
       <div>
-        <button onClick={() => canvasRef.current && canvasRef.current.clear()} style={{color:'black', padding:'1px', margin:'5px 2px'}}>Clear</button>
+        <button onClick={handleClear} style={{color:'black', padding:'1px', margin:'5px 2px'}}>Clear</button>
         <button onClick={handleUndo} style={{color:'black', padding:'1px', margin:'5px 2px'}}>Undo</button>
       </div>
       <div>

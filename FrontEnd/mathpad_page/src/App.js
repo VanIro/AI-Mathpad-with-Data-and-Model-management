@@ -20,7 +20,14 @@ function App() {
   const [cor_math_exp, setCorMath_exp] = useState('')
   const [cor_flag, setCor_flag] = useState(false);
 
-  const mathpad = <DrawingComponent ref={canvasRef} />
+  const mathpad = <DrawingComponent ref={canvasRef} clearMathview={()=>{
+    console.log('clearing mathview');
+    setMath_exp('');
+    if(mathviewRef)
+      mathviewRef.current.value='';
+    setCorMath_exp('');
+  }}/>
+  console.log('math_exp',math_exp);
   const mathview = <CustomMathfield value={math_exp} ref={mathviewRef}  setCorMath_exp={setCorMath_exp} editRespFunc = {handleMathfieldEdit}/>
   // console.log(mathviewRef)
 
@@ -117,7 +124,7 @@ function App() {
           draggable
           pauseOnHover
           theme="colored"
-        />
+      />
       <div className='mathpad-container'>{mathpad}</div>
       <br/>
       <div>

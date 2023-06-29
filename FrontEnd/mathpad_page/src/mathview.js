@@ -14,7 +14,7 @@ const CustomMathfield = React.forwardRef((props, ref) => {
   }
   const mathliv_el = <math-field ref={mathfieldRef} contentEditable="true" onInput={handleEdit}/>
   // mathliv_el.addEventListener('input',handleEdit);
-  console.log(mathliv_el);
+  // console.log(mathliv_el);
 
   useEffect(() => {
     // mathfieldRef.current.<option> = <value>;
