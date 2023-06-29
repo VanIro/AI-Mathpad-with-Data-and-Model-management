@@ -14,6 +14,7 @@ backend2/aiMathpad/__pycache__/
 backend2/backend2/__pycache__/
 backend2/dataAdmin/__pycache__/
 backend2/db.sqlite3
+backend2/static/
 .vscode
 backend2/env/
 # backend2/dl_models

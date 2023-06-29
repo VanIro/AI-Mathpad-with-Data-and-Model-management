@@ -3,7 +3,7 @@ import AuthContext from "../auth/AuthContext";
 import useAxios from "../auth/useAxios";
 import { BACKEND_URL_viewAllData } from "../backend_urls";
 
-import ImageCard from "../components/card";
+import ImageCard from "../components/Card";
 
 import "./viewAllData.css";
 
@@ -50,10 +50,10 @@ const ViewAllData = () => {
   for (let i = 0; i < rows; i++) {
     const startIndex = i * itemsPerRow;
     const endIndex = startIndex + itemsPerRow;
-    const rowItems = allData.slice(startIndex, endIndex);
+    const rowItems = currentData.slice(startIndex, endIndex);
 
     const imageRow = rowItems.map((item) => (
-      <ImageCard key={item.id} item={item} />
+      <ImageCard key={item.id} item={item} setAllData={setAllData} />
     ));
 
     imageRows.push(
