@@ -12,7 +12,7 @@ const CustomMathfield = React.forwardRef((props, ref) => {
     // props.setCorMath_exp(event.target.value);
     props.editRespFunc(event);
   }
-  const mathliv_el = <math-field ref={mathfieldRef} onInput={handleEdit}/>
+  const mathliv_el = <math-field ref={mathfieldRef} contentEditable="true" onInput={handleEdit}/>
   // mathliv_el.addEventListener('input',handleEdit);
   console.log(mathliv_el);
 
@@ -21,8 +21,10 @@ const CustomMathfield = React.forwardRef((props, ref) => {
   }, []);
 
   return (
-    <div className='mathfield'>
+    <div className='mathview'>
+      <div className='mathfield-container'>
         {mathliv_el}
+      </div>
     </div>
   );
 });

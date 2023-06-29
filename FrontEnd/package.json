@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "postcss": "^8.4.24",
+    "postcss-reporter": "^7.0.5"
+  }
+}
