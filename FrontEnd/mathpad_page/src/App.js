@@ -26,6 +26,7 @@ function App() {
     if(mathviewRef)
       mathviewRef.current.value='';
     setCorMath_exp('');
+    setCor_flag(false);
   }}/>
   console.log('math_exp',math_exp);
   const mathview = <CustomMathfield value={math_exp} ref={mathviewRef}  setCorMath_exp={setCorMath_exp} editRespFunc = {handleMathfieldEdit}/>
