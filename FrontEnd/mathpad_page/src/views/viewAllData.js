@@ -50,10 +50,10 @@ const ViewAllData = () => {
   for (let i = 0; i < rows; i++) {
     const startIndex = i * itemsPerRow;
     const endIndex = startIndex + itemsPerRow;
-    const rowItems = allData.slice(startIndex, endIndex);
+    const rowItems = currentData.slice(startIndex, endIndex);
 
     const imageRow = rowItems.map((item) => (
-      <ImageCard key={item.id} item={item} />
+      <ImageCard key={item.id} item={item} setAllData={setAllData} />
     ));
 
     imageRows.push(

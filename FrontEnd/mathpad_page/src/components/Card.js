@@ -8,7 +8,6 @@ import {
 } from "../backend_urls";
 import axios from "axios";
 
-
 const ImageCard = (props) => {
   const item = props.item;
   const axios_instance = useAxios();
@@ -18,7 +17,7 @@ const ImageCard = (props) => {
   let labelValue = editedLabel;
 
   const handleSelect = (rating) => {
-    console.log("Selected rating:", rating)
+    console.log("Selected rating:", rating);
     setSelectedRating(rating);
     console.log(rating);
   };
@@ -35,54 +34,59 @@ const ImageCard = (props) => {
     setEditedLabel(e.target.value);
   };
 
-
   const handleLabelSubmit = async (e) => {
     e.preventDefault();
-    
-  if (labelValue !== null && labelValue !== undefined) {
-    // Create the request payload
-    const data = {
-      image_label: labelValue
-    };
 
-    try {
-      // Send the POST request to save the updated image label
-      await axios_instance.post(`${BACKEND_URL_updateImageLabel}${item.id}`, data).then(() => {
-        axios.get(`${BACKEND_URL_getImageLabel}${item.id}`).then((res) => {
-          setEditedLabel(res.image_label);
-        })
-      });
+    if (labelValue !== null && labelValue !== undefined) {
+      const data = {
+        image_label: labelValue,
+      };
 
-      console.log('Image label updated successfully');
-      setIsPopupOpen(false);
-    } catch (error) {
-      console.log('Error updating image label:', error);
+      try {
+        await axios_instance
+          .post(`${BACKEND_URL_updateImageLabel}${item.id}`, data)
+          // .then(() => {
+          //   axios.get(`${BACKEND_URL_getImageLabel}${item.id}`).then((res) => {
+          //     setEditedLabel(res.image_label);
+          //   });
+          // });
+
+          props.setAllData((prevData) =>
+            prevData.map((dataItem) => {
+              if (dataItem.id === item.id) {
+                return { ...dataItem, image_label: labelValue };
+              }
+              return dataItem;
+            })
+          );
+
+        console.log("Image label updated successfully");
+        setIsPopupOpen(false);
+      } catch (error) {
+        console.log("Error updating image label:", error);
+      }
+    } else {
+      console.log("Invalid image label");
     }
-  } else {
-    console.log('Invalid image label');
-  }
-};
+  };
 
+  const extractImgUrl = (fullPath) => {
+    const retStr =
+      window.location.origin + fullPath.slice(fullPath.indexOf("/media"));
+    return retStr;
+  };
 
-const extractImgUrl = (fullPath)=>{
-  const retStr =window.location.origin + fullPath.slice(fullPath.indexOf('/media'));
-  return retStr;
-}
-
-const imgUrl = extractImgUrl(item.image_file);
+  const imgUrl = extractImgUrl(item.image_file);
 
   return (
     <div className="imageCard">
       <div className="rating-display">{selectedRating}</div>
       <div className="image-display">
-        <img
-          src={imgUrl}
-          alt={item.image_label}
-        />
+        <img src={imgUrl} alt={item.image_label} />
       </div>
-        <p className="text-display">
-          <math-field contentEditable="false" >{item.image_label}</math-field>
-        </p>
+      <p className="text-display">
+        <math-field contentEditable="false">{item.image_label}</math-field>
+      </p>
       <p>Uploaded At: {item.uploaded_at}</p>
       <p>City: {item.city}</p>
       {/* <p>Country: {item.country}</p>
