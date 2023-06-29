@@ -72,9 +72,11 @@
     
     /* DROPDOWN MENU */
     
-    .userDropCont {
+    li.userDropCont {
     
     position: relative; 
+    /* height:80%; */
+    padding-bottom:0.2cm;
     
     }
     
@@ -87,10 +89,13 @@
     position: absolute; /*WITH RESPECT TO PARENT*/
     
     display: none;
+    /* background: red; */
     
     border-radius: 8px;
     
     top: 35px;
+    /* animation-duration: 4s; */
+    /* transition-duration: 4s; */
     
     }
     
@@ -115,9 +120,14 @@
     background-color: #4c9e9e;
     
     }
+
+    /* .userDropCont:hover{
+        background-color:blue;
+    }  */
     
     .userDropCont:hover .dropdown {
     
     display: block;
-    
+    background-color:blue;
+    transition-duration:0s;
     }
