@@ -8,6 +8,7 @@ class ImageData(models.Model):
     image_file = models.ImageField(upload_to=image_upload_path)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     image_label = models.CharField(max_length=400, default='')
+    # image_label = models.CharField(max_length=400, null=True, default='')
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='annoted_images', on_delete=models.CASCADE, null=False)
     city = models.CharField(max_length=100, default='')
     country = models.CharField(max_length=100, default='')

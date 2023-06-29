@@ -14,6 +14,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view()),
     path('user_info/', views.know_cur_user),
     path('getAllImages/', views.ImageDataListView.as_view()),
+    path('updateImageLabel/<int:image_id>', views.update_image_label),
 
     path('verify-email/',
          VerifyEmailView.as_view(), name='rest_verify_email'),
