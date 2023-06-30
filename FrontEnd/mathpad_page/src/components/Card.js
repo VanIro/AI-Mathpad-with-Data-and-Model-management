@@ -30,6 +30,7 @@ const ImageCard = (props) => {
         ...prevState,
         [id]: rating,
       }));
+      setSelectedRating(rating);
     };
 
 
