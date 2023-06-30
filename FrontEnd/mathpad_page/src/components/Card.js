@@ -39,6 +39,13 @@ const ImageCard = (props) => {
     setEditedLabel(item.image_label);
   }, [item.image_label]);
 
+  useEffect(() => {
+    const mathField = document.getElementById(`mathField_${item.id}`);
+    if (mathField) {
+      mathField.value = editedLabel;
+    }
+  }, [editedLabel]);
+
 
   const handleLabelSubmit = async (e) => {
     e.preventDefault();
@@ -85,8 +92,8 @@ const ImageCard = (props) => {
         <img src={imgUrl} alt={item.image_label} />
       </div>
       <div className="text-display" >
-        {editedLabel}
-        {/* <math-field >{editedLabel}</math-field> */}
+        {/* {editedLabel} */}
+        <math-field id={`mathField_${item.id}`} readOnly value={editedLabel} />
       </div>
       <p>Uploaded At: {item.uploaded_at}</p>
       <p>City: {item.city}</p>
