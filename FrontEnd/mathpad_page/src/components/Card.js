@@ -20,9 +20,9 @@ const ImageCard = (props) => {
   let labelValue = editedLabel;
 
   const handleSelect = (rating) => {
-    console.log("Selected rating:", rating, item);
+    // console.log("Selected rating:", rating, item);
     setSelectedRating(rating);
-    console.log(rating);
+    // console.log(rating);
   };
 
   const handleEditButtonClick = () => {
