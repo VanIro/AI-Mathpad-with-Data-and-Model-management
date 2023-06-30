@@ -40,6 +40,8 @@ const ImageCard = (props) => {
   const handleLabelSubmit = async (e) => {
     e.preventDefault();
 
+    console.log('here here')
+
     if (labelValue !== null && labelValue !== undefined) {
       const data = {
         image_label: labelValue,
@@ -88,7 +90,7 @@ const ImageCard = (props) => {
         <img src={imgUrl} alt={item.image_label} />
       </div>
       <p className="text-display">
-        <math-field contentEditable="false">{item.image_label}</math-field>
+        <math-field contentEditable="false">{editedLabel}</math-field>
       </p>
       <p>Uploaded At: {item.uploaded_at}</p>
       <p>City: {item.city}</p>
@@ -117,7 +119,7 @@ const ImageCard = (props) => {
                 <label>
                   Image Label:
                   <div className="input-group">
-                  <math-field contentEditable="true" style={{width:"100%"}}>{editedLabel}</math-field>
+                  <math-field contentEditable="true" style={{width:"100%"}} onInput={handleLabelChange}>{editedLabel}</math-field>
                     {/* <input
                       type="text"
                       value={editedLabel}
