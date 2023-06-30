@@ -6,11 +6,9 @@ const RatingSelect = ({ selectedRating, onSelectedRating, id_num }) => {
     const rating = Number(e.target.value);
     onSelectedRating(rating);
   };
-  console.log('rating select',selectedRating)
   return (
     <ul className="rating">
       {[1,2,3,4,5].map((num,i) => {
-        console.log('rating select',num,selectedRating===num)
         return (
           <li key={i}>
             <input
