@@ -13,10 +13,8 @@ const ImageCard = (props) => {
   const axios_instance = useAxios();
   const [selectedRating, setSelectedRating] = useState(5);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [editedLabel, setEditedLabel] = useState(item.image_label);
-  // useEffect(() => {
-  //   setEditedLabel(item.image_label);
-  // },[])
+  let [editedLabel, setEditedLabel] = useState(item.image_label);
+
   let labelValue = editedLabel;
 
   const handleSelect = (rating) => {
@@ -37,10 +35,13 @@ const ImageCard = (props) => {
     setEditedLabel(e.target.value);
   };
 
+  useEffect(() => {
+    setEditedLabel(item.image_label);
+  }, [item.image_label]);
+
+
   const handleLabelSubmit = async (e) => {
     e.preventDefault();
-
-    console.log('here here')
 
     if (labelValue !== null && labelValue !== undefined) {
       const data = {
@@ -50,12 +51,6 @@ const ImageCard = (props) => {
       try {
         await axios_instance
           .post(`${BACKEND_URL_updateImageLabel}${item.id}`, data)
-          // .then(() => {
-          //   axios.get(`${BACKEND_URL_getImageLabel}${item.id}`).then((res) => {
-          //     setEditedLabel(res.image_label);
-          //   });
-          // });
-
           props.setAllData((prevData) =>
             prevData.map((dataItem) => {
               if (dataItem.id === item.id) {
@@ -90,7 +85,8 @@ const ImageCard = (props) => {
         <img src={imgUrl} alt={item.image_label} />
       </div>
       <div className="text-display" >
-        <math-field readOnly >{editedLabel}</math-field>
+        {editedLabel}
+        {/* <math-field >{editedLabel}</math-field> */}
       </div>
       <p>Uploaded At: {item.uploaded_at}</p>
       <p>City: {item.city}</p>
@@ -119,12 +115,7 @@ const ImageCard = (props) => {
                 <label>
                   Image Label:
                   <div className="input-group">
-                  <math-field contentEditable="true" style={{width:"100%"}} onInput={handleLabelChange}>{editedLabel}</math-field>
-                    {/* <input
-                      type="text"
-                      value={editedLabel}
-                      onChange={handleLabelChange}
-                    /> */}
+                  <math-field contentEditable="true" style={{width:"100%"}} onInput={handleLabelChange} value={editedLabel} />
                   </div>
                 </label>
                 <div className="popup-buttons">

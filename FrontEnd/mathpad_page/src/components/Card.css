@@ -2,6 +2,7 @@ p {
   color: #333;
 }
 .text-display {
+  margin-top: 10px;
   font-size: 20;
   color: black;
 }
@@ -109,7 +110,7 @@ p {
 }
 
 .popup-form {
-  padding-top: 10px; 
+  margin-top: 10px; 
 }
 
 .popup-buttons {
@@ -124,7 +125,6 @@ p {
   /* border: 1px solid #ccc; */
   padding: 8px 10px;
   border-radius: 8px;
-  margin-top: 15px;
 }
 
 input{
@@ -182,3 +182,4 @@ button:hover{
   align-items: center;
   width: inherit;
 }
+
