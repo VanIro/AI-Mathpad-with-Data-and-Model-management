@@ -47,7 +47,7 @@ const ViewAllData = () => {
   const renderData = () => {
 
     return currentData.map((item,i) => (
-      <div key={i} className="card-container">
+      <div key={`${currentPage}_${i}`} className="card-container">
         <ImageCard item={item} setAllData={setAllData} />
       </div>
     ));

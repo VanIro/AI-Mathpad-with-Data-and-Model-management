@@ -89,9 +89,9 @@ const ImageCard = (props) => {
       <div className="image-display">
         <img src={imgUrl} alt={item.image_label} />
       </div>
-      <p className="text-display">
-        <math-field contentEditable="false">{editedLabel}</math-field>
-      </p>
+      <div className="text-display" >
+        <math-field readOnly >{editedLabel}</math-field>
+      </div>
       <p>Uploaded At: {item.uploaded_at}</p>
       <p>City: {item.city}</p>
       {/* <p>Country: {item.country}</p>
