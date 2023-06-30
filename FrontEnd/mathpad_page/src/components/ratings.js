@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./ratings.css";
 
-const RatingSelect = ({ selectedRating, onSelectedRating }) => {
+const RatingSelect = ({ selectedRating, onSelectedRating, id_num }) => {
   const onChange = (e) => {
     const rating = Number(e.target.value);
     onSelectedRating(rating);
@@ -9,61 +9,21 @@ const RatingSelect = ({ selectedRating, onSelectedRating }) => {
 
   return (
     <ul className="rating">
-      <li>
-        <input
-          type="radio"
-          id="num1"
-          name="rating"
-          value="1"
-          onChange={onChange}
-          checked={selectedRating === 1}
-        />
-        <label htmlFor="num1">1</label>
-      </li>
-      <li>
-        <input
-          type="radio"
-          id="num2"
-          name="rating"
-          value="2"
-          onChange={onChange}
-          checked={selectedRating === 2}
-        />
-        <label htmlFor="num2">2</label>
-      </li>
-      <li>
-        <input
-          type="radio"
-          id="num3"
-          name="rating"
-          value="3"
-          onChange={onChange}
-          checked={selectedRating === 3}
-        />
-        <label htmlFor="num3">3</label>
-      </li>
-      <li>
-        <input
-          type="radio"
-          id="num4"
-          name="rating"
-          value="4"
-          onChange={onChange}
-          checked={selectedRating === 4}
-        />
-        <label htmlFor="num4">4</label>
-      </li>
-      <li>
-        <input
-          type="radio"
-          id="num5"
-          name="rating"
-          value="5"
-          onChange={onChange}
-          checked={selectedRating === 5}
-        />
-        <label htmlFor="num5">5</label>
-      </li>
+      {[1,2,3,4,5].map((num,i) => {
+        return (
+          <li key={i}>
+            <input
+              type="radio"
+              id={`num${i}_${id_num}`}
+              name="rating"
+              value={num}
+              onChange={onChange}
+              checked={selectedRating === num}
+            />
+            <label htmlFor={`num${i}_${id_num}`}>{num}</label>
+          </li>
+        );
+      })}
     </ul>
   );
 };

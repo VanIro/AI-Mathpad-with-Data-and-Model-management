@@ -7,14 +7,15 @@ p {
 }
 
 .imageCard {
+  width:75%;
   position: relative;
   display: flex;
   flex-direction: column;
   background-color: #fff;
   color: #333;
   border-radius: 15px;
-  padding: 25px;
-  margin: 20px 0px;
+  padding: 55px;
+  margin: 20px auto;
 }
 
 @media (max-width: 768px) {
@@ -46,8 +47,8 @@ p {
 
 @media (min-width: 768px) {
   .imageCard {
-    width: calc(33.33% - 20px);
-    margin: 0 10px 20px;
+    /* width: calc(33.33% - 20px); */
+    /* margin: 0 10px 20px; */
   }
 
   .image-display {

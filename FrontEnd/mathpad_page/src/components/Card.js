@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RatingSelect from "./ratings";
 import "./Card.css";
 import useAxios from "../auth/useAxios";
@@ -14,10 +14,13 @@ const ImageCard = (props) => {
   const [selectedRating, setSelectedRating] = useState(5);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [editedLabel, setEditedLabel] = useState(item.image_label);
+  // useEffect(() => {
+  //   setEditedLabel(item.image_label);
+  // },[])
   let labelValue = editedLabel;
 
   const handleSelect = (rating) => {
-    console.log("Selected rating:", rating);
+    console.log("Selected rating:", rating, item);
     setSelectedRating(rating);
     console.log(rating);
   };
@@ -98,6 +101,7 @@ const ImageCard = (props) => {
       <RatingSelect
         selectedRating={selectedRating}
         onSelectedRating={handleSelect}
+        id_num={item.id}
       />
 
       {isPopupOpen && (
@@ -112,7 +116,7 @@ const ImageCard = (props) => {
               <form>
                 <label>
                   Image Label:
-                  <div class="input-group">
+                  <div className="input-group">
                   <math-field contentEditable="true" style={{width:"100%"}}>{editedLabel}</math-field>
                     {/* <input
                       type="text"

@@ -9,7 +9,8 @@
 }
 
 .imageRow > .imageCard {
-  flex-basis: calc(20% - 10px); /* Adjust the width as needed */
+  /* Adjust the width as needed */
+  flex-basis: calc(20% - 10px); 
 }
 
 @media (max-width: 768px) {
@@ -19,13 +20,15 @@
   }
 
   .imageRow > .imageCard {
-    flex-basis: calc(50% - 10px); /* Adjust the width as needed for smaller screens */
+    /* Adjust the width as needed for smaller screens */
+    flex-basis: calc(50% - 10px); 
   }
 }
 
 @media (max-width: 480px) {
   .imageRow > .imageCard {
-    flex-basis: 100%; /* Full width for smaller screens */
+    /* Full width for smaller screens */
+    flex-basis: 100%; 
   }
 }
 
@@ -52,4 +55,16 @@
 .next-button {
   position: fixed;
   right: 5px;
+}
+
+.cards-container{
+  display:flex;
+  flex-direction:row;
+  flex-wrap:wrap;
+  justify-content: space-between;
+}
+
+.card-container{
+  flex-basis: calc(100%/3);
+  /* margin-left:2cm; */
 }

@@ -34,6 +34,8 @@ const ViewAllData = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentData = allData.slice(startIndex, endIndex);
 
+
+
   const handleNextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
   };
@@ -43,33 +45,21 @@ const ViewAllData = () => {
   };
 
   const renderData = () => {
-  const itemsPerRow = 3; // Number of items per row
-  const rows = Math.ceil(currentData.length / itemsPerRow);
 
-  const imageRows = [];
-  for (let i = 0; i < rows; i++) {
-    const startIndex = i * itemsPerRow;
-    const endIndex = startIndex + itemsPerRow;
-    const rowItems = currentData.slice(startIndex, endIndex);
-
-    const imageRow = rowItems.map((item) => (
-      <ImageCard key={item.id} item={item} setAllData={setAllData} />
-    ));
-
-    imageRows.push(
-      <div key={i} className="imageRow">
-        {imageRow}
+    return currentData.map((item,i) => (
+      <div key={i} className="card-container">
+        <ImageCard item={item} setAllData={setAllData} />
       </div>
-    );
+    ));
   }
-
-  return imageRows;
-}
 
   return (
     <div className="content-wrap">
       <h1>View all Images Here</h1>
-      {renderData()}
+      <div className="cards-container">
+
+        {renderData()}
+      </div>
       <div className="pagination">
         {currentPage > 1 && (
           <button
