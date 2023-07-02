@@ -30,12 +30,13 @@ function DateRangeFilter(props,childern){
                 <div className='datepicker from'>
                     <CustomDatePicker
                         showIcon
+                        isClearable
                         selected={props.startDate}
                         onChange={handleStartDateChange}
                         selectsStart
                         startDate={props.startDate}
                         endDate={props.endDate}
-                        placeholderText="From"
+                        placeholderText="Set start date"
                         dateFormat="yyyy-MM-dd"
                     />
                     <div className='datepicker-label from'>
@@ -48,13 +49,14 @@ function DateRangeFilter(props,childern){
                     </div>
                     <CustomDatePicker
                         showIcon
+                        isClearable
                         selected={props.endDate}
                         onChange={handleEndDateChange}
                         selectsEnd
                         startDate={props.startDate}
                         endDate={props.endDate}
                         minDate={props.startDate}
-                        placeholderText="To"
+                        placeholderText="Set end date"
                         dateFormat="yyyy-MM-dd"
                     />
                 </div>
