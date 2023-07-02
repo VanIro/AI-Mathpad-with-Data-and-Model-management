@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView
 from allauth.account import urls as allauth_urls
+import filer
 
 from aiMathpad import views
 

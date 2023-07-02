@@ -61,6 +61,10 @@ INSTALLED_APPS = [
     'corsheaders',
     'dataAdmin',
     'bootstrapsidebar',
+    'easy_thumbnails',
+    'filer',
+    'mptt',
+    'explorer.apps.ExplorerConfig',
 ]
 
 REST_FRAMEWORK = {

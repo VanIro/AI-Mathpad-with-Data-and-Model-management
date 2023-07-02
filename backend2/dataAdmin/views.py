@@ -11,9 +11,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import logout
 from django.db.models import Q
 from django.db.models.functions import TruncDate
-from django.db.models import Func
+from django.db.models import Func, Count
 
 from aiMathpad.models import ImageData, ExpressionType
+from .models import Datasets
 
 def IsDataAdmin(view_func):
     def wrapper(request,*args,**kwargs):
@@ -28,6 +29,16 @@ def IsDataAdmin(view_func):
 @IsDataAdmin
 def index(request):
     return redirect(reverse('dataAdmin:dashboard'))
+
+@IsDataAdmin
+def manage_models(request):
+    context = dict()
+    return render(request, 'dataAdmin/manage_models.html', context=context)
+
+@IsDataAdmin
+def manage_datasets(request):
+    context = dict()
+    return render(request, 'dataAdmin/manage_datasets.html', context=context)
 
 
 @IsDataAdmin
@@ -110,11 +121,14 @@ def dashboard_view(request):
 
         # print('filtered_imgData',filtered_imgData,filtered_imgData.count())
         print('filtered_imgData',filtered_imgData.count())
+
+        #create dataset
         try:
             createD = json.loads(request.POST.get('createDataset'))
         except TypeError:
             createD = None
         else:
+
             createDataset(filtered_imgData,createD)
             
 
@@ -131,33 +145,37 @@ def dashboard_view(request):
 
         expression_stat = dict()
         if True:
-            expression_chars = [field.name for field in ExpressionType._meta.get_fields()][2:]
+            expression_chars =  [field.name for field in ExpressionType._meta.get_fields()][2:]
+            ex_chars = ['exp_type__'+Exchar for Exchar in expression_chars]
             expression_chars = [Exchar for Exchar in expression_chars if filtered_imgData.filter(**{'exp_type__'+Exchar:True}).exists()]
+
+
+            exp_types_counts = filtered_imgData.values(*ex_chars).annotate(count = Count('exp_type__'+expression_chars[0]))
+            # print('exp_type counts',list(exp_types_counts))
+            
             if expressionType:
-                expression_chars1 = [Exchar for Exchar in expression_chars if ((Exchar in expressionType)==include_flag and Exchar in expression_chars)]
+                expression_chars1 = [Exchar for Exchar in expression_chars 
+                                        if ((Exchar in expressionType)==include_flag and Exchar in expression_chars)
+                                     ]
             else:
                 expression_chars1 = expression_chars
             # print(include_flag,expression_chars1)
             simple_exp_type = {'exp_type__'+Exchar:False for Exchar in expression_chars}
-            expression_stat['simple'] = filtered_imgData.filter(**simple_exp_type).count()
-            for i in range(len(expression_chars1)):
-                if expression_chars1[i] not in expression_stat:
-                    expression_stat[expression_chars1[i]] = dict()
+            expression_stat['simple'] = exp_types_counts.get(**simple_exp_type)['count']#filtered_imgData.filter(**simple_exp_type).count()
 
-                exp_type = simple_exp_type.copy()
-                exp_type['exp_type__'+expression_chars1[i]] = True
-                expression_stat[expression_chars1[i]]['only'] = filtered_imgData.filter(**exp_type).count()
-                for j in range(len(expression_chars)):
-                    if expression_chars1[i]==expression_chars[j]:
-                        continue
-                    # print(expression_chars1[i],expression_chars[j])
-                    if expression_chars[j] in expression_stat:
-                        expression_stat[expression_chars1[i]][expression_chars[j]] = expression_stat[expression_chars[j]][expression_chars1[i]] 
-                        continue
-                    exp_type=dict()
-                    exp_type['exp_type__'+expression_chars1[i]] = True
-                    exp_type['exp_type__'+expression_chars[j]] = True
-                    expression_stat[expression_chars1[i]][expression_chars[j]] = filtered_imgData.filter(**exp_type).count()
+
+            for i in range(len(expression_chars1)):
+                expression_stat[expression_chars1[i]] =  dict(
+                                    map(lambda item: (f"{[key.replace('exp_type__','') for key in item if key!='count' and item[key]==True]}",item['count']),
+                                         exp_types_counts.filter(**{'exp_type__'+expression_chars1[i]:True})\
+                                            .values(*['exp_type__'+a for a in expression_chars if a != expression_chars1[i]],'count')
+                                    ))
+                try:
+                    expression_stat[expression_chars1[i]]['only'] = expression_stat[expression_chars1[i]].pop( '[]' )
+                except KeyError:
+                    pass
+                print('filtered_ex_counts',list(expression_stat[expression_chars1[i]]))
+                
             
             context.update({'expression_stat':expression_stat})
         # print('expression_stat : ',expression_stat)

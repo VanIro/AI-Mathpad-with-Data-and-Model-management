@@ -45,7 +45,7 @@
 
     <hr />
     <ul class="list-unstyled components">
-    <li class="active">
+    <!-- <li class="active">
 
         <a href="#homeSubmenu"
             data-bs-toggle="collapse"
@@ -64,9 +64,15 @@
                     <a href="#">Home 3</a>
                 </li>
             </ul>
+    </li> -->
+    <li>
+        <a href="{%url 'dataAdmin:dashboard' %}">Home</a>
     </li>
     <li>
-        <a href="#">About</a>
+        <a href="{%url 'dataAdmin:manage-datasets' %}">Datasets</a>
+    </li>
+    <li>
+        <a href="{%url 'dataAdmin:manage-models' %}">Model</a>
     </li>
     </ul>
 
