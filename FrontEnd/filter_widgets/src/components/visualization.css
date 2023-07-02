@@ -4,6 +4,7 @@
     flex-wrap:nowrap;
     overflow:auto;
 }
+
 .country-region-visualization-container{
     height:8cm;
     /* width:min-content; */
@@ -18,5 +19,35 @@
 }
 
 .visualization-container > div{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    /* text-align: center; */
+    /* border-right: 1px solid black; */
+    /* background-image: linear-gradient(to right, transparent 0%, transparent 40%, black 40%, black 60%, transparent 60%, transparent 100%); */
+    padding-right: 1cm;
+    min-width:10cm;
+    margin-right: 1cm;
+    
+    position:relative;
+}
 
+.visualization-container > div::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 0%, transparent 20%,red 20%, blue 85%, transparent 85%);
+    margin-right:0.3cm;
+  }
+
+
+.visualization-container > div > div:last-child{
+    margin:auto 0;
+}
+
+.visualization-container> div:last-child::after{
+    display:none;
 }

@@ -26,6 +26,7 @@
 .expression-type-choices-container{
   display:flex;
   flex-direction:row;
+  justify-content: space-between;
   min-width: 8cm;
   /* width:80%; */
   width:8.5cm;
@@ -40,6 +41,7 @@
   font-weight: 500;
   border: 2px solid black;
   cursor:pointer;
+  flex-grow: 1;
 }
 .expression-type-choice:hover{
   background-color: rgba(249, 86, 4, 0.805);

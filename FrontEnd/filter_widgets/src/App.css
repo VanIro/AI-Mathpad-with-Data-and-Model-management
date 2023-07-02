@@ -1,11 +1,12 @@
 .widget_App {
+  width:100%;
   text-align: center;
   display:flex;
   flex-direction:row;
+  justify-content: space-around;
   /* align-items:center; */
   flex-wrap:nowrap;
   overflow:auto;
-  width:min-content;
 }
 
 .widget_container{

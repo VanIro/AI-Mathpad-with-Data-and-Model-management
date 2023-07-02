@@ -1,0 +1,11 @@
+.vis-placeholder-container{
+    max-height:6cm;
+    width:7cm;
+    
+}
+.vis-placeholder{
+    height:min-content;
+    padding:0.3cm;
+    text-align:center;
+    background-color: aquamarine;
+}
