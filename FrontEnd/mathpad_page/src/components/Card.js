@@ -12,16 +12,27 @@ const ImageCard = (props) => {
   const item = props.item;
   const axios_instance = useAxios();
   const [selectedRating, setSelectedRating] = useState(5);
+  const [ratingStates, setRatingStates] = useState({ [item.id]: null });
+
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   let [editedLabel, setEditedLabel] = useState(item.image_label);
 
   let labelValue = editedLabel;
 
-  const handleSelect = (rating) => {
-    // console.log("Selected rating:", rating, item);
-    setSelectedRating(rating);
-    // console.log(rating);
-  };
+  // const handleSelect = (rating) => {
+  //   // console.log("Selected rating:", rating, item);
+  //   setSelectedRating(rating);
+  //   // console.log(rating);
+  // };
+
+    const handleSelect = (id, rating) => {
+      setRatingStates((prevState) => ({
+        ...prevState,
+        [id]: rating,
+      }));
+      setSelectedRating(rating);
+    };
+
 
   const handleEditButtonClick = () => {
     setIsPopupOpen(true);
@@ -46,7 +57,6 @@ const ImageCard = (props) => {
     }
   }, [editedLabel]);
 
-
   const handleLabelSubmit = async (e) => {
     e.preventDefault();
 
@@ -56,16 +66,18 @@ const ImageCard = (props) => {
       };
 
       try {
-        await axios_instance
-          .post(`${BACKEND_URL_updateImageLabel}${item.id}`, data)
-          props.setAllData((prevData) =>
-            prevData.map((dataItem) => {
-              if (dataItem.id === item.id) {
-                return { ...dataItem, image_label: labelValue };
-              }
-              return dataItem;
-            })
-          );
+        await axios_instance.post(
+          `${BACKEND_URL_updateImageLabel}${item.id}`,
+          data
+        );
+        props.setAllData((prevData) =>
+          prevData.map((dataItem) => {
+            if (dataItem.id === item.id) {
+              return { ...dataItem, image_label: labelValue };
+            }
+            return dataItem;
+          })
+        );
 
         console.log("Image label updated successfully");
         setIsPopupOpen(false);
@@ -91,7 +103,7 @@ const ImageCard = (props) => {
       <div className="image-display">
         <img src={imgUrl} alt={item.image_label} />
       </div>
-      <div className="text-display" >
+      <div className="text-display">
         {/* {editedLabel} */}
         <math-field id={`mathField_${item.id}`} readOnly value={editedLabel} />
       </div>
@@ -104,7 +116,8 @@ const ImageCard = (props) => {
         Edit
       </button>
       <RatingSelect
-        selectedRating={selectedRating}
+        // selectedRating={selectedRating}
+        selectedRating={ratingStates[item.id]}
         onSelectedRating={handleSelect}
         id_num={item.id}
       />
@@ -112,17 +125,18 @@ const ImageCard = (props) => {
       {isPopupOpen && (
         <div className="popup-overlay">
           <div className="popup-content">
-            <img
-              className="popup-image"
-              src={imgUrl}
-              alt={item.image_label}
-            />
+            <img className="popup-image" src={imgUrl} alt={item.image_label} />
             <div className="popup-form">
               <form>
                 <label>
                   Image Label:
                   <div className="input-group">
-                  <math-field contentEditable="true" style={{width:"100%"}} onInput={handleLabelChange} value={editedLabel} />
+                    <math-field
+                      contentEditable="true"
+                      style={{ width: "100%" }}
+                      onInput={handleLabelChange}
+                      value={editedLabel}
+                    />
                   </div>
                 </label>
                 <div className="popup-buttons">
