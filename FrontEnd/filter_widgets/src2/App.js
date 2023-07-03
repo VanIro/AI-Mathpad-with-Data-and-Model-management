@@ -3,12 +3,14 @@ import DataSetCard from "./DataSetCard";
 import "./viewDataSets.css";
 
 const App = () => {
-  const DatasetsList = JSON.parse(
+  const initialDatasetsList = JSON.parse(
     document.getElementById("datasets-list").innerHTML
   );
-  const totalPages = Math.ceil(DatasetsList.length / 6);
+const itemsPerPage = 6;
+  const totalPages = Math.ceil(initialDatasetsList.length / itemsPerPage);
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [DatasetsList, setDatasetsList] = useState(initialDatasetsList);
 
   const handlePreviousPage = () => {
     setCurrentPage((prevPage) => prevPage - 1);
@@ -18,14 +20,21 @@ const App = () => {
     setCurrentPage((prevPage) => prevPage + 1);
   };
 
+  const updateDatasetDescription = (updatedItem) => {
+    const updatedList = DatasetsList.map((item) =>
+      item.id === updatedItem.id ? updatedItem : item
+    );
+    setDatasetsList(updatedList);
+  };
+
   const renderData = () => {
-    const startIndex = (currentPage - 1) * 6;
-    const endIndex = startIndex + 6;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
     const pageData = DatasetsList.slice(startIndex, endIndex);
 
     return pageData.map((item, index) => (
       <div key={index} className="card-container">
-        <DataSetCard item={item} />
+        <DataSetCard item={item} updateDescription={updateDatasetDescription} />
       </div>
     ));
   };
