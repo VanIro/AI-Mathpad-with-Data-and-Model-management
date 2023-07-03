@@ -16,7 +16,8 @@ function getDay(date) {
   return date.getDay();
 }
 
-function CustomDatePicker(props) {const [startDate, setStartDate] = useState(new Date());
+function CustomDatePicker(props) {
+  const [startDate, setStartDate] = useState(new Date());
   const years = range(1990, getYear(new Date()) + 1, 1);
   const months = [
     "January",
@@ -32,6 +33,7 @@ function CustomDatePicker(props) {const [startDate, setStartDate] = useState(new
     "November",
     "December",
   ];
+  
   return (
     <DatePicker
       renderCustomHeader={({
@@ -82,6 +84,7 @@ function CustomDatePicker(props) {const [startDate, setStartDate] = useState(new
           </button>
         </div>
       )}
+
       selected={startDate}
       onChange={(date) => setStartDate(date)}
       {...props}

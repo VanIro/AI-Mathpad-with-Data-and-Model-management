@@ -1,0 +1,24 @@
+{%extends 'dataAdmin/base.html' %}
+{% load static %}
+<!-- <html> -->
+    {%block head%}
+    <head>
+        <title>Dashboard</title>
+        <!-- <link rel="stylesheet" href="css/dashboard.css"> -->
+    </head>
+    {%endblock%}
+    <!-- <body> -->
+        {%block sidebar%}
+            {{block.super}}
+        {%endblock%}
+        {%block content%}
+        <form id="widget-data-capture-form" action="{% url 'dataAdmin:dashboard' %}" method="post">
+            {% csrf_token %}
+        </form>
+        {%endblock%}
+
+        {%block footer%}
+        
+        {%endblock%}
+    <!-- </body> -->
+<!-- </html> -->

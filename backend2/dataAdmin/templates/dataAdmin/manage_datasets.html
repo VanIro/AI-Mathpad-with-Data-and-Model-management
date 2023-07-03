@@ -1,0 +1,32 @@
+{%extends 'dataAdmin/base.html' %}
+{% load static %}
+<!-- <html> -->
+    {%block head%}
+    <head>
+        <title>Dashboard Datasets</title>
+        <!-- <link rel="stylesheet" href="css/dashboard.css"> -->
+    </head>
+    {%endblock%}
+    <!-- <body> -->
+        {%block sidebar%}
+            {{block.super}}
+        {%endblock%}
+        {%block content%}
+        <div id="manage-datasets-app_container"></div>
+
+        {{datasets_list|json_script:'datasets-list'}}
+        {{current_page|json_script:'current-page'}}
+        {{total_pages|json_script:'total-pages'}}
+
+        
+        <form id="widget-data-capture-form" action="{% url 'dataAdmin:dashboard' %}" method="post">
+            {% csrf_token %}
+        </form>
+        <script src="{% static 'dataset_app-bundle.js'%}"></script>
+        {%endblock%}
+
+        {%block footer%}
+        
+        {%endblock%}
+    <!-- </body> -->
+<!-- </html> -->

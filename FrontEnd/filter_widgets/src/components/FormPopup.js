@@ -3,18 +3,22 @@ import React, { useState, useEffect, useRef } from 'react';
 const FormPopup = React.forwardRef((props,ref) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [datasetName, setDatasetName] = useState('');
+  const [datasetDesc, setDatasetDesc] = useState('');
   const formRef = ref;//useRef(null);
 
   const datasetNameChanged= (event) => {
     setDatasetName(event.target.value);
   }
+  const datasetDescChanged= (event) => {
+    setDatasetDesc(event.target.value);
+  }
   const handleSubmit = () => {
     if(formRef){
-      console.log(formRef.current);
+      // console.log(formRef.current);
     }
-    console.log(datasetName);
+    // console.log(datasetName);
     setIsFormVisible(false);
-    props.handleSubmit(datasetName);
+    props.handleSubmit({datasetName,datasetDesc});
   }
 
   const handleButtonClick = () => {
@@ -47,7 +51,8 @@ const FormPopup = React.forwardRef((props,ref) => {
     <div>
       {isFormVisible ? (
         <div ref={formRef}>
-          <input type="text" placeholder="Dataset Name" onChange={datasetNameChanged} value={datasetName}/>
+          <input type="text" placeholder="Dataset Name" onChange={datasetNameChanged} value={datasetName}/><br/>
+          <input type="text" placeholder="Description" onChange={datasetDescChanged} value={datasetDesc}/>
           <button onClick={handleSubmit}>Submit</button>
         </div>
       ):(

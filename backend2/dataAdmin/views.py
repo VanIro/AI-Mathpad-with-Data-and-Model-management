@@ -11,9 +11,16 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import logout
 from django.db.models import Q
 from django.db.models.functions import TruncDate
-from django.db.models import Func
+from django.db.models import Func, Count
+
+from rest_framework.generics import ListAPIView
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.decorators import api_view
+
 
 from aiMathpad.models import ImageData, ExpressionType
+from .models import Dataset
+from .serializers import DatasetSerializer
 
 def IsDataAdmin(view_func):
     def wrapper(request,*args,**kwargs):
@@ -29,6 +36,53 @@ def IsDataAdmin(view_func):
 def index(request):
     return redirect(reverse('dataAdmin:dashboard'))
 
+@IsDataAdmin
+def manage_models(request):
+    context = dict()
+    return render(request, 'dataAdmin/manage_models.html', context=context)
+
+class DatasetView(ListAPIView):
+    serializer_class = DatasetSerializer
+    queryset = Dataset.objects.all()
+    pagination_class = PageNumberPagination  # Enable pagination
+
+    def get_queryset(self):
+        # Apply sorting based on query parameters
+        queryset = super().get_queryset()
+        sort_by = self.request.query_params.get('sort_by')
+        if sort_by:
+            queryset = queryset.order_by(sort_by)
+        return queryset
+    
+
+@IsDataAdmin
+def viewDataset(request):
+    return DatasetView.as_view()(request)
+
+@IsDataAdmin
+@api_view(['GET'])
+def manage_datasets(request):
+    order_by = request.query_params.get('order_by', 'id')
+    page_number = request.query_params.get('page', 1)
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 10  # Number of objects per page
+
+    queryset = Dataset.objects.order_by(order_by)
+    result_page = paginator.paginate_queryset(queryset, request)
+
+    serializer = DatasetSerializer(result_page, many=True)
+    serialized_data = serializer.data
+
+    return render(request, 'dataAdmin/manage_datasets.html', {
+        'datasets_list': serialized_data,
+        'current_page': paginator.page.number,
+        'total_pages': paginator.page.paginator.num_pages
+    })
+    # return render(request, 'dataAdmin/manage_datasets.html', context=context)
+
+def get_images():
+    pass
 
 @IsDataAdmin
 def dashboard_view(request):
@@ -110,12 +164,6 @@ def dashboard_view(request):
 
         # print('filtered_imgData',filtered_imgData,filtered_imgData.count())
         print('filtered_imgData',filtered_imgData.count())
-        try:
-            createD = json.loads(request.POST.get('createDataset'))
-        except TypeError:
-            createD = None
-        else:
-            createDataset(filtered_imgData,createD)
             
 
         country_region_stat = {
@@ -131,33 +179,37 @@ def dashboard_view(request):
 
         expression_stat = dict()
         if True:
-            expression_chars = [field.name for field in ExpressionType._meta.get_fields()][2:]
+            expression_chars =  [field.name for field in ExpressionType._meta.get_fields()][2:]
+            ex_chars = ['exp_type__'+Exchar for Exchar in expression_chars]
             expression_chars = [Exchar for Exchar in expression_chars if filtered_imgData.filter(**{'exp_type__'+Exchar:True}).exists()]
+
+
+            exp_types_counts = filtered_imgData.values(*ex_chars).annotate(count = Count('exp_type__'+expression_chars[0]))
+            # print('exp_type counts',list(exp_types_counts))
+            
             if expressionType:
-                expression_chars1 = [Exchar for Exchar in expression_chars if ((Exchar in expressionType)==include_flag and Exchar in expression_chars)]
+                expression_chars1 = [Exchar for Exchar in expression_chars 
+                                        if ((Exchar in expressionType)==include_flag and Exchar in expression_chars)
+                                     ]
             else:
                 expression_chars1 = expression_chars
             # print(include_flag,expression_chars1)
             simple_exp_type = {'exp_type__'+Exchar:False for Exchar in expression_chars}
-            expression_stat['simple'] = filtered_imgData.filter(**simple_exp_type).count()
-            for i in range(len(expression_chars1)):
-                if expression_chars1[i] not in expression_stat:
-                    expression_stat[expression_chars1[i]] = dict()
+            expression_stat['simple'] = exp_types_counts.get(**simple_exp_type)['count']#filtered_imgData.filter(**simple_exp_type).count()
 
-                exp_type = simple_exp_type.copy()
-                exp_type['exp_type__'+expression_chars1[i]] = True
-                expression_stat[expression_chars1[i]]['only'] = filtered_imgData.filter(**exp_type).count()
-                for j in range(len(expression_chars)):
-                    if expression_chars1[i]==expression_chars[j]:
-                        continue
-                    # print(expression_chars1[i],expression_chars[j])
-                    if expression_chars[j] in expression_stat:
-                        expression_stat[expression_chars1[i]][expression_chars[j]] = expression_stat[expression_chars[j]][expression_chars1[i]] 
-                        continue
-                    exp_type=dict()
-                    exp_type['exp_type__'+expression_chars1[i]] = True
-                    exp_type['exp_type__'+expression_chars[j]] = True
-                    expression_stat[expression_chars1[i]][expression_chars[j]] = filtered_imgData.filter(**exp_type).count()
+
+            for i in range(len(expression_chars1)):
+                expression_stat[expression_chars1[i]] =  dict(
+                                    map(lambda item: (f"{[key.replace('exp_type__','') for key in item if key!='count' and item[key]==True]}",item['count']),
+                                         exp_types_counts.filter(**{'exp_type__'+expression_chars1[i]:True})\
+                                            .values(*['exp_type__'+a for a in expression_chars if a != expression_chars1[i]],'count')
+                                    ))
+                try:
+                    expression_stat[expression_chars1[i]]['only'] = expression_stat[expression_chars1[i]].pop( '[]' )
+                except KeyError:
+                    pass
+                print('filtered_ex_counts',list(expression_stat[expression_chars1[i]]))
+                
             
             context.update({'expression_stat':expression_stat})
         # print('expression_stat : ',expression_stat)
@@ -174,6 +226,15 @@ def dashboard_view(request):
             }
         context.update({'dateRange_stat':dateRange_stat})
         # print('dateRange_stat : ',dateRange_stat)
+
+        
+        #create dataset
+        try:
+            createD = json.loads(request.POST.get('createDataset'))
+        except TypeError:
+            createD = None
+        else:
+            createDataset(filtered_imgData,createD, request.user, country_region_stat, expression_stat, dateRange_stat)
 
         server_tz = pytz.timezone(settings.TIME_ZONE)
         client_tz = pytz.timezone(tz_info) 
@@ -208,16 +269,38 @@ def dashboard_view(request):
     })
     return render(request,'dataAdmin/dashboard.html',context)
 
-import os
-def createDataset(filtered_imgData,createD):
-    print('createDataset',createD)
+import os, pickle
+def createDataset(filtered_imgData,createD, user, *stats):
+    print('createDataset',list(createD.items()))
+
+    pickled_stats = pickle.dumps(stats)
+    values = {
+        'name': createD['datasetName'],
+        'description': createD['datasetDesc'],
+        'creator':user,
+        'modifier':user,
+        'num_images':filtered_imgData.count(),
+        'pickled_stats':pickled_stats,
+    }
+
+    dataset = Dataset(**values)
+    dataset.save()
+
+
+    
+    uid = dataset.pk
     # Get the current date and time
     current_datetime = datetime.now().strftime('%Y%m%d%H%M%S')
 
     dataset_path = 'datasets/'
     # Create a folder with the dataset name and current date
-    dataset_folder = dataset_path+f"{createD}_{current_datetime}"
+    dataset_folder = dataset_path+f"{createD['datasetName']}_{current_datetime}_{uid}"
+
     os.makedirs(dataset_folder)
+
+    
+    dataset.path = dataset_folder
+    dataset.save()
 
     annotation_path = os.path.join(dataset_folder, f"annotation.txt")
     with open(annotation_path, 'w') as fa:
@@ -225,14 +308,20 @@ def createDataset(filtered_imgData,createD):
         for index, item in enumerate(filtered_imgData):
             image_path = os.path.join(dataset_folder, f"image_{index}.jpg")
 
-            annotation = f"Image {index+1}:\n" \
-                         f"Image file: {image_path}\n" \
-                         f"Annotation: {item.image_label}\n\n"
-            fa.write(annotation)
+            try:
+                # Save the image file
+                with open(image_path, 'wb') as fi:
+                    fi.write(item.image_file.read())
+            except FileNotFoundError as e:
+                print(e)
+                continue
+            else:
+                # Save the annotation
+                annotation = f"Image {index+1}:\n" \
+                            f"Image file: {image_path}\n" \
+                            f"Annotation: {item.image_label}\n\n"
+                fa.write(annotation)
 
-            # Save the image file
-            with open(image_path, 'wb') as fi:
-                fi.write(item.image_file.read())
 
 
 def logout_dataAdmin(request):

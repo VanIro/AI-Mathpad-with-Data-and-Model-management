@@ -8,28 +8,34 @@ const countryRegionStat = JSON.parse(document.getElementById('country-region-sta
 const expressionStat = JSON.parse(document.getElementById('expression-stat').innerHTML);
 const dateRangeStat = JSON.parse(document.getElementById('dateRange-stat').innerHTML);
 
+import VisPlaceholder from './vis_placeholder';
+
 function Visualization({ data }) {
   // Transform the data into the format expected by ResponsiveBar
   
-  return (<div className="visualization-container">
-        <div style={{width:'fit-content', marginRight:'1cm'}}>
+  return (<div style={{overflow:'auto'}}>
+    <div className="visualization-container">
+        <div >
                 <div className="visualization-label">
                     <h4>Country Region Visualization</h4>
                 </div>
-          {getCountryRegionVisualization()}
+                <div>
+                  {getCountryRegionVisualization() || <VisPlaceholder label="Country Region Visualization"/>}
+                </div>
         </div>
-        <div style={{width:'fit-content', marginRight:'1cm'}}>
+        <div >
               <div className="visualization-label">
                   <h4>Expression Type Visualization</h4>
               </div>
-          {getExpressionTypeVisualization()}
+          {getExpressionTypeVisualization() || <VisPlaceholder label="Expression Type Visualization"/>}
         </div>
-        <div style={{width:'fit-content', marginRight:'1cm'}}>
+        <div >
           <div className="visualization-label">
             <h4>Date Range Visualization</h4>            
           </div>
-          {getDateRangeVisualization()}
+          {getDateRangeVisualization() || <VisPlaceholder label="Date Range Visualization"/>}
         </div>
+    </div>
     </div>
   );
 }
