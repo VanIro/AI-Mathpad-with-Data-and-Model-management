@@ -16,6 +16,8 @@ from django.db.models import Func, Count
 from rest_framework.generics import ListAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 
 from aiMathpad.models import ImageData, ExpressionType
@@ -59,9 +61,11 @@ class DatasetView(ListAPIView):
 def viewDataset(request):
     return DatasetView.as_view()(request)
 
+@api_view(['GET','POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
 @IsDataAdmin
-@api_view(['GET'])
 def manage_datasets(request):
+    # print('manage dataset',request.user)
     order_by = request.query_params.get('order_by', 'id')
     page_number = request.query_params.get('page', 1)
 
@@ -74,7 +78,8 @@ def manage_datasets(request):
     serializer = DatasetSerializer(result_page, many=True)
     serialized_data = serializer.data
 
-    return render(request, 'dataAdmin/manage_datasets.html', {
+
+    return render(request, 'dataAdmin/manage_datasets.html', context={
         'datasets_list': serialized_data,
         'current_page': paginator.page.number,
         'total_pages': paginator.page.paginator.num_pages
@@ -87,6 +92,7 @@ def get_images():
 @IsDataAdmin
 def dashboard_view(request):
     context=dict()
+    # print('dashboard',request.user)
     if request.method=='POST':
         query1 = Q()
         regionInputs = None
