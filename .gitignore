@@ -2,8 +2,7 @@ node_modules/
 __pycache__/
 .vscode/
 datasets/
-static/*mathpad-bundle.js
-static/*widget-bundle.js
+static/*-bundle.js
 # for FrontEnd
 FrontEnd/filter_widgets/node_modules/
 FrontEnd/mathpad_page/node_modules/

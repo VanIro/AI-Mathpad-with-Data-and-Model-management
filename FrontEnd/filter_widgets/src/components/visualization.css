@@ -1,8 +1,8 @@
 .visualization-container{
     display:flex;
-    flex-direction: row;
-    justify-content: space-around;
-    flex-wrap:nowrap;
+    flex-direction: column;
+    /* justify-content: space-around; */
+    /* flex-wrap:wrap; */
     overflow:auto;
 }
 
@@ -52,3 +52,7 @@
 .visualization-container> div:last-child::after{
     display:none;
 }
+.container > div:nth-child(n)::after {
+    /* Styles for other flex items */
+    display:none;
+  }

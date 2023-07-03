@@ -13,7 +13,8 @@ import VisPlaceholder from './vis_placeholder';
 function Visualization({ data }) {
   // Transform the data into the format expected by ResponsiveBar
   
-  return (<div className="visualization-container">
+  return (<div style={{overflow:'auto'}}>
+    <div className="visualization-container">
         <div >
                 <div className="visualization-label">
                     <h4>Country Region Visualization</h4>
@@ -34,6 +35,7 @@ function Visualization({ data }) {
           </div>
           {getDateRangeVisualization() || <VisPlaceholder label="Date Range Visualization"/>}
         </div>
+    </div>
     </div>
   );
 }

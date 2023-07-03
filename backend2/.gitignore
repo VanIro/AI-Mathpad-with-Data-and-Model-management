@@ -3,7 +3,6 @@ __pycache__/
 .vscode/
 datasets/
 db.sqlite3
-static/*mathpad-bundle.js
-static/*widget-bundle.js
+static/*-bundle.js
 images/
 

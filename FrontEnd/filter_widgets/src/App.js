@@ -180,6 +180,7 @@ function App() {
     form.appendChild(createHiddenFormInput('tz_info', tz_info));
 
     if(create){
+      // console.log(create)
       form.appendChild(createHiddenFormInput('createDataset', create));
     }
     // Submit the form

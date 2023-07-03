@@ -13,5 +13,6 @@ urlpatterns=[
     path('create',views.createDataset),
     path('models/', views.manage_models, name='manage-models'),
     path('datasets/', views.manage_datasets, name='manage-datasets'),
+    # path('datasets/view', views.viewDataset, name='view-datasets'),
     # path('browsing/', include('filer.urls')),
 ]

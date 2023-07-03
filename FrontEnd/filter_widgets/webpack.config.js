@@ -1,10 +1,13 @@
 const path = require('path')
 
 module.exports ={
-    entry: './src/index.js',
+    entry: {
+        widget:'./src/index.js',
+        dataset_app:'./src2/index.js'
+    },
     output:{
-        filename:'widget-bundle.js',
-        path: path.resolve(__dirname, '../../backend2/static'),
+            filename:'[name]-bundle.js',
+            path: path.resolve(__dirname, '../../backend2/static')
     },
     module:{
         rules:[
