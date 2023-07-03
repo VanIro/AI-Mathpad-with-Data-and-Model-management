@@ -1,23 +1,60 @@
-//Datasets List is a list of rows from dataAdmin/models.Dataset table
-const DatasetsList = JSON.parse(document.getElementById('datasets-list').innerHTML);
-const currentPage = parseInt(document.getElementById('current-page').innerHTML);
-const totalPages = parseInt(document.getElementById('total-pages').innerHTML);
+import React, { useState } from "react";
+import DataSetCard from "./DataSetCard";
+import "./viewDataSets.css";
 
-function App(){
-    return <div>
-        <h1>Dataset App</h1>
-        Datasets:
-        <ol>
-        {
-            DatasetsList.map((dataset, index) => {
-                return <li key={index}>
-                    <a href={dataset.url}>{dataset.name}</a>
-                </li>
-            })
-        }
-        </ol>
+const App = () => {
+  const DatasetsList = JSON.parse(
+    document.getElementById("datasets-list").innerHTML
+  );
+  const totalPages = Math.ceil(DatasetsList.length / 6);
 
-        Page {currentPage} out of {totalPages} pages
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prevPage) => prevPage - 1);
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const renderData = () => {
+    const startIndex = (currentPage - 1) * 6;
+    const endIndex = startIndex + 6;
+    const pageData = DatasetsList.slice(startIndex, endIndex);
+
+    return pageData.map((item, index) => (
+      <div key={index} className="card-container">
+        <DataSetCard item={item} />
+      </div>
+    ));
+  };
+
+  return (
+    <div className="content-wrap">
+      <h1>View all DataSets Here</h1>
+      Page {currentPage} out of {totalPages} pages
+      <div className="cards-container">{renderData()}</div>
+      <div className="pagination">
+        {currentPage > 1 && (
+          <button
+            className="submit navigation-button prev-button"
+            onClick={handlePreviousPage}
+          >
+            Previous
+          </button>
+        )}
+        {currentPage < totalPages && (
+          <button
+            className="submit navigation-button next-button"
+            onClick={handleNextPage}
+          >
+            Next
+          </button>
+        )}
+      </div>
     </div>
-}
+  );
+};
+
 export default App;
