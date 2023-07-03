@@ -11,7 +11,8 @@ function App(){
         {
             DatasetsList.map((dataset, index) => {
                 return <li key={index}>
-                    <a href={dataset.url}>{dataset.name}</a>
+                    <a href={dataset.url}>{dataset.name} - {dataset.num_images} images</a>
+                    <div>{dataset.description}</div>
                 </li>
             })
         }
