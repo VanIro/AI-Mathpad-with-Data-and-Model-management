@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 import pytz
+import os
 
 from django.conf import settings
 from django.shortcuts import render,HttpResponse, redirect
@@ -38,10 +39,59 @@ def IsDataAdmin(view_func):
 def index(request):
     return redirect(reverse('dataAdmin:dashboard'))
 
+import zlib
+import base64
+
+def decode_base64_and_inflate( b64string ):
+    # decoded_data = base64.b64decode( b64string )
+    # print(decoded_data)
+    return zlib.decompress( b64string , 15)
+
+def deflate_and_base64_encode( string_val ):
+    zlibbed_str = zlib.compress( string_val )
+    compressed_string = zlibbed_str[2:-4]
+    return base64.b64encode( compressed_string )
+
 @IsDataAdmin
 def manage_models(request):
     context = dict()
+    
+    if request.method == 'POST' :
+        try:
+            print(request.FILES['model_repo'])
+        except KeyError:
+            print('No file uploaded yet', request.FILES)
+        else:
+            # compressed_files = request.FILES.getlist('model_repo')  # Assuming the file input field name is 'compressed_files'
+            compressed_files = request.FILES['model_repo']
+            # print('***',compressed_files, request.FILES)
+
+            compressed_files = json.loads(decode_base64_and_inflate(compressed_files.read()))
+
+            # print('compressed files again',compressed_files[0])
+            output_directory = 'modelsManage'  # Specify the desired output directory
+
+            # Create the output directory if it doesn't exist
+            # os.makedirs(output_directory, exist_ok=True)
+            
+            for compressed_file in compressed_files:
+                # Get the full path of the file
+                full_path = os.path.join(output_directory, compressed_file['name'])
+                print(full_path,f'size:{compressed_file["size"]}', end=" ") 
+                os.makedirs(os.path.dirname(full_path), exist_ok=True)
+                
+                # Decompress the file and write it to the output path
+                with open(full_path, 'wb') as output_file:
+                    print('decoding...', end="")
+                    decompressed_data = decode_base64_and_inflate(bytes(compressed_file['data']))
+                    print('-> done')
+                    # decompressed_data = decompressor.decompress(compressed_file.read())
+                    output_file.write(decompressed_data)
+            
+            print('Files decompressed successfully')
+            # return HttpResponse('Files decompressed successfully')
     return render(request, 'dataAdmin/manage_models.html', context=context)
+
 
 class DatasetView(ListAPIView):
     serializer_class = DatasetSerializer

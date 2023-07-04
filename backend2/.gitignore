@@ -5,4 +5,5 @@ datasets/
 db.sqlite3
 static/*-bundle.js
 images/
+modelsManage/
 

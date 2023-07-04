@@ -12,9 +12,13 @@
             {{block.super}}
         {%endblock%}
         {%block content%}
-        <form id="widget-data-capture-form" action="{% url 'dataAdmin:dashboard' %}" method="post">
+        <div id="manage-models-app_container"></div>
+
+        <form id="model-repo-upload-form" action="{% url 'dataAdmin:dashboard' %}" method="post">
             {% csrf_token %}
         </form>
+
+        <script src="{% static 'model_app-bundle.js'%}"></script>
         {%endblock%}
 
         {%block footer%}
