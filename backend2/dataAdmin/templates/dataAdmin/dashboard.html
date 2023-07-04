@@ -25,6 +25,10 @@
         <form id="widget-data-capture-form" action="{% url 'dataAdmin:dashboard' %}" method="post">
             {% csrf_token %}
         </form>
+
+        <script>
+            document.getElementById('sidebar_nav').children[0].classList.add('active');
+        </script>
         <script src="{% static 'widget-bundle.js'%}"></script>
         {%endblock%}
 

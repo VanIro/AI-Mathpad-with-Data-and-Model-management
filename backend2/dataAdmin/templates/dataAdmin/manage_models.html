@@ -17,7 +17,9 @@
         <form id="model-repo-upload-form" action="{% url 'dataAdmin:dashboard' %}" method="post">
             {% csrf_token %}
         </form>
-
+        <script>
+            document.getElementById('sidebar_nav').children[2].classList.add('active');
+        </script>
         <script src="{% static 'model_app-bundle.js'%}"></script>
         {%endblock%}
 

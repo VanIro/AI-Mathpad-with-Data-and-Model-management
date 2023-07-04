@@ -94,7 +94,7 @@ const DirectoryUpload = ({ onUpload }) => {
       {displayProgressString && 
         <div>{`${calculateProgress()}% (${compressedFiles}/${totalFiles}) files compressed`}</div>
       }
-      {displayProgress && <ProgressBar completed={calculateProgress()} transitionDuration='0.2s'/>}
+      {displayProgress && <ProgressBar completed={calculateProgress()} transitionDuration='0.6s'/>}
       {displayProgressString && 
         <div>Compressing {compressingFiles} ...</div>
       }
