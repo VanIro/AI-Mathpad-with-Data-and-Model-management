@@ -1,3 +1,5 @@
+import './directoryUpload.css'
+
 import React, { useState } from 'react';
 import { deflate } from 'pako';
 import ProgressBar from '@ramonak/react-progress-bar';
@@ -68,7 +70,7 @@ const DirectoryUpload = ({ onUpload }) => {
 
   return (
     <div>
-      <div
+      {/* <div
         onDrop={handleUpload}
         onDragOver={(event) => event.preventDefault()}
         style={{
@@ -80,8 +82,12 @@ const DirectoryUpload = ({ onUpload }) => {
         }}
       >
         Drop Files and Directories Here
-      </div>
-      <div>
+      </div> */}
+      <div className='dir-upload-container'>
+        <div>
+          <h4>Upload New Model </h4>
+        </div>
+
         <input
           type="file"
           multiple

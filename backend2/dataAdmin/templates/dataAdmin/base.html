@@ -75,6 +75,9 @@
     <li>
         <a href="{%url 'dataAdmin:manage-models' %}">Model</a>
     </li>
+    <li>
+        <a href="{%url 'dataAdmin:mlflow-ui' %}">MLFlow</a>
+    </li>
     </ul>
 
     {% if user.is_authenticated %}
@@ -142,7 +145,15 @@
         {% include 'snippets/show_messages.html' %}
     {% endblock %}
 
-
+    <style>
+        #content{
+            
+        }
+        #content-wrapper {
+            max-height: 100%; /* Set the maximum height of the content-wrapper */
+            overflow: auto; /* Hide the overflowing content */
+        }
+    </style>
 
     <div id="content-wrapper">
         {% block content %}

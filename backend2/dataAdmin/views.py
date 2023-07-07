@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 import pytz
 import os
+import mlflow
 
 from django.conf import settings
 from django.shortcuts import render,HttpResponse, redirect
@@ -14,7 +15,6 @@ from django.db.models import Q
 from django.db.models.functions import TruncDate
 from django.db.models import Func, Count
 
-from rest_framework.generics import ListAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import api_view
 from rest_framework.decorators import api_view, authentication_classes
@@ -22,8 +22,8 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 
 
 from aiMathpad.models import ImageData, ExpressionType
-from .models import Dataset
-from .serializers import DatasetSerializer
+from .models import Dataset, DlModel
+from .serializers import DatasetSerializer, DlModelSerializer
 
 def IsDataAdmin(view_func):
     def wrapper(request,*args,**kwargs):
@@ -53,8 +53,56 @@ def deflate_and_base64_encode( string_val ):
     return base64.b64encode( compressed_string )
 
 @IsDataAdmin
+def viewMlFLowUI(request):
+    return render(request, 'dataAdmin/mlflow_ui.html', context={})
+
+
+@api_view(['GET','POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@IsDataAdmin
+@IsDataAdmin
+def manage_specific_dataset(request,pk):
+
+    dataset = Dataset.objects.get(pk=pk)
+
+
+    return render(request, 'dataAdmin/specific_dataset.html', context={
+        'dataset':DatasetSerializer(dataset).data
+    })
+    # return render(request, 'dataAdmin/manage_models.html', context=context)
+
+@api_view(['GET','POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@IsDataAdmin
+@IsDataAdmin
+def manage_specific_model(request,pk):
+    order_by = request.query_params.get('order_by', 'id')
+    page_number = request.query_params.get('page', 1)
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 10  # Number of objects per page
+
+    dlModel = DlModel.objects.get(pk=pk)
+    queryset = dlModel.dlmodeldatasets.order_by(order_by)
+    result_page = paginator.paginate_queryset(queryset, request)
+
+    serializer = DlModelSerializer(result_page, many=True)
+    serialized_data = serializer.data
+
+
+    return render(request, 'dataAdmin/specific_model.html', context={
+        'model':DlModelSerializer(dlModel).data,
+        'model_datasets_list': serialized_data,
+        'current_page': paginator.page.number,
+        'total_pages': paginator.page.paginator.num_pages
+    })
+    # return render(request, 'dataAdmin/manage_models.html', context=context)
+
+@api_view(['GET','POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@IsDataAdmin
+@IsDataAdmin
 def manage_models(request):
-    context = dict()
     
     if request.method == 'POST' :
         try:
@@ -73,10 +121,14 @@ def manage_models(request):
 
             # Create the output directory if it doesn't exist
             # os.makedirs(output_directory, exist_ok=True)
+
+            root_dir_name=compressed_files[0]['name'].split('/')[0]
+
+            model_root_path = os.path.join(output_directory,root_dir_name+'_root')
             
             for compressed_file in compressed_files:
                 # Get the full path of the file
-                full_path = os.path.join(output_directory, compressed_file['name'])
+                full_path = os.path.join(model_root_path, compressed_file['name'])
                 print(full_path,f'size:{compressed_file["size"]}', end=" ") 
                 os.makedirs(os.path.dirname(full_path), exist_ok=True)
                 
@@ -89,27 +141,47 @@ def manage_models(request):
                     output_file.write(decompressed_data)
             
             print('Files decompressed successfully')
+
+            # Set the repository path where artifacts will be stored
+            artifact_path = os.path.join(model_root_path, 'artifacts')
+
+            # Create the experiment
+            experiment_id = mlflow.create_experiment(f"{root_dir_name}", artifact_location=artifact_path)
+            print(f"Mlflow Experiment created with ID #{experiment_id}")
+
+            model_params = {
+                'name':root_dir_name,
+                'path':model_root_path,
+                'repo_path':os.path.join(model_root_path,root_dir_name),
+                'mlflow_experiment_id':experiment_id,
+                'creator':request.user,
+                'modifier':request.user,
+            }
+            print('saving model info to dataset...')
+            dl_model = DlModel.objects.create(**model_params)
+            print('model info saved to dataset successfully')
+
             # return HttpResponse('Files decompressed successfully')
-    return render(request, 'dataAdmin/manage_models.html', context=context)
+
+    order_by = request.query_params.get('order_by', 'id')
+    page_number = request.query_params.get('page', 1)
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 10  # Number of objects per page
+
+    queryset = DlModel.objects.order_by(order_by)
+    result_page = paginator.paginate_queryset(queryset, request)
+
+    serializer = DlModelSerializer(result_page, many=True)
+    serialized_data = serializer.data
 
 
-class DatasetView(ListAPIView):
-    serializer_class = DatasetSerializer
-    queryset = Dataset.objects.all()
-    pagination_class = PageNumberPagination  # Enable pagination
-
-    def get_queryset(self):
-        # Apply sorting based on query parameters
-        queryset = super().get_queryset()
-        sort_by = self.request.query_params.get('sort_by')
-        if sort_by:
-            queryset = queryset.order_by(sort_by)
-        return queryset
-    
-
-@IsDataAdmin
-def viewDataset(request):
-    return DatasetView.as_view()(request)
+    return render(request, 'dataAdmin/manage_models.html', context={
+        'models_list': serialized_data,
+        'current_page': paginator.page.number,
+        'total_pages': paginator.page.paginator.num_pages
+    })
+    # return render(request, 'dataAdmin/manage_models.html', context=context)
 
 @api_view(['GET','POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])

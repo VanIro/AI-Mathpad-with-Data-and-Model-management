@@ -4,7 +4,9 @@ module.exports ={
     entry: {
         widget:'./src/index.js',
         dataset_app:'./src2/index.js',
-        model_app:'./src3/index.js'
+        spec_dataset_app:'./src2/spec_dataset/index2.js',
+        model_app:'./src3/index.js',
+        spec_model_app:'./src3/spec_model/index2.js',
     },
     output:{
             filename:'[name]-bundle.js',

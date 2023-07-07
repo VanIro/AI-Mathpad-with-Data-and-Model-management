@@ -4,19 +4,46 @@ import React from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 import {ResponsiveLine, Axis} from '@nivo/line'
 
-const countryRegionStat = JSON.parse(document.getElementById('country-region-stat').innerHTML);
-const expressionStat = JSON.parse(document.getElementById('expression-stat').innerHTML);
-const dateRangeStat = JSON.parse(document.getElementById('dateRange-stat').innerHTML);
+let countryRegionStat = null
+let expressionStat = null
+let dateRangeStat = null
+
+try{
+  countryRegionStat = JSON.parse(document.getElementById('country-region-stat').innerHTML);
+}
+catch(err){
+  console.log('visualization.js err')//, err)
+}
+try{
+  expressionStat = JSON.parse(document.getElementById('expression-stat').innerHTML);
+}
+catch(err){
+  console.log('visualization.js err')//, err)
+}
+try{
+  dateRangeStat = JSON.parse(document.getElementById('dateRange-stat').innerHTML);
+}
+catch(err){
+  console.log('visualization.js err')//, err)
+}
+
+
+
 
 import VisPlaceholder from './vis_placeholder';
 
 function Visualization({ data }) {
   // Transform the data into the format expected by ResponsiveBar
+  if(data){
+    countryRegionStat = data[0] || countryRegionStat;
+    expressionStat = data[1] || expressionStat;
+    dateRangeStat = data[2] || dateRangeStat;
+  }
   
   return (<div style={{overflow:'auto'}}>
     <div className="visualization-container">
         <div >
-                <div className="visualization-label">
+                <div id="countryRegion_viz" className="visualization-label">
                     <h4>Country Region Visualization</h4>
                 </div>
                 <div>
@@ -24,13 +51,13 @@ function Visualization({ data }) {
                 </div>
         </div>
         <div >
-              <div className="visualization-label">
+              <div id="expressionType_viz" className="visualization-label">
                   <h4>Expression Type Visualization</h4>
               </div>
           {getExpressionTypeVisualization() || <VisPlaceholder label="Expression Type Visualization"/>}
         </div>
         <div >
-          <div className="visualization-label">
+          <div id="dateRange_viz" className="visualization-label">
             <h4>Date Range Visualization</h4>            
           </div>
           {getDateRangeVisualization() || <VisPlaceholder label="Date Range Visualization"/>}

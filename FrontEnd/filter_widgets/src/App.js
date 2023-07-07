@@ -197,9 +197,9 @@ function App() {
   return (
     <>
     <div className="widget-App-container-brother">
-      <div className="widget_App">
+      <div id="widget_App" className="widget_App">
         <div className="widget_container-container">
-          <div className={"widget_container countryRegion"+(countryRegionEnabled?'':' widget-disable')}>
+          <div  className={"widget_container countryRegion"+(countryRegionEnabled?'':' widget-disable')}>
             <CountryRegionFilter {...{suggestions,onKeyChange,onSuggestionClick,regionInputs,deleteItem}}
               {...{regionInputsUse,setRegionInputsUse}}
             />

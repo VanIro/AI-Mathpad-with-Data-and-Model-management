@@ -32,6 +32,35 @@
         <script src="{% static 'widget-bundle.js'%}"></script>
         {%endblock%}
 
+        
+        {% block navbar-links %}
+            <div class="collapse navbar-collapse" id="navbarTop">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Dashboard
+                        </a>
+                        <style>
+                            .dropdown-menu[data-bs-popper]{
+                                /* right:0 !important; */
+                                left:-20% !important;
+                            }
+                        </style>
+                        <ul class="dropdown-menu" aria-labelledby="navbarAdmin" >
+                            <!-- <div style="position:relative;left:-0.6cm;"> -->
+                                <li><a class="dropdown-item" href="#widget_App">
+                                    Filters</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" style="overflow-y:auto;" href="#countryRegion_viz">Country and Region</a></li>
+                                <li><a class="dropdown-item" style="overflow-y:auto;" href="#expressionType_viz">Expression Type</a></li>
+                                <li><a class="dropdown-item" style="overflow-y:auto;" href="#dateRange_viz">Date Range</a></li>
+                            <!-- </div> -->
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        {% endblock %}
+
         {%block footer%}
         
         {%endblock%}

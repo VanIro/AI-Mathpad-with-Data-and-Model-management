@@ -1,0 +1,41 @@
+.viewer{
+    display:flex;
+    flex-direction:column;
+}
+.viewer-body{
+    display:flex;
+    flex-direction:column;
+}
+.row_style{
+    display:flex;
+    flex-direction:row;
+}
+
+.row_style .row-item:first-child{
+    width:10%;
+    min-width:1cm;
+}
+
+.row_style .row-item{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:0.2cm;
+    margin:0.1cm;
+}
+.viewer-body .row_style .row-item:nth-child(2){
+    border:1px solid #ccc;
+    border-radius:0.2cm;
+    cursor:pointer;
+}
+.row-item{
+    width:20%;
+    min-width:1.5cm;
+}
+.viewer-body{
+    
+}
+.viewer-body .row_style:hover{
+    background-color: #f1f1f1;
+}

@@ -4,6 +4,8 @@ import ProgressBar from '@ramonak/react-progress-bar';
 import { deflate } from 'pako';
 import axios from 'axios';
 
+import Viewer from './components/viewer';
+
 const App = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [displayUpload, setDisplayUpload] = useState(false);
@@ -51,7 +53,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Model App</h1>
+      <h1>Models</h1>
       <DirectoryUpload onUpload={handleUpload} />
 
       <br />
@@ -62,6 +64,15 @@ const App = () => {
           <ProgressBar completed={uploadProgress} />
         </div>
       )}
+      
+      <Viewer list_id='models-list' 
+        columns={['name','created_at','creator','modified_at','modifier']}
+        id_pre='model'
+        handleRowClick={(e)=>{
+          const model_id = e.currentTarget.id.split('_')[1]
+          window.location.href = `/dataAdmin/models/${model_id}`
+        }}
+      />
     </div>
   );
 };

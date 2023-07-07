@@ -3,7 +3,7 @@
 <!-- <html> -->
     {%block head%}
     <head>
-        <title>Datasets</title>
+        <title>Models</title>
         <!-- <link rel="stylesheet" href="css/dashboard.css"> -->
     </head>
     {%endblock%}
@@ -12,20 +12,21 @@
             {{block.super}}
         {%endblock%}
         {%block content%}
-        <div id="manage-datasets-app_container"></div>
+        <div id="manage-spec_model-app_container"></div>
 
-        {{datasets_list|json_script:'datasets-list'}}
+        
+        {{model|json_script:'model-info'}}
+        {{model_datasets_list|json_script:'model_datasets_list'}}
         {{current_page|json_script:'current-page'}}
         {{total_pages|json_script:'total-pages'}}
 
-        
-        <form id="widget-data-capture-form" action="{% url 'dataAdmin:dashboard' %}" method="post">
+        <form id="model-repo-upload-form" action="{% url 'dataAdmin:dashboard' %}" method="post">
             {% csrf_token %}
         </form>
         <script>
-            document.getElementById('sidebar_nav') && document.getElementById('sidebar_nav').children[1].classList.add('active');
+            document.getElementById('sidebar_nav') &&  document.getElementById('sidebar_nav').children[2].classList.add('active');
         </script>
-        <script src="{% static 'dataset_app-bundle.js'%}"></script>
+        <script src="{% static 'spec_model_app-bundle.js'%}"></script>
         {%endblock%}
 
         
@@ -33,7 +34,8 @@
             <div class="collapse navbar-collapse" id="navbarTop">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{%url 'dataAdmin:manage-datasets'%}">Datasets</a>
+                        <a class="nav-link" href="{%url 'dataAdmin:manage-models'%}" style="display:inline;">Models</a>/
+                        <a class="nav-link" href="{%url 'dataAdmin:manage-specific-model' pk=model.id %}" style="display:inline;">{{model.name}}</a>
                     </li>
                 </ul>
             </div>
