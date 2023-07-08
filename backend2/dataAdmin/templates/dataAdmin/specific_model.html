@@ -20,7 +20,7 @@
         {{current_page|json_script:'current-page'}}
         {{total_pages|json_script:'total-pages'}}
 
-        <form id="model-repo-upload-form" action="{% url 'dataAdmin:dashboard' %}" method="post">
+        <form id="model-dataset-create-form" action="{% url 'dataAdmin:manage-specific-model' pk=model.id %}" method="post">
             {% csrf_token %}
         </form>
         <script>

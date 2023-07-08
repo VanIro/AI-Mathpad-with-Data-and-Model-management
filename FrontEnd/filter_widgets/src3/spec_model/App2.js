@@ -10,7 +10,7 @@ const App2 = () => {
   return (
     <div>
       <h1>Model {model_info.name}</h1>
-      <CreateModelDataset />
+      <CreateModelDataset model_info={model_info}/>
 
       <br/>
       <Viewer list_id='model_datasets_list' 

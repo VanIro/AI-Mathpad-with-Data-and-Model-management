@@ -22,8 +22,9 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 
 
 from aiMathpad.models import ImageData, ExpressionType
-from .models import Dataset, DlModel
-from .serializers import DatasetSerializer, DlModelSerializer
+from .models import Dataset, DlModel, DlModelDataset
+from .serializers import DatasetSerializer, DlModelSerializer, DlModelDatasetSerializer
+from .dlUtils import create_dataset
 
 def IsDataAdmin(view_func):
     def wrapper(request,*args,**kwargs):
@@ -76,6 +77,36 @@ def manage_specific_dataset(request,pk):
 @IsDataAdmin
 @IsDataAdmin
 def manage_specific_model(request,pk):
+    if request.method=='POST':
+        # print(request.POST)
+        model_pk, dataset_pk, action = request.POST['model'], request.POST['dataset_pk'], request.POST['action']
+        dataset = Dataset.objects.get(pk=dataset_pk[0])
+        model = DlModel.objects.get(pk=model_pk[0])
+
+        model_dataset_dir_name = dataset.name+f'_{dataset.id}' +' __ '+model.name+f'_{model.id}'
+        model_dataset_path = os.path.join(model.path, model_dataset_dir_name)
+        errorFlag = create_dataset(os.path.join(settings.BASE_DIR,dataset.path), os.path.join(settings.BASE_DIR,model.repo_path), os.path.join(settings.BASE_DIR,model_dataset_path))
+        if errorFlag == 1:
+            print("returning error...")
+            return HttpResponse('Error in creating dataset.',status=500)
+
+        model_dataset_name = dataset.name +' __ '+model.name
+        model_dataset = None
+        if model.dlmodeldatasets.filter(name=model_dataset_name,parent_dataset=dataset,dl_model=model).exists():
+            model_dataset = model.dlmodeldatasets.get(name=model_dataset_name,parent_dataset=dataset,dl_model=model)
+            model_dataset.modifier = request.user
+            model_dataset.save()
+            print(f'Dataset {model_dataset.name} modified successfully at {model_dataset.path}')
+        else:
+            model_dataset = model.dlmodeldatasets.create(
+                name= model_dataset_name,
+                parent_dataset=dataset,dl_model=model, 
+                path=model_dataset_path, 
+                creator=request.user, modifier=request.user
+            )
+            print(f'Dataset {model_dataset.name} created successfully at {model_dataset.path}')
+        
+
     order_by = request.query_params.get('order_by', 'id')
     page_number = request.query_params.get('page', 1)
 
@@ -86,9 +117,10 @@ def manage_specific_model(request,pk):
     queryset = dlModel.dlmodeldatasets.order_by(order_by)
     result_page = paginator.paginate_queryset(queryset, request)
 
-    serializer = DlModelSerializer(result_page, many=True)
+    serializer = DlModelDatasetSerializer(result_page, many=True)
     serialized_data = serializer.data
 
+    print(request.method)
 
     return render(request, 'dataAdmin/specific_model.html', context={
         'model':DlModelSerializer(dlModel).data,

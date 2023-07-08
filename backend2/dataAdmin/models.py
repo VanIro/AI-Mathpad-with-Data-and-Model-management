@@ -19,7 +19,7 @@ class Dataset(models.Model):
     # img_date_range = models.ImageField(upload_to='images/dataset/img_date_range', blank=True, null=True)
     
     def __str__(self):
-        return self.name
+        return self.name+f'({self.id})'
     
 class DlModel(models.Model):
     name = models.CharField(max_length=150, null=False)
@@ -35,9 +35,12 @@ class DlModel(models.Model):
     modifier = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='m_dlmodels', on_delete=models.CASCADE, null=False)
     modified_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.name+f'({self.id})'
+
 class DlModelDataset(models.Model):
     name = models.CharField(max_length=150, null=False)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     path = models.CharField(max_length=250, null=False)
 
     parent_dataset = models.ForeignKey(Dataset, related_name='dlmodeldatasets', on_delete=models.CASCADE, null=False)
@@ -48,6 +51,9 @@ class DlModelDataset(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modifier = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='m_dlmodeldatasets', on_delete=models.CASCADE, null=False)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name+f'({self.id})'
 
     
 class DlModelVersion(models.Model):
@@ -62,6 +68,9 @@ class DlModelVersion(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modifier = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='m_dlmodelVersions', on_delete=models.CASCADE, null=False)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name+f'({self.id})'
 
 
 

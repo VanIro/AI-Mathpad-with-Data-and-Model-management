@@ -14,3 +14,8 @@ class DlModelAdmin(admin.ModelAdmin):
 
 admin.site.register(DlModel,DlModelAdmin)
 
+class DlModelDatasetAdmin(admin.ModelAdmin):
+    list_display = ('name','dl_model','parent_dataset', 'creator','created_at')
+
+admin.site.register(DlModelDataset,DlModelDatasetAdmin)
+

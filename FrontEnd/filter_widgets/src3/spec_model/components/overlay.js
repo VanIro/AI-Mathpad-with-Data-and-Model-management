@@ -12,7 +12,7 @@ const OverlayComponent = (props) => {
 
   const handleBack = () => {
     if(iframeHists.length<=1){
-      props.handleCancel();
+      handleCancel();
     }
     const destSrc = iframeHists[iframeHists.length - 2];
     setIframeHists(iframeHists.slice(0, iframeHists.length - 1));
@@ -21,18 +21,19 @@ const OverlayComponent = (props) => {
 
   const handleOk = () => {
     console.log('Current src:',iframeHists[iframeHists.length-1]);
-    props.handleOk(iframeHists[iframeHists.length-1]);
+    const srcSend = iframeHists[iframeHists.length-1]
+    handleCancel();
+    props.handleOk(srcSend);
   };
 
   const handleCancel = () => {
+    setIframeHists([]);
     props.handleCancel();
   };
   
 
   const handleIframeLoad = (event) => {
-    // event.target.contentDocument.getElementById('sidebar').style.display = 'none';
-    // event.target.contentDocument.getElementById('sidebarCollapse').click();
-    console.log('in handle load')
+    // console.log('in handle load')
 
     const newSrc = event.target.contentWindow.location.href;
     console.log(newSrc,iframeHists, newSrc!==iframeHists.slice(-1)[0])
