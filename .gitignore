@@ -3,6 +3,10 @@ __pycache__/
 .vscode/
 datasets/
 modelsManage/
+mlflow_logs/
+mlruns/
+
+
 static/*-bundle.js
 # for FrontEnd
 FrontEnd/filter_widgets/node_modules/

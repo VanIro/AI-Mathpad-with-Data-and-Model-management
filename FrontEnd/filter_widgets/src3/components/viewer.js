@@ -19,7 +19,8 @@ function Viewer(props,children){
     const [isOneItem, setIsOneItem] = useState(false);
     const [items_list, setItemsList] = useState([])
 
-
+    
+    
     useEffect(() => {
         let items_list2 = JSON.parse(document.getElementById(props.list_id).textContent)
         if(items_list){}
@@ -34,7 +35,7 @@ function Viewer(props,children){
             setIsOneItem(false);
             setItemsList ( items_list2 );
         }
-    },[])
+    },[props.reloadTrigger])
     // console.log(items_list, Array.from(items_list))
 
     const header_columns = props.columns.map((column,i) => {

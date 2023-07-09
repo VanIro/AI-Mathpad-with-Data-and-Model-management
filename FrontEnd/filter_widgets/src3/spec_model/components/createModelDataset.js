@@ -50,31 +50,33 @@ function CreateModelDataset(props) {
                     if (response.status === 200) {
                         console.log('Creation successful!');
                         // Handle successful creation of dataset
-                        toast.success('Created Successfully 👌');
-                        setTimeout(() => {
-                            window.location.reload();
-                          }, 2000);
-                        // if (response.headers.get('content-type').includes('text/html')) {
-                        //     const data = response.data;
-                        //     const parser = new DOMParser();
-                        //     const htmlDoc = parser.parseFromString(data, 'text/html');
+                        toast.success('Created Successfully 👌..');
+                        // setTimeout(() => {
+                        //     window.location.reload();
+                        //   }, 2000);
+                        if (response.headers.get('content-type').includes('text/html')) {
+                            const data = response.data;
+                            const parser = new DOMParser();
+                            const htmlDoc = parser.parseFromString(data, 'text/html');
 
-                        //     // Find elements with type="application/json"
-                        //     const jsonElements = htmlDoc.querySelectorAll('script[type="application/json"]');
+                            // Find elements with type="application/json"
+                            const jsonElements = htmlDoc.querySelectorAll('script[type="application/json"]');
                             
-                        //     // Iterate over the JSON elements and update the target elements accordingly
-                        //     jsonElements.forEach((element) => {
-                        //         const id = element.id;
-                        //         const jsonData = JSON.parse(element.textContent);
+                            // Iterate over the JSON elements and update the target elements accordingly
+
+                            jsonElements.forEach((element) => {
+                                const id = element.id;
+                                const jsonData = JSON.parse(element.textContent);
                                 
-                        //         // Update the target elements using the id and JSON data
-                        //         const targetElement = document.getElementById(id);
-                        //         if (targetElement) {
-                        //             // Perform the necessary updates using jsonData
-                        //             targetElement.textContent = jsonData.propertyName;
-                        //         }
-                        //     });
-                        // }
+                                // // Update the target elements using the id and JSON data
+                                const targetElement = document.getElementById(id);
+                                if (targetElement) {
+                                    // Perform the necessary updates using jsonData
+                                    targetElement.textContent = element.textContent;
+                                }
+                                props.handleDataChange();
+                            });
+                        }
                       } else {
                         console.log('Creation failed.');
                         // Handle creation failure

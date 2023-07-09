@@ -74,6 +74,32 @@ class DlModelVersion(models.Model):
 
 
 
+from django.db.models.signals import pre_delete
+from django.db.models import ProtectedError
+from django.dispatch import receiver
+import mlflow
+import os, shutil
+
+@receiver(pre_delete, sender=DlModel)
+def delete_model(sender, instance, **kwargs):
+    # mlflow.set_tracking_uri(settings.MLFLOW_TRACKING_URI)
+    
+    mlflow.set_experiment('Default')
+    # mlflow.delete_registered_model(instance.name)
+    try:
+        mlflow.delete_experiment(instance.mlflow_experiment_id)
+        print('removing',(settings.BASE_DIR/f'mlruns/.trash/{instance.mlflow_experiment_id}'))
+        shutil.rmtree(settings.BASE_DIR/f'mlruns/.trash/{instance.mlflow_experiment_id}')
+        print(f'Experiment {instance.name}:{instance.mlflow_experiment_id} deleted.')
+    except Exception as e:
+        print(e)
+    # raise ProtectedError(
+    #         "Deletion of this instance is not allowed.",
+    #         instance=instance,
+    #         model=sender
+    #     )
+    # mlflow.delete
+
 
     
 

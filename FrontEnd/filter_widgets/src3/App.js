@@ -9,6 +9,7 @@ import Viewer from './components/viewer';
 const App = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [displayUpload, setDisplayUpload] = useState(false);
+  const [reloadTrigger, setReloadTrigger] = useState(false);
 
   const handleUpload = async (compressedZip) => {
     // Create a FormData object to send the compressed file
@@ -38,6 +39,29 @@ const App = () => {
       if (response.status === 200) {
         console.log('File upload successful!');
         // Handle successful upload
+        if (response.headers.get('content-type').includes('text/html')) {
+          const data = response.data;
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(data, 'text/html');
+
+          // Find elements with type="application/json"
+          const jsonElements = htmlDoc.querySelectorAll('script[type="application/json"]');
+          
+          // Iterate over the JSON elements and update the target elements accordingly
+
+          jsonElements.forEach((element) => {
+              const id = element.id;
+              // const jsonData = JSON.parse(element.textContent);
+              
+              // // Update the target elements using the id and JSON data
+              const targetElement = document.getElementById(id);
+              if (targetElement) {
+                  // Perform the necessary updates using jsonData
+                  targetElement.textContent = element.textContent;
+              }
+              setReloadTrigger(!reloadTrigger);
+          });
+        }
       } else {
         console.log('File upload failed.');
         // Handle upload failure
@@ -72,6 +96,8 @@ const App = () => {
           const model_id = e.currentTarget.id.split('_')[1]
           window.location.href = `/dataAdmin/models/${model_id}`
         }}
+
+        reloadTrigger={reloadTrigger}
       />
     </div>
   );
