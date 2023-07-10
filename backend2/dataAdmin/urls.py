@@ -15,4 +15,5 @@ urlpatterns=[
     path('datasets/', views.manage_datasets, name='manage-datasets'),
     # path('datasets/view', views.viewDataset, name='view-datasets'),
     # path('browsing/', include('filer.urls')),
+    path('updateDataset/<str:dataset_id>', views.update_dataset),
 ]

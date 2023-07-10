@@ -18,6 +18,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import api_view
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from django.http import JsonResponse
+
 
 
 from aiMathpad.models import ImageData, ExpressionType
@@ -60,6 +62,20 @@ class DatasetView(ListAPIView):
 @IsDataAdmin
 def viewDataset(request):
     return DatasetView.as_view()(request)
+
+@IsDataAdmin
+def update_dataset(request, dataset_id):
+    new_desc = request.data['dataset_desc']
+
+    try:
+        dataset_data = Dataset.objects.get(id=dataset_id)
+        dataset_data.description = new_desc
+        dataset_data.save()
+        return JsonResponse({'message': 'Backend: Dataset Description updated successfully.'})
+    except Dataset.DoesNotExist:
+        return JsonResponse({'error': 'Backend: Dataset with the provided ID does not exist.'}, status=404)
+
+
 
 @api_view(['GET','POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import "./DataSetCard.css";
+import useAxios from "../../mathpad_page/src/auth/useAxios";
 
 const DataSetCard = (props) => {
   const item = props.item;
@@ -16,10 +17,39 @@ const DataSetCard = (props) => {
     setIsPopupOpen(false);
   };
 
-  const handleLabelSubmit = (event) => {
+  const handleLabelSubmit = async (event) => {
     event.preventDefault();
-    item.description = editedLabel;
-    setIsPopupOpen(false);
+    const data = {
+      dataset_desc: editedLabel,
+    };
+
+    try {
+      const response = await fetch(
+        `http://localhost:8000/updateDataset/${item.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      if (response.ok) {
+        // Update the dataset in the DatasetsList state
+        const updatedList = DatasetsList.map((listItem) =>
+          listItem.id === item.id
+            ? { ...listItem, description: editedLabel }
+            : listItem
+        );
+        setDatasetsList(updatedList);
+        setIsPopupOpen(false); // Close the popup after successful update
+      } else {
+        console.log("Frontend: Failed to update dataset description");
+      }
+    } catch (error) {
+      console.log("Error:", error);
+    }
   };
 
   useEffect(() => {

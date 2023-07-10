@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     'easy_thumbnails',
     'filer',
     'mptt',
-    'explorer.apps.ExplorerConfig',
+    # 'explorer.apps.ExplorerConfig',
 ]
 
 REST_FRAMEWORK = {
