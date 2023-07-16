@@ -101,7 +101,7 @@ def manage_specific_model(request,pk):
 
 
                 info = execute_dynamic_file_function(model_repo_path, 
-                                                        'myTrain.py','perf_train',os.abspath(model.path),
+                                                        'myTrain.py','perf_train',os.path.abspath(model.path),
                                                         model_dataset_path,get_mlflow_tracking_uri(),model.mlflow_experiment_id
                                                      )
 
