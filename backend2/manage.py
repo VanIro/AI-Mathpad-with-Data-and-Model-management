@@ -20,7 +20,7 @@ def run_mlflow_ui(log_file_dir='mlflow_logs'):
         os.mkdir(log_file_dir)
     print('Starting MLFlow UI', end=' ')
     log_file_path = os.path.join(log_file_dir, f'mlflow_ui_{datetime.now().strftime("%Y%m%d%H%M%S")}.log')
-    command = 'mlflow ui'
+    command = 'mlflow server -h 0.0.0.0'
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print('| PID:', process.pid)
     
@@ -42,7 +42,9 @@ def main():
         ) from exc
     # Check if the runserver command is passed
     if len(sys.argv) > 1 and sys.argv[1] == 'runserver':
-        run_mlflow_ui()
+        # print(sys.argv, os.environ.get('RUN_MAIN'))
+        if os.environ.get('RUN_MAIN') != 'true':
+            run_mlflow_ui()
     execute_from_command_line(sys.argv)
 
 

@@ -75,8 +75,17 @@
     <li>
         <a href="{%url 'dataAdmin:manage-models' %}">Model</a>
     </li>
+
+    <script>
+        function navigateToPort(port) {
+            var currentOrigin = window.location.protocol + '//' + window.location.hostname;
+            var url = currentOrigin + ':' + port;
+            window.open(url);
+        }
+    </script>
     <li>
-        <a href="{%url 'dataAdmin:mlflow-ui' %}">MLFlow</a>
+        <a href="" onclick="navigateToPort(5000)">MLFlow</a>
+        <!-- <a href="{%url 'dataAdmin:mlflow-ui' %}">MLFlow</a> -->
     </li>
     </ul>
 

@@ -74,7 +74,7 @@ class DlModelVersion(models.Model):
 
 
 
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, post_delete
 from django.db.models import ProtectedError
 from django.dispatch import receiver
 import mlflow
@@ -99,6 +99,14 @@ def delete_model(sender, instance, **kwargs):
     #         model=sender
     #     )
     # mlflow.delete
+
+@receiver(post_delete, sender=DlModel)
+def delete_model(sender, instance, **kwargs):
+    # mlflow.set_tracking_uri(settings.MLFLOW_TRACKING_URI)
+    
+    root_path = instance.path
+    print('removing',root_path)
+    shutil.rmtree(root_path)
 
 
     

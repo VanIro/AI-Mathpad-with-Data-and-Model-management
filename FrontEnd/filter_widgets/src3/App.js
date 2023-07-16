@@ -1,19 +1,25 @@
+import './App.css';
+
 import React, { useState } from 'react';
 import DirectoryUpload from './components/directoryUpload';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { deflate } from 'pako';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Viewer from './components/viewer';
+
+const TransitionDuration = 1;//seconds
 
 const App = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [displayUpload, setDisplayUpload] = useState(false);
   const [reloadTrigger, setReloadTrigger] = useState(false);
 
-  const handleUpload = async (compressedZip) => {
+  const handleUpload = async (compressed_further) => {
     // Create a FormData object to send the compressed file
-    const compressed_further = deflate(JSON.stringify(compressedZip), { windowBits: 15 });
+    // const compressed_further = deflate(JSON.stringify(compressedZip), { windowBits: 15 });
     const blob = new Blob([compressed_further], { type: 'application/json' });
     const form = document.getElementById('model-repo-upload-form');
     const csrfmiddlewaretoken = form.children[0].value;
@@ -23,9 +29,8 @@ const App = () => {
 
     setDisplayUpload(true);
 
-    try {
       // Make API request to upload the compressed file to Django view using Axios
-      const response = await axios.post('', formData, {
+      const responseP = axios.post('', formData, {
         headers: {
           'X-CSRFToken': csrfmiddlewaretoken,
           'Content-Type': 'multipart/form-data',
@@ -33,61 +38,99 @@ const App = () => {
         onUploadProgress: (progressEvent) => {
           const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
           setUploadProgress(progress);
+          if(progress==100){
+            setTimeout(()=>setDisplayUpload(false),1.5*TransitionDuration*1000);
+            // setDisplayUpload(false);
+            // toast.info('Processing..');
+          }
         },
       });
 
-      if (response.status === 200) {
-        console.log('File upload successful!');
-        // Handle successful upload
-        if (response.headers.get('content-type').includes('text/html')) {
-          const data = response.data;
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(data, 'text/html');
+      toast.promise(responseP, {
+        pending: 'Server is Processing...',
+      });
 
-          // Find elements with type="application/json"
-          const jsonElements = htmlDoc.querySelectorAll('script[type="application/json"]');
-          
-          // Iterate over the JSON elements and update the target elements accordingly
+      responseP.then((response)=>{
+        
+        if (response.status === 200) {
+          let message="Success..."
+          // Handle successful upload
+          if (response.headers.get('content-type').includes('text/html')) {
+            message+='\nRepo saved and MlFLow experiment created !';
+            const data = response.data;
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(data, 'text/html');
 
-          jsonElements.forEach((element) => {
-              const id = element.id;
-              // const jsonData = JSON.parse(element.textContent);
-              
-              // // Update the target elements using the id and JSON data
-              const targetElement = document.getElementById(id);
-              if (targetElement) {
-                  // Perform the necessary updates using jsonData
-                  targetElement.textContent = element.textContent;
-              }
-              setReloadTrigger(!reloadTrigger);
-          });
+            // Find elements with type="application/json"
+            const jsonElements = htmlDoc.querySelectorAll('script[type="application/json"]');
+            
+            // Iterate over the JSON elements and update the target elements accordingly
+
+            jsonElements.forEach((element) => {
+                const id = element.id;
+                // const jsonData = JSON.parse(element.textContent);
+                
+                // // Update the target elements using the id and JSON data
+                const targetElement = document.getElementById(id);
+                if (targetElement) {
+                    // Perform the necessary updates using jsonData
+                    targetElement.textContent = element.textContent;
+                }
+                setReloadTrigger(!reloadTrigger);
+            });
+          }
+          else{
+            message=message+"\n"+response.data;
+          }
+          toast.success(message);
+        } else {
+          const message="Err.. Something went wrong"
+          if(response.status==500){
+            message=message+"\n"+response.data;
+          }
+          toast.error(message)
+          // Handle upload failure
         }
-      } else {
-        console.log('File upload failed.');
-        // Handle upload failure
-      }
-    } catch (error) {
-      console.error('An error occurred during file upload:', error);
-      // Handle error
-    } finally {
+      });
+      responseP.catch((error)=>{
+        console.log(error)
+        const message="Err.. Something went wrong. \n"+`'${error.response.data}'`
+        toast.error(message)
+      });
+
+      // await responseP;
+    responseP.finally (()=>{
       setDisplayUpload(false);
       setUploadProgress(0);
-    }
+    });
   };
 
   return (
-    <div>
+    <div style={{textAlign:'center'}}>
       <h1>Models</h1>
       <DirectoryUpload onUpload={handleUpload} />
-
       <br />
       <br />
       {displayUpload && (
-        <div>
-          Upload Progress:
-          <ProgressBar completed={uploadProgress} />
+        <div className='progress-container-upload'>
+          <div className='progress-upload'>
+            Upload Progress:
+            <ProgressBar completed={uploadProgress} transitionDuration={`${TransitionDuration}s`}/>
+          </div>
         </div>
       )}
+      <ToastContainer
+                position="top-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                // pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+      />
       
       <Viewer list_id='models-list' 
         columns={['name','created_at','creator','modified_at','modifier']}

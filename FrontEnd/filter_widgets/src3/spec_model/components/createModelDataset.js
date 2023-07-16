@@ -36,7 +36,8 @@ function CreateModelDataset(props) {
 
                 const formData = new FormData();
                 
-                formData.append('action','create dataset for a model');
+                formData.append('action','create');
+                formData.append('detail','create dataset for a model')
                 formData.append('model',props.model_info.id);
                 formData.append('dataset_pk',dataset_pk);
 
@@ -121,7 +122,7 @@ function CreateModelDataset(props) {
                 newestOnTop={false}
                 closeOnClick
                 rtl={false}
-                pauseOnFocusLoss
+                // pauseOnFocusLoss
                 draggable
                 pauseOnHover
                 theme="colored"

@@ -12,6 +12,13 @@ module.exports ={
             filename:'[name]-bundle.js',
             path: path.resolve(__dirname, '../../backend2/static')
     },
+    // Resolve configuration to handle the import of compressionWorker.js
+    resolve: {
+        extensions: ['.js'],
+        alias: {
+        '@worker': path.resolve(__dirname, 'src3/components/compressionWorker.js'),
+        },
+    },
     module:{
         rules:[
             {

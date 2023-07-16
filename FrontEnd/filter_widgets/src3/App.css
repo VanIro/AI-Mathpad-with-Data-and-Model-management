@@ -1,11 +1,4 @@
-.dir-upload-container{
-    width:fit-content;
-    padding:1em;
-    border-radius: 9%;
-    border: 3px solid #ccc;
-}
-
-.progress-container-compress{
+.progress-container-upload{
     position: fixed;
     top: 0;
     left: 0;
@@ -18,9 +11,7 @@
     align-items: center;
     justify-content: center;
 }
-
-
-.progress-compress{
+.progress-upload{
     background-color: rgba(200, 220, 200, 1);
     width:90%;
     height:40%;

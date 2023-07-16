@@ -1,6 +1,8 @@
 .viewer{
     display:flex;
     flex-direction:column;
+    /* align-items: center; */
+    width:100%;
 }
 .viewer-body{
     display:flex;
@@ -38,4 +40,25 @@
 }
 .viewer-body .row_style:hover{
     background-color: #f1f1f1;
+}
+.viewer .filter-container{
+/* padding-bottom:0.4cm; */
+    margin-bottom:0.4cm;
+
+    width:100%;
+    /* padding:auto; */
+}
+.viewer .underliner{
+    margin:0.2cm auto;
+    border-bottom:1px solid #ccc;
+    background-color: blue;
+    height:0.1cm;
+    width:0.7cm;
+}
+.viewer input{
+    min-width:3cm;
+    width:20%;
+    display: block;
+    margin:auto;
+    text-align: center;
 }

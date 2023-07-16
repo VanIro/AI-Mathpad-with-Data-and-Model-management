@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 import pytz
 import os
+import urllib
 import mlflow
 
 from django.conf import settings
@@ -25,6 +26,14 @@ from aiMathpad.models import ImageData, ExpressionType
 from .models import Dataset, DlModel, DlModelDataset
 from .serializers import DatasetSerializer, DlModelSerializer, DlModelDatasetSerializer
 from .dlUtils import create_dataset
+
+def get_mlflow_tracking_uri():
+    path_to_mlruns = 'mlruns'
+    abs_path_to_mlruns = os.path.abspath(path_to_mlruns)
+    url_encoded_path_mlruns = urllib.parse.quote(abs_path_to_mlruns.replace("\\", "/"), safe=':/')
+    mlflow_tracking_uri = f'file:///{url_encoded_path_mlruns}'
+
+    return mlflow_tracking_uri
 
 def IsDataAdmin(view_func):
     def wrapper(request,*args,**kwargs):
@@ -78,33 +87,55 @@ def manage_specific_dataset(request,pk):
 @IsDataAdmin
 def manage_specific_model(request,pk):
     if request.method=='POST':
-        # print(request.POST)
-        model_pk, dataset_pk, action = request.POST['model'], request.POST['dataset_pk'], request.POST['action']
-        dataset = Dataset.objects.get(pk=dataset_pk[0])
-        model = DlModel.objects.get(pk=model_pk[0])
+        print(request.POST)
+        
+        if 'action' in request.POST:
+            if request.POST['action'] == "Train":
+                print("Training model...")
+                model_pk, model_dataset_pk = request.POST['model_id'], request.POST['model_dataset_id']
+                model = DlModel.objects.get(pk=model_pk)
+                model_dataset = DlModelDataset.objects.get(pk=model_dataset_pk)
 
-        model_dataset_dir_name = dataset.name+f'_{dataset.id}' +' __ '+model.name+f'_{model.id}'
-        model_dataset_path = os.path.join(model.path, model_dataset_dir_name)
-        errorFlag = create_dataset(os.path.join(settings.BASE_DIR,dataset.path), os.path.join(settings.BASE_DIR,model.repo_path), os.path.join(settings.BASE_DIR,model_dataset_path))
-        if errorFlag == 1:
-            print("returning error...")
-            return HttpResponse('Error in creating dataset.',status=500)
+                model_dataset_path = os.path.abspath(model_dataset.path)
+                model_repo_path = os.path.abspath(model.repo_path)
 
-        model_dataset_name = dataset.name +' __ '+model.name
-        model_dataset = None
-        if model.dlmodeldatasets.filter(name=model_dataset_name,parent_dataset=dataset,dl_model=model).exists():
-            model_dataset = model.dlmodeldatasets.get(name=model_dataset_name,parent_dataset=dataset,dl_model=model)
-            model_dataset.modifier = request.user
-            model_dataset.save()
-            print(f'Dataset {model_dataset.name} modified successfully at {model_dataset.path}')
-        else:
-            model_dataset = model.dlmodeldatasets.create(
-                name= model_dataset_name,
-                parent_dataset=dataset,dl_model=model, 
-                path=model_dataset_path, 
-                creator=request.user, modifier=request.user
-            )
-            print(f'Dataset {model_dataset.name} created successfully at {model_dataset.path}')
+
+                info = execute_dynamic_file_function(model_repo_path, 
+                                                        'myTrain.py','perf_train',os.abspath(model.path),
+                                                        model_dataset_path,get_mlflow_tracking_uri(),model.mlflow_experiment_id
+                                                     )
+
+
+
+
+            else:
+                model_pk, dataset_pk, action = request.POST['model'], request.POST['dataset_pk'], request.POST['action']
+                print(type(model_pk), model_pk, dataset_pk, action)
+                dataset = Dataset.objects.get(pk=dataset_pk)
+                model = DlModel.objects.get(pk=model_pk)
+
+                model_dataset_dir_name = dataset.name+f'_{dataset.id}' +' __ '+model.name+f'_{model.id}'
+                model_dataset_path = os.path.join(model.path, model_dataset_dir_name)
+                errorFlag = create_dataset(os.path.join(settings.BASE_DIR,dataset.path), os.path.join(settings.BASE_DIR,model.repo_path), os.path.join(settings.BASE_DIR,model_dataset_path))
+                if errorFlag == 1:
+                    print("returning error...")
+                    return HttpResponse('Error in creating dataset.',status=500)
+
+                model_dataset_name = dataset.name +' __ '+model.name
+                model_dataset = None
+                if model.dlmodeldatasets.filter(name=model_dataset_name,parent_dataset=dataset,dl_model=model).exists():
+                    model_dataset = model.dlmodeldatasets.get(name=model_dataset_name,parent_dataset=dataset,dl_model=model)
+                    model_dataset.modifier = request.user
+                    model_dataset.save()
+                    print(f'Dataset {model_dataset.name} modified successfully at {model_dataset.path}')
+                else:
+                    model_dataset = model.dlmodeldatasets.create(
+                        name= model_dataset_name,
+                        parent_dataset=dataset,dl_model=model, 
+                        path=model_dataset_path, 
+                        creator=request.user, modifier=request.user
+                    )
+                    print(f'Dataset {model_dataset.name} created successfully at {model_dataset.path}')
         
 
     order_by = request.query_params.get('order_by', 'id')
@@ -120,8 +151,6 @@ def manage_specific_model(request,pk):
     serializer = DlModelDatasetSerializer(result_page, many=True)
     serialized_data = serializer.data
 
-    print(request.method)
-
     return render(request, 'dataAdmin/specific_model.html', context={
         'model':DlModelSerializer(dlModel).data,
         'model_datasets_list': serialized_data,
@@ -130,12 +159,50 @@ def manage_specific_model(request,pk):
     })
     # return render(request, 'dataAdmin/manage_models.html', context=context)
 
+import os, sys
+#execute a function from another file dynamically, with its own location as its cwd
+def execute_dynamic_file_function(file_path, function_name, *args, **kwargs):
+    # Get the directory of the dynamic file
+    file_dir = os.path.dirname(os.path.abspath(file_path))
+
+    # Store the current working directory and sys.path
+    original_cwd = os.getcwd()
+    original_sys_path = sys.path[:]
+
+    ret_value=None
+    print("flag ====", original_cwd)
+
+    ret_val = None
+
+    try:
+        # Change the current working directory to the file's directory
+        os.chdir(file_dir)
+
+        # Append the file's directory to sys.path so that imports work correctly
+        sys.path.append(file_dir)
+
+        print("Importing module",__name__, file_path)
+        # Import the module dynamically
+        module = __import__(os.path.basename(file_path).replace('.py', ''))
+        print("Executing the function")
+        # Get the function from the module and execute it
+        function = getattr(module, function_name)
+        ret_val = function(*args, **kwargs)
+    except Exception as e:
+        print("Error", e)
+    finally:
+        # Revert the changes to CWD and sys.path
+        os.chdir(original_cwd)
+        sys.path = original_sys_path
+
+    return ret_val
+    
+
 @api_view(['GET','POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @IsDataAdmin
 @IsDataAdmin
-def manage_models(request):
-    
+def manage_models(request):    
     if request.method == 'POST' :
         try:
             print(request.FILES['model_repo'])
@@ -157,6 +224,11 @@ def manage_models(request):
             root_dir_name=compressed_files[0]['name'].split('/')[0]
 
             model_root_path = os.path.join(output_directory,root_dir_name+'_root')
+
+            if os.path.exists(model_root_path):
+                if DlModel.objects.filter(name=root_dir_name).exists():
+                    print(f'Model {root_dir_name} already exists. Please choose a different name.')
+                    return HttpResponse(f'Model {root_dir_name} already exists. Please choose a different name for the repo.',status=500)
             
             for compressed_file in compressed_files:
                 # Get the full path of the file
@@ -189,11 +261,17 @@ def manage_models(request):
                 'creator':request.user,
                 'modifier':request.user,
             }
-            print('saving model info to dataset...')
+            # print('saving model info to dataset...')
             dl_model = DlModel.objects.create(**model_params)
-            print('model info saved to dataset successfully')
-
-            # return HttpResponse('Files decompressed successfully')
+            print('model info saved to dataset successfully.')
+            
+            mlflow_tracking_uri = get_mlflow_tracking_uri()
+            execute_dynamic_file_function(os.path.join(dl_model.path,dl_model.name,'mlflow_log_model.py'), 
+                                                    'log_pretrained', os.path.abspath(dl_model.path),
+                                                    mlflow_tracking_uri, 
+                                                    dl_model.mlflow_experiment_id,
+                                                )
+            # return HttpResponse('Model saved and MlFlow experiment created.', status=200)
 
     order_by = request.query_params.get('order_by', 'id')
     page_number = request.query_params.get('page', 1)

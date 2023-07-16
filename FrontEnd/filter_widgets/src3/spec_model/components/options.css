@@ -1,0 +1,26 @@
+.options-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* width: 100%;
+    height: 100%; */
+    position:absolute;
+    background-color: rgb(171, 241, 229);
+    z-index: 4;
+    cursor: pointer;
+    transform: translate(-20%,-50%);
+}
+.option-item{
+    min-width:2cm;
+    width: max-content;
+    color:brown;
+    text-align: center;
+    font-size: 0.5cm;
+    font-weight: bold;
+    padding:0.1cm;
+}
+.option-item:hover{
+    background-color: rgb(156, 222, 85);
+    color:rgb(244, 81, 11);
+}

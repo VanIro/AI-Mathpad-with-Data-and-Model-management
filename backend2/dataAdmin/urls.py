@@ -1,4 +1,5 @@
 from django.urls import path, include
+import mlflow
 # from django.conf.urls import url
 
 from . import views, views_api
@@ -15,6 +16,7 @@ urlpatterns=[
     path('models/<int:pk>', views.manage_specific_model, name='manage-specific-model'),
     path('datasets/', views.manage_datasets, name='manage-datasets'),
     path('datasets/<int:pk>', views.manage_specific_dataset, name='manage-specific-dataset'),
+    # path('mlflow', include('mlflow.server.ui._init')),
     path('mlflow_ui', views.viewMlFLowUI, name='mlflow-ui'),
     # path('browsing/', include('filer.urls')),
 ]

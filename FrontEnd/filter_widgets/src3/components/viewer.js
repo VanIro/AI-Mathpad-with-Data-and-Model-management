@@ -60,9 +60,11 @@ function Viewer(props,children){
     });
     return (
         <div className="viewer">
-            {!isOneItem && <div className="filter-container">
+            {!isOneItem && <><div className="filter-container">
                 <input type="text" placeholder="Search by name..." onChange={(e) => setFilterKey(e.target.value)} />
-            </div>}
+                <div className='underliner'></div>
+            </div>
+            </>}
             <div className="viewer-header row_style">
                 <div className='header-row row-item'>#</div>
                 {header_columns}

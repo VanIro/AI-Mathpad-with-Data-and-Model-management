@@ -1,19 +1,48 @@
 import './directoryUpload.css'
 
-import React, { useState } from 'react';
-import { deflate } from 'pako';
+import React, { useState,useEffect } from 'react';
 import ProgressBar from '@ramonak/react-progress-bar';
 
+import Worker from 'worker-loader!@worker';
+import Worker2 from 'worker-loader!./finalCompressionWorker.js';
+
 const ExcludeUpload = ['__pycache__', '/.']
+const MAX_CHUNK_SIZE = 10 * 1024 * 1024; // Maximum chunk size in bytes
+
+const work_time_limit = 1000*3; // milliseconds
+const break_time = 100*10; // milleseconds
+const periodicBreaks = () => {
+    return setInterval(async ()=> {
+        console.log('break time',break_time)
+        const ret_val = await new Promise((resolve) =>setTimeout(resolve, break_time) );
+        console.log('break over ;(',work_time_limit);
+        return ret_val;
+    }, work_time_limit)
+};
 
 const DirectoryUpload = ({ onUpload }) => {
   const [progress, setProgress] = useState(0);
   const [totalFiles, setTotalFiles] = useState(0);
-  const [compressedFiles, setCompressedFiles] = useState(0);
+  const [compressedFilesCount, setCompressedFilesCount] = useState(0);
   const [displayProgressString, setDisplayProgressString] = useState(false);
   const [displayProgress, setDisplayProgress] = useState(false);
   const [compressingFiles, setCompressingFiles] = useState([]);
+  const [compressionWorker, setCompressionWorker] = useState(null);
+  const [compressionWorker2, setCompressionWorker2] = useState(null);
+  // const [compressedFiles, setCompressedFiles] = useState([]);
 
+  useEffect(() => {
+    const worker = new Worker();
+    setCompressionWorker(worker);
+    const worker2 = new Worker2();
+    setCompressionWorker2(worker2);
+
+    return () => {
+      worker.terminate();
+    };
+  }, []);
+
+  
   const handleUpload = async (event) => {
     const files = event.target.files || event.dataTransfer.files;
 
@@ -32,40 +61,97 @@ const DirectoryUpload = ({ onUpload }) => {
     setTotalFiles(fileList2.length);
     setDisplayProgressString(true);
 
-    // console.log('fileList2', fileList2);
-
-    const compressedFilesPromises = fileList2.map(async (file) => {
-    //   console.log('webkitRelativePath is falsy', file, file.webkitRelativePath);
-      // Individual file entry
-      setCompressingFiles((prevFiles) => [...prevFiles, file.webkitRelativePath || file.name]);
-      const compressedData = Array.from(deflate(await file.arrayBuffer(),{windowBits: 15}));
-      // console.log(Array.from(compressedData))
-      const compressedFile = {
-        name: file.webkitRelativePath || file.name,
-        data: compressedData,
-        size: compressedData.length,
-      };
+    let compressedFiles = [];
+    const compressChunks = async () => {
       
+      const intervalId = periodicBreaks();
+      console.log('*set interval', intervalId);
 
-      // Update compressed files count
-      setCompressedFiles((prevCount) => prevCount + 1);
-      setCompressingFiles((prevFiles) => prevFiles.filter((prevFile) => prevFile !== (file.webkitRelativePath || file.name)));
+      let chunk = [];
+      let chunkSize = 0;
+      for (const file of fileList2) {
+        const fileSize = file.size;
+        if (chunkSize + fileSize > MAX_CHUNK_SIZE) {
+          // Process the current chunk
+          await compressAndUploadChunk(chunk, compressedFiles);
+          chunk = [];
+          chunkSize = 0;
+        }
 
-      return compressedFile;
-    });
+        chunk.push(file);
+        chunkSize += fileSize;
+      }
+      // Process the remaining files in the last chunk
+      if (chunk.length > 0) {
+        await compressAndUploadChunk(chunk, compressedFiles);
+      }
+      compressionWorker2.postMessage(compressedFiles);
+      const compressedFurtherFiles = await new Promise((resolve) => {
+        compressionWorker2.onmessage = (event) => {
+          const compressedFurtherFiles = event.data;
+          resolve(compressedFurtherFiles);
+        }
+      });
+      
+      console.log('*clear interval', intervalId);
+      clearInterval(intervalId);
 
-    Promise.all(compressedFilesPromises).then((compressedFiles) => {
-      const flattenedFiles = compressedFiles.flat();
       setDisplayProgress(false);
-      onUpload(flattenedFiles);
       setDisplayProgressString(false);
-      setCompressedFiles(0);
-    });
+      setCompressedFilesCount(0);
+      // console.log(compressedFiles)
+      onUpload(compressedFurtherFiles);
+
+    };
+
+    const compressAndUploadChunk = async (chunk, compressedFiles) => {
+      setCompressingFiles(chunk.map((file) => file.webkitRelativePath || file.name));
+
+      const fileDataPromises = chunk.map((file) => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const arrayBuffer = reader.result;
+            resolve({
+              name: file.webkitRelativePath || file.name,
+              data: arrayBuffer,
+            });
+          };
+          reader.readAsArrayBuffer(file);
+        });
+      });
+      const fileData = await Promise.all(fileDataPromises);
+
+      compressionWorker.postMessage(fileData);
+
+      const compressedFilesChunk = await new Promise((resolve) => {
+        compressionWorker.onmessage = (event) => {
+          const compressedFilesChunk = event.data;
+          // console.log('compressedFilesChunk',compressedFilesChunk)
+          setCompressedFilesCount((prevCount) => {
+            return prevCount + compressedFilesChunk.length
+          });
+          setCompressingFiles((prevFiles) =>{
+            prevFiles.filter((prevFile) => !compressedFilesChunk.some((file) => file.name === prevFile))
+          });
+          
+          resolve(compressedFilesChunk);
+        };
+      });
+
+      compressedFiles.push(...compressedFilesChunk);
+
+      // Call the onUpload callback for each chunk
+      // compressedFilesChunk.forEach((file) => onUpload(file));
+    };
+    
+    compressChunks();
+
   };
 
   const calculateProgress = () => {
     if (totalFiles === 0) return 0;
-    return ((compressedFiles / totalFiles) * 100).toFixed(2);
+    return ((compressedFilesCount / totalFiles) * 100).toFixed(2);
   };
 
   return (
@@ -97,13 +183,17 @@ const DirectoryUpload = ({ onUpload }) => {
           onClick={(event) => (event.target.value = null)} // Clear selected files on click to allow reselection of directories
         />
       </div>
-      {displayProgressString && 
-        <div>{`${calculateProgress()}% (${compressedFiles}/${totalFiles}) files compressed`}</div>
-      }
-      {displayProgress && <ProgressBar completed={calculateProgress()} transitionDuration='0.6s'/>}
-      {displayProgressString && 
-        <div>Compressing {compressingFiles} ...</div>
-      }
+      {displayProgress &&<div className='progress-container-compress'>
+        <div className='progress-compress'>
+          {displayProgressString && 
+            <div>{`${calculateProgress()}% (${compressedFilesCount}/${totalFiles}) files compressed`}</div>
+          }
+          <ProgressBar completed={calculateProgress()} transitionDuration='0.6s'/>
+          {displayProgressString && 
+            <div>Compressing {compressingFiles} ...</div>
+          }
+        </div>
+      </div>}
     </div>
   );
 };
