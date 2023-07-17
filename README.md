@@ -7,6 +7,9 @@ This project provides the ability to:
 - train models on collected data and  manage the models, and  ✅
 - easily serve a model of choice      🔲
 
-Model management is being done through integration with MlFlow.
+## Features:
+- Integration with MlFlow
+- Fullstack (Django, React) project
+  - Utilizing both django templates and React Components
 
 
