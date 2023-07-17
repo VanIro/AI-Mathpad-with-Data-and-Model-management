@@ -22,4 +22,6 @@
       - View specific Model
       - Create dataset for the Model
       - View created datasets
-      - Train on any such dataset(click and select train) 
+      - Train on any such dataset(click and select train)
+
+Run `npm run dev` in /filter_widgets and /mathpad_page to monitor and update the bundled file. The bundled file is automatically placed in static folder of the django backend, so after a reload the changes will be visible.
