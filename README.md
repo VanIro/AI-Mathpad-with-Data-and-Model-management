@@ -12,5 +12,7 @@ This project provides the ability to:
 - Integration with MlFlow
 - Fullstack (Django, React) project
   - Utilizing both django templates and React Components
+- Use of multiple processes in backend for handling time consuming tasks without blocking the request-response cycle
+- Use of Web worker in frontend for handling computation intensive task(directory compression) without making the browser unresopnsive
 
 
