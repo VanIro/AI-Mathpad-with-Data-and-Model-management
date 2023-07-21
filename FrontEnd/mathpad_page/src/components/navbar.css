@@ -23,13 +23,20 @@
     /* LOGO */
     
     .logo {
-    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
     font-size: 32px;
-    color:rgb(217, 245, 8);
-    }
-    .logo > img {
-        max-height: 1.5em;
-    }
+    color: white;
+    text-align: center;
+}
+
+.logo > img {
+    max-height: 1.5em;
+    vertical-align: middle;
+    margin-right: 0.5em;
+}
 
     .logo:hover {
     

@@ -22,8 +22,9 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <Link to="/">
-        <div className="logo">
+        <div class="logo">
           <img src={nsDevilLogo} alt="Logo" />
+          <span>AI Mathpad</span>
         </div>
       </Link>
       <ul className="nav-links">
