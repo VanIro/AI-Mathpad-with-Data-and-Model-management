@@ -100,13 +100,10 @@ def manage_specific_model(request,pk):
                 model_repo_path = os.path.abspath(model.repo_path)
 
 
-                info = execute_dynamic_file_function(model_repo_path, 
-                                                        'myTrain.py','perf_train',os.path.abspath(model.path),
+                info = execute_dynamic_file_function(os.path.join(model_repo_path, 'myTrain.py'),
+                                                        'perf_train',os.path.abspath(model.path),
                                                         model_dataset_path,get_mlflow_tracking_uri(),model.mlflow_experiment_id
                                                      )
-
-
-
 
             else:
                 model_pk, dataset_pk, action = request.POST['model'], request.POST['dataset_pk'], request.POST['action']
@@ -116,7 +113,9 @@ def manage_specific_model(request,pk):
 
                 model_dataset_dir_name = dataset.name+f'_{dataset.id}' +' __ '+model.name+f'_{model.id}'
                 model_dataset_path = os.path.join(model.path, model_dataset_dir_name)
-                errorFlag = create_dataset(os.path.join(settings.BASE_DIR,dataset.path), os.path.join(settings.BASE_DIR,model.repo_path), os.path.join(settings.BASE_DIR,model_dataset_path))
+                errorFlag = create_dataset( os.path.join(settings.BASE_DIR,dataset.path), os.path.join(settings.BASE_DIR,model.repo_path), 
+                                            os.path.join(settings.BASE_DIR,model_dataset_path)
+                                        )
                 if errorFlag == 1:
                     print("returning error...")
                     return HttpResponse('Error in creating dataset.',status=500)
@@ -143,7 +142,7 @@ def manage_specific_model(request,pk):
 
     paginator = PageNumberPagination()
     paginator.page_size = 10  # Number of objects per page
-
+    
     dlModel = DlModel.objects.get(pk=pk)
     queryset = dlModel.dlmodeldatasets.order_by(order_by)
     result_page = paginator.paginate_queryset(queryset, request)
@@ -181,10 +180,10 @@ def execute_dynamic_file_function(file_path, function_name, *args, **kwargs):
         # Append the file's directory to sys.path so that imports work correctly
         sys.path.append(file_dir)
 
-        print("Importing module",__name__, file_path)
+        print("Importing module", file_path)
         # Import the module dynamically
         module = __import__(os.path.basename(file_path).replace('.py', ''))
-        print("Executing the function")
+        print("Executing the function", function_name)
         # Get the function from the module and execute it
         function = getattr(module, function_name)
         ret_val = function(*args, **kwargs)

@@ -1,7 +1,7 @@
 import subprocess
 
-def create_dataset(dataset_path, repo_path, out_path):
-    command = f'cd "{repo_path}" && python prepare_dataset.py --dataset "{dataset_path}" --repoPath "{repo_path}" --outPath "{out_path}"'
+def create_dataset(dataset_path, repo_path, out_path, ref_words_path=''):
+    command = f'cd "{repo_path}" && python prepare_dataset.py --dataset "{dataset_path}" --repoPath "{repo_path}" --outPath "{out_path}" '
     print(command)
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
 

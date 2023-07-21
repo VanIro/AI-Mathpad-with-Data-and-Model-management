@@ -17,13 +17,20 @@ def make_prediction(img_64):
     black_mask = image[:,:,-1]>0
     image[black_mask] = [255,255,255,255]
 
-    image_path = 'aiMathpad/images/hellohi.jpg'
+    # image_dir = 'aiMathpad/images'
+    # image_path = image_dir + '/hellohi.jpg'
     
-    cv2.imwrite(image_path, image)
+    # if not os.path.exists(image_dir):
+    #     os.mkdir(image_dir)
+
+    # cv2.imwrite(image_path, image)
     # result = make_prediction('hellohi.jpg')
 
     # Implementing pix2tex    
-    image = Image.open(image_path)
+    
+    # image = Image.open(image_path)
+    image = Image.fromarray(image)
+
 
      #Load Model
     import os

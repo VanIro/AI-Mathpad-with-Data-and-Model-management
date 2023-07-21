@@ -1,0 +1,15 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "A head for running or installing packages for both projects in this directory",
+  "main": "index.js",
+  "scripts": {
+    "dev-all": "concurrently \"cd mathpad_page && npm run dev\" \"cd filter_widgets && npm run dev\"",
+    "install-all": "concurrently \"cd mathpad_page && npm install\" \"cd filter_widgets && npm install\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
