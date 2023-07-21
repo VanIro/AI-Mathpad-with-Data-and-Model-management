@@ -31,8 +31,8 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const loginUser = async (email, password) => {
-    console.log(email);
-    const response = await fetch(BACKEND_URL_login, {
+    // console.log(email);
+    const responseP = fetch(BACKEND_URL_login, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -41,35 +41,50 @@ export const AuthProvider = ({ children }) => {
         email,
         password
       })
+    })
+    responseP.then((response) => {
+      response.json().then((data) => {
+        if (response.status === 200) {
+          // console.log('response',data['access'],data['user']);
+  
+          // const response2 = await fetch(BACKEND_URL_UInfo, {
+          //   method: "GET",
+          //   headers: {
+          //     "Content-Type": "application/json",
+          //     // "Authorization": "Token "+data['key']
+          //     "Authorization": "Bearer "+data['access']
+          //   }
+          // });
+          // const user_info = await response2.json();
+          // if(response2.status===200){
+          //   console.log("Success fetching user information...")
+          //   data['user_info']=user_info;
+          // }
+          
+          // console.log(data)
+          console.log('Login success!');
+          setAuthTokens(data);
+          setUser(data['user'])//jwt_decode(data['key']));
+          localStorage.setItem("authTokens", JSON.stringify(data))
+          navigate("/");
+          return 0;
+        } else {
+          // alert("Something went wrong!");
+          return 1;
+        }
+      });
+
+
+    })
+    responseP.catch((error) => {
+      console.log('Error:', error);
+      return 1;
     });
-    const data = await response.json();
 
-    if (response.status === 200) {
-      // console.log('response',data['access'],data['user']);
+    const retVal =  await responseP;
 
-      // const response2 = await fetch(BACKEND_URL_UInfo, {
-      //   method: "GET",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     // "Authorization": "Token "+data['key']
-      //     "Authorization": "Bearer "+data['access']
-      //   }
-      // });
-      // const user_info = await response2.json();
-      // if(response2.status===200){
-      //   console.log("Success fetching user information...")
-      //   data['user_info']=user_info;
-      // }
-      
-      console.log(data)
-      console.log('Login success!');
-      setAuthTokens(data);
-      setUser(data['user'])//jwt_decode(data['key']));
-      localStorage.setItem("authTokens", JSON.stringify(data));
-      navigate("/");
-    } else {
-      alert("Something went wrong!");
-    }
+    return retVal;
+    
   };
   
   const registerUser = async (username,email, password1, password2) => {
