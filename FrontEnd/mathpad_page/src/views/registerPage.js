@@ -1,9 +1,13 @@
+import './registerPage.css'
+
 import { useState, useContext } from "react";
 import AuthContext from "../auth/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SyncLoader from "react-spinners/SyncLoader";
 
-import './registerPage.css'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function Register() {
   const [username, setUsername] = useState("");
@@ -18,12 +22,18 @@ function Register() {
 
   const { registerUser } = useContext(AuthContext);
 
+  const navigate = useNavigate();
+
   const handleSubmit = async e => {
     setRegistering(true);
     setErrorMsgs([]); //clear error messages
     e.preventDefault();
-    registerUser(username, email, password, password2).then((ret) => {
-      console.log('ret',ret);
+    const handleSuccess = ()=>{
+      toast.success("Registration Successful👌.\nPlease Verify your email to login.")
+      setTimeout(()=>navigate("/login"),3000);
+    }
+    registerUser(username, email, password, password2, handleSuccess).then((ret) => {
+      // console.log('ret',ret);
       if(ret){
         const {success, detail, non_field_errors,...remnError} = ret; 
         // setErrorMsgs(errMsgs=>[...errMsgs,"Incorrect username or password."]);
@@ -47,6 +57,18 @@ function Register() {
 
     <div className="login-wrap">
       <h2>Register</h2>
+      <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+      />
       
       <br/>
       <div className="error-message">
@@ -121,6 +143,7 @@ function Register() {
             }
           </ul>
         </div>
+        <p className="error-message">{password2 !== password ? "Passwords do not match" : ""}</p>
         <input
             type="password"
             id="confirm-password"
@@ -129,7 +152,6 @@ function Register() {
             onKeyDown={handleKeyPress}
             required
         />
-        <p className="warning">{password2 !== password ? "Passwords do not match" : ""}</p>
         <button onClick={handleSubmit} style={{position:'relative'}}> 
           {registering?'Registering':'Register' }
           <SyncLoader

@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import AuthContext from "../auth/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import SyncLoader from "react-spinners/SyncLoader";
 
@@ -8,6 +8,7 @@ import './loginPage.css'
 
 const LoginPage = () => {
   const { loginUser } = useContext(AuthContext);
+  const navigate = useNavigate();
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +23,10 @@ const LoginPage = () => {
     setErrorMsgs([]); //clear error messages
     if(email.length > 0 && password.length > 0){
       setSigningIn(true);
-      loginUser(email, password).then((ret) => {
+      const handleSuccess = ()=>{
+        navigate('/');
+      }
+      loginUser(email, password,handleSuccess).then((ret) => {
         // console.log('ret',ret);
         if(ret){
           const {success, detail, non_field_errors,...remnError} = ret; 

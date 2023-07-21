@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  const loginUser = async (email, password) => {
+  const loginUser = async (email, password, handleSuccess) => {
     // console.log(email);
     const responseP = fetch(BACKEND_URL_login, {
       method: "POST",
@@ -69,12 +69,19 @@ export const AuthProvider = ({ children }) => {
           setAuthTokens(data);
           setUser(data['user'])//jwt_decode(data['key']));
           localStorage.setItem("authTokens", JSON.stringify(data))
-          navigate("/");
+          handleSuccess&&handleSuccess();
+          // navigate("/");
           return {success:true}; 
-      }).catch((error_data) => {
-        // console.log('Error:', data);
-        return {success:false, ...error_data};
-      });
+      }).catch(error=>{
+        console.log(error);
+        return error.then((error_data) => {
+          // console.log('error: ',error_data)
+          return {
+            success:false,
+            ...error_data
+          }
+        })}
+      );
 
     const retVal =  await responseP;
     // console.log(retVal)
@@ -83,7 +90,7 @@ export const AuthProvider = ({ children }) => {
     
   };
   
-  const registerUser = async (username,email, password1, password2) => {
+  const registerUser = async (username,email, password1, password2, handleSuccess) => {
     // let username='';
     // console.log(JSON.stringify({
     //   username,
@@ -111,15 +118,18 @@ export const AuthProvider = ({ children }) => {
         return response.json();
       }
     ).then((data) => {
-        navigate("/login");
+        handleSuccess&&handleSuccess();
+        // navigate("/login");
         return {success:true};
-    }).catch( error=>error.then((error_data) => {
+    }).catch( error=>{
+      console.log(error)
+      return error.then((error_data) => {
       // console.log('error: ',error_data)
       return {
         success:false,
         ...error_data
       }
-    })
+    })}
     );
 
     return await responseP;
