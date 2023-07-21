@@ -41,10 +41,13 @@ export const AuthProvider = ({ children }) => {
         email,
         password
       })
-    })
-    responseP.then((response) => {
-      response.json().then((data) => {
-        if (response.status === 200) {
+    }).then((response) => {
+      if(!response.ok){
+        // console.log('here here', response)
+        throw response.json();
+      }
+      return response.json();
+    }).then((data) => {
           // console.log('response',data['access'],data['user']);
   
           // const response2 = await fetch(BACKEND_URL_UInfo, {
@@ -67,21 +70,14 @@ export const AuthProvider = ({ children }) => {
           setUser(data['user'])//jwt_decode(data['key']));
           localStorage.setItem("authTokens", JSON.stringify(data))
           navigate("/");
-          return 0;
-        } else {
-          // alert("Something went wrong!");
-          return 1;
-        }
+          return {success:true}; 
+      }).catch((error_data) => {
+        // console.log('Error:', data);
+        return {success:false, ...error_data};
       });
 
-
-    })
-    responseP.catch((error) => {
-      console.log('Error:', error);
-      return 1;
-    });
-
     const retVal =  await responseP;
+    // console.log(retVal)
 
     return retVal;
     
@@ -89,13 +85,13 @@ export const AuthProvider = ({ children }) => {
   
   const registerUser = async (username,email, password1, password2) => {
     // let username='';
-    console.log(JSON.stringify({
-      username,
-      email,
-      password1,
-      password2
-    }));
-    const response = await fetch(BACKEND_URL_register, {
+    // console.log(JSON.stringify({
+    //   username,
+    //   email,
+    //   password1,
+    //   password2
+    // }));
+    const responseP = fetch(BACKEND_URL_register, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -106,13 +102,28 @@ export const AuthProvider = ({ children }) => {
         password1,
         password2
       })
-    });
-    if (response.status === 201) {
+    }).then(
+      (response) => {
+        if(!response.ok){
+          // console.log('here here', response)
+          throw response.json();
+        }
+        return response.json();
+      }
+    ).then((data) => {
         navigate("/login");
-    } else {
-        console.log(response)
-      alert("Something went wrong!");
-    }
+        return {success:true};
+    }).catch( error=>error.then((error_data) => {
+      // console.log('error: ',error_data)
+      return {
+        success:false,
+        ...error_data
+      }
+    })
+    );
+
+    return await responseP;
+
   };
 
   const logoutUser = async () => {

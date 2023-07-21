@@ -12,6 +12,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsgs, setErrorMsgs] = useState([]); //["Error message 1", "Error message 2"
+  const [fieldErrors, setFieldErrors] = useState({}); //["Error message 1", "Error message 2"
 
   const [signingIn, setSigningIn] = useState(false); //["Error message 1", "Error message 2"
 
@@ -22,9 +23,15 @@ const LoginPage = () => {
     if(email.length > 0 && password.length > 0){
       setSigningIn(true);
       loginUser(email, password).then((ret) => {
-        console.log('ret',ret);
+        // console.log('ret',ret);
         if(ret){
-          setErrorMsgs(errMsgs=>[...errMsgs,"Incorrect username or password."]);
+          const {success, detail, non_field_errors,...remnError} = ret; 
+          // setErrorMsgs(errMsgs=>[...errMsgs,"Incorrect username or password."]);
+          if(non_field_errors)
+            setErrorMsgs(errMsgs=>[...errMsgs,...non_field_errors]);
+
+          // console.log(remnError);
+          setFieldErrors(remnError);
         }
         setSigningIn(false);
       });
@@ -45,7 +52,7 @@ const LoginPage = () => {
 
     <div className="login-wrap">
       <h2>Login</h2>
-      
+      <br/>
       <div className="error-message">
         <ul>
           {
@@ -56,6 +63,15 @@ const LoginPage = () => {
         </ul>
       </div>
       <div className="form">
+        <div className="error-message">
+          <ul>
+            {fieldErrors['email'] &&
+              fieldErrors['email'].map((msg, index) => (
+                <li key={index}>{msg}</li>
+              ))
+            }
+          </ul>
+        </div>
         <input 
           type="text" 
           id="email" 
@@ -64,6 +80,15 @@ const LoginPage = () => {
           onChange={e => setEmail(e.target.value)} 
           onKeyDown={handleKeyPress}
         />
+        <div className="error-message">
+          <ul>
+            {fieldErrors['password'] &&
+              fieldErrors['password'].map((msg, index) => (
+                <li key={index}>{msg}</li>
+              ))
+            }
+          </ul>
+        </div>
         <input 
           type="password" 
           placeholder="Password" 
