@@ -32,6 +32,11 @@ module.exports = {
         test: /\.(jpg|png)$/,
         use: {
           loader: "url-loader",
+          options: {
+            limit: 8192, // Set a limit for inlining the image as a Data URL (in bytes)
+            name: '[name].[ext]', // Output file name and extension
+            outputPath: 'images/', // Output directory for the images
+          },
         },
       },
     ],

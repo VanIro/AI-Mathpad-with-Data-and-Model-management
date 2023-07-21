@@ -25,6 +25,7 @@
     "react-scripts": "5.0.1",
     "react-spinners": "^0.13.8",
     "resolve-cwd": "^3.0.0",
+    "url-loader": "^4.1.1",
     "web-vitals": "^2.1.4",
     "worker-loader": "^3.0.8"
   },
