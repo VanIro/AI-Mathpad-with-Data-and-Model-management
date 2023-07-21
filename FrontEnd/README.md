@@ -3,7 +3,7 @@
  - Move to this directory in the terminal
  - Run npm run install-all to install all packages
  - Run npm run run-all to watch for changes to both filter_widgets and mathpad_page
- > > This will start monitoring of the respective codes and creation of updated bundled files. The bundled files are automatically placed in static folder of the django backend, so after a reload the changes will be visible in the site hosted by django. 
+  > > This will start monitoring of the respective codes and creation of updated bundled files. The bundled files are automatically placed in static folder of the django backend, so after a reload the changes will be visible in the site hosted by django. 
 
 ## mathpad_page
 - User interface
