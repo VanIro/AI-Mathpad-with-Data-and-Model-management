@@ -1,4 +1,10 @@
 # FrontEnds for User and Admin
+## Steps to update frontends
+ - Move to this directory in the terminal
+ - Run npm run install-all to install all packages
+ - Run npm run run-all to watch for changes to both filter_widgets and mathpad_page
+ > > This will start monitoring of the respective codes and creation of updated bundled files. The bundled files are automatically placed in static folder of the django backend, so after a reload the changes will be visible in the site hosted by django. 
+
 ## mathpad_page
 - User interface
 - Use the mathpad for recognizing handdrawn expressions
@@ -24,7 +30,3 @@
       - View created datasets
       - Train on any such dataset(click and select train)
 
-To update the front ends:
-- Go to /mathpad_page in the terminal and run `npm run dev` , for user interface.
-- Go to /filter_widgets in the terminal and run `npm run dev` , for admin interface.
-> > This will start monitoring of the respective codes and creation of updated bundled files. The bundled files are automatically placed in static folder of the django backend, so after a reload the changes will be visible in the site hosted by django. 
