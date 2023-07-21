@@ -25,13 +25,13 @@ const ImageCard = (props) => {
   //   // console.log(rating);
   // };
 
-    const handleSelect = (id, rating) => {
-      setRatingStates((prevState) => ({
-        ...prevState,
-        [id]: rating,
-      }));
-      setSelectedRating(rating);
-    };
+  const handleSelect = (id, rating) => {
+    setRatingStates((prevState) => ({
+      ...prevState,
+      [id]: rating,
+    }));
+    setSelectedRating(rating);
+  };
 
 
   const handleEditButtonClick = () => {

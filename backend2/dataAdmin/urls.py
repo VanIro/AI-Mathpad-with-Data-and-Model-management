@@ -19,4 +19,5 @@ urlpatterns=[
     # path('mlflow', include('mlflow.server.ui._init')),
     path('mlflow_ui', views.viewMlFLowUI, name='mlflow-ui'),
     # path('browsing/', include('filer.urls')),
+    path('updateDataset/<str:dataset_id>', views.update_dataset),
 ]
