@@ -1,6 +1,8 @@
 import json
 from datetime import datetime
 import pytz
+import os
+import mlflow
 
 from django.conf import settings
 from django.shortcuts import render,HttpResponse, redirect
@@ -13,7 +15,6 @@ from django.db.models import Q
 from django.db.models.functions import TruncDate
 from django.db.models import Func, Count
 
-from rest_framework.generics import ListAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import api_view
 from rest_framework.decorators import api_view, authentication_classes
@@ -23,8 +24,9 @@ from django.http import JsonResponse
 
 
 from aiMathpad.models import ImageData, ExpressionType
-from .models import Dataset
-from .serializers import DatasetSerializer
+from .models import Dataset, DlModel, DlModelDataset
+from .serializers import DatasetSerializer, DlModelSerializer, DlModelDatasetSerializer
+from .dlUtils import create_dataset
 
 def IsDataAdmin(view_func):
     def wrapper(request,*args,**kwargs):
@@ -40,28 +42,180 @@ def IsDataAdmin(view_func):
 def index(request):
     return redirect(reverse('dataAdmin:dashboard'))
 
+import zlib
+import base64
+
+def decode_base64_and_inflate( b64string ):
+    # decoded_data = base64.b64decode( b64string )
+    # print(decoded_data)
+    return zlib.decompress( b64string , 15)
+
+def deflate_and_base64_encode( string_val ):
+    zlibbed_str = zlib.compress( string_val )
+    compressed_string = zlibbed_str[2:-4]
+    return base64.b64encode( compressed_string )
+
+@IsDataAdmin
+def viewMlFLowUI(request):
+    return render(request, 'dataAdmin/mlflow_ui.html', context={})
+
+
+@api_view(['GET','POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@IsDataAdmin
+@IsDataAdmin
+def manage_specific_dataset(request,pk):
+
+    dataset = Dataset.objects.get(pk=pk)
+
+
+    return render(request, 'dataAdmin/specific_dataset.html', context={
+        'dataset':DatasetSerializer(dataset).data
+    })
+    # return render(request, 'dataAdmin/manage_models.html', context=context)
+
+@api_view(['GET','POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@IsDataAdmin
+@IsDataAdmin
+def manage_specific_model(request,pk):
+    if request.method=='POST':
+        # print(request.POST)
+        model_pk, dataset_pk, action = request.POST['model'], request.POST['dataset_pk'], request.POST['action']
+        dataset = Dataset.objects.get(pk=dataset_pk[0])
+        model = DlModel.objects.get(pk=model_pk[0])
+
+        model_dataset_dir_name = dataset.name+f'_{dataset.id}' +' __ '+model.name+f'_{model.id}'
+        model_dataset_path = os.path.join(model.path, model_dataset_dir_name)
+        errorFlag = create_dataset(os.path.join(settings.BASE_DIR,dataset.path), os.path.join(settings.BASE_DIR,model.repo_path), os.path.join(settings.BASE_DIR,model_dataset_path))
+        if errorFlag == 1:
+            print("returning error...")
+            return HttpResponse('Error in creating dataset.',status=500)
+
+        model_dataset_name = dataset.name +' __ '+model.name
+        model_dataset = None
+        if model.dlmodeldatasets.filter(name=model_dataset_name,parent_dataset=dataset,dl_model=model).exists():
+            model_dataset = model.dlmodeldatasets.get(name=model_dataset_name,parent_dataset=dataset,dl_model=model)
+            model_dataset.modifier = request.user
+            model_dataset.save()
+            print(f'Dataset {model_dataset.name} modified successfully at {model_dataset.path}')
+        else:
+            model_dataset = model.dlmodeldatasets.create(
+                name= model_dataset_name,
+                parent_dataset=dataset,dl_model=model, 
+                path=model_dataset_path, 
+                creator=request.user, modifier=request.user
+            )
+            print(f'Dataset {model_dataset.name} created successfully at {model_dataset.path}')
+        
+
+    order_by = request.query_params.get('order_by', 'id')
+    page_number = request.query_params.get('page', 1)
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 10  # Number of objects per page
+
+    dlModel = DlModel.objects.get(pk=pk)
+    queryset = dlModel.dlmodeldatasets.order_by(order_by)
+    result_page = paginator.paginate_queryset(queryset, request)
+
+    serializer = DlModelDatasetSerializer(result_page, many=True)
+    serialized_data = serializer.data
+
+    print(request.method)
+
+    return render(request, 'dataAdmin/specific_model.html', context={
+        'model':DlModelSerializer(dlModel).data,
+        'model_datasets_list': serialized_data,
+        'current_page': paginator.page.number,
+        'total_pages': paginator.page.paginator.num_pages
+    })
+    # return render(request, 'dataAdmin/manage_models.html', context=context)
+
+@api_view(['GET','POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@IsDataAdmin
 @IsDataAdmin
 def manage_models(request):
-    context = dict()
-    return render(request, 'dataAdmin/manage_models.html', context=context)
-
-class DatasetView(ListAPIView):
-    serializer_class = DatasetSerializer
-    queryset = Dataset.objects.all()
-    pagination_class = PageNumberPagination  # Enable pagination
-
-    def get_queryset(self):
-        # Apply sorting based on query parameters
-        queryset = super().get_queryset()
-        sort_by = self.request.query_params.get('sort_by')
-        if sort_by:
-            queryset = queryset.order_by(sort_by)
-        return queryset
     
+    if request.method == 'POST' :
+        try:
+            print(request.FILES['model_repo'])
+        except KeyError:
+            print('No file uploaded yet', request.FILES)
+        else:
+            # compressed_files = request.FILES.getlist('model_repo')  # Assuming the file input field name is 'compressed_files'
+            compressed_files = request.FILES['model_repo']
+            # print('***',compressed_files, request.FILES)
 
-@IsDataAdmin
-def viewDataset(request):
-    return DatasetView.as_view()(request)
+            compressed_files = json.loads(decode_base64_and_inflate(compressed_files.read()))
+
+            # print('compressed files again',compressed_files[0])
+            output_directory = 'modelsManage'  # Specify the desired output directory
+
+            # Create the output directory if it doesn't exist
+            # os.makedirs(output_directory, exist_ok=True)
+
+            root_dir_name=compressed_files[0]['name'].split('/')[0]
+
+            model_root_path = os.path.join(output_directory,root_dir_name+'_root')
+            
+            for compressed_file in compressed_files:
+                # Get the full path of the file
+                full_path = os.path.join(model_root_path, compressed_file['name'])
+                print(full_path,f'size:{compressed_file["size"]}', end=" ") 
+                os.makedirs(os.path.dirname(full_path), exist_ok=True)
+                
+                # Decompress the file and write it to the output path
+                with open(full_path, 'wb') as output_file:
+                    print('decoding...', end="")
+                    decompressed_data = decode_base64_and_inflate(bytes(compressed_file['data']))
+                    print('-> done')
+                    # decompressed_data = decompressor.decompress(compressed_file.read())
+                    output_file.write(decompressed_data)
+            
+            print('Files decompressed successfully')
+
+            # Set the repository path where artifacts will be stored
+            artifact_path = os.path.join(model_root_path, 'artifacts')
+
+            # Create the experiment
+            experiment_id = mlflow.create_experiment(f"{root_dir_name}", artifact_location=artifact_path)
+            print(f"Mlflow Experiment created with ID #{experiment_id}")
+
+            model_params = {
+                'name':root_dir_name,
+                'path':model_root_path,
+                'repo_path':os.path.join(model_root_path,root_dir_name),
+                'mlflow_experiment_id':experiment_id,
+                'creator':request.user,
+                'modifier':request.user,
+            }
+            print('saving model info to dataset...')
+            dl_model = DlModel.objects.create(**model_params)
+            print('model info saved to dataset successfully')
+
+            # return HttpResponse('Files decompressed successfully')
+
+    order_by = request.query_params.get('order_by', 'id')
+    page_number = request.query_params.get('page', 1)
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 10  # Number of objects per page
+
+    queryset = DlModel.objects.order_by(order_by)
+    result_page = paginator.paginate_queryset(queryset, request)
+
+    serializer = DlModelSerializer(result_page, many=True)
+    serialized_data = serializer.data
+
+
+    return render(request, 'dataAdmin/manage_models.html', context={
+        'models_list': serialized_data,
+        'current_page': paginator.page.number,
+        'total_pages': paginator.page.paginator.num_pages
+    })
+    # return render(request, 'dataAdmin/manage_models.html', context=context)
 
 @IsDataAdmin
 def update_dataset(request, dataset_id):

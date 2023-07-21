@@ -12,10 +12,31 @@
             {{block.super}}
         {%endblock%}
         {%block content%}
-        <form id="widget-data-capture-form" action="{% url 'dataAdmin:dashboard' %}" method="post">
+        <div id="manage-models-app_container"></div>
+
+        
+        {{models_list|json_script:'models-list'}}
+        {{current_page|json_script:'current-page'}}
+        {{total_pages|json_script:'total-pages'}}
+
+        <form id="model-repo-upload-form" action="{% url 'dataAdmin:dashboard' %}" method="post">
             {% csrf_token %}
         </form>
+        <script>
+            document.getElementById('sidebar_nav') && document.getElementById('sidebar_nav').children[2].classList.add('active');
+        </script>
+        <script src="{% static 'model_app-bundle.js'%}"></script>
         {%endblock%}
+
+        {% block navbar-links %}
+            <div class="collapse navbar-collapse" id="navbarTop">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'dataAdmin:manage-models'%}">Models</a>
+                    </li>
+                </ul>
+            </div>
+        {% endblock %}
 
         {%block footer%}
         

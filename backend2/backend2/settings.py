@@ -26,6 +26,8 @@ SECRET_KEY = 'django-insecure-0y@7upzb+qfth2%q*n6!3iwh%a(yn7f%0!jo9smal4go)o99bh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+MAX_UPLOAD_MEMORY_SIZE = 1024 * 1024 * 1024* 3
+
 ALLOWED_HOSTS = []
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # Update this with the origin of your frontend application
@@ -38,6 +40,8 @@ CORS_ALLOWED_ORIGINS = [
 #     'http://localhost:8000/',
 # ]
 CORS_ALLOW_CREDENTIALS = True
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 
 # Application definition
@@ -120,6 +124,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',

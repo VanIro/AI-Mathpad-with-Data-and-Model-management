@@ -1,69 +1,44 @@
-import React, { useState } from "react";
-import DataSetCard from "./DataSetCard";
-import "./viewDataSets.css";
+import Viewer from "../src3/components/viewer";
 
-const App = () => {
-  const initialDatasetsList = JSON.parse(
-    document.getElementById("datasets-list").innerHTML
-  );
-const itemsPerPage = 6;
-  const totalPages = Math.ceil(initialDatasetsList.length / itemsPerPage);
+//Datasets List is a list of rows from dataAdmin/models.Dataset table
+const DatasetsList = JSON.parse(
+  document.getElementById("datasets-list").innerHTML
+);
+const currentPage = parseInt(document.getElementById("current-page").innerHTML);
+const totalPages = parseInt(document.getElementById("total-pages").innerHTML);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [DatasetsList, setDatasetsList] = useState(initialDatasetsList);
-
-  const handlePreviousPage = () => {
-    setCurrentPage((prevPage) => prevPage - 1);
-  };
-
-  const handleNextPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
-  };
-
-  const updateDatasetDescription = (updatedItem) => {
-    const updatedList = DatasetsList.map((item) =>
-      item.id === updatedItem.id ? updatedItem : item
-    );
-    setDatasetsList(updatedList);
-  };
-
-  const renderData = () => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const pageData = DatasetsList.slice(startIndex, endIndex);
-
-    return pageData.map((item, index) => (
-      <div key={index} className="card-container">
-        <DataSetCard item={item} updateDescription={updateDatasetDescription} />
-      </div>
-    ));
-  };
-
+function App() {
   return (
-    <div className="content-wrap">
-      <h1>View all DataSets Here</h1>
+    <div>
+      <h1>Datasets</h1>
+      <Viewer
+        list_id="datasets-list"
+        columns={[
+          "name",
+          "num_images",
+          "created_at",
+          "creator",
+          "modified_at",
+          "modifier",
+        ]}
+        id_pre="dataset"
+        handleRowClick={(e) => {
+          const dataset_id = e.currentTarget.id.split("_")[1];
+          window.location.href = `/dataAdmin/datasets/${dataset_id}`;
+        }}
+      />
+      {/* <ol>
+        {
+            DatasetsList.map((dataset, index) => {
+                return <li key={index}>
+                    <a href={dataset.url}>{dataset.name} - {dataset.num_images} images</a>
+                    <div>{dataset.description}</div>
+                </li>
+            })
+        }
+        </ol> */}
       Page {currentPage} out of {totalPages} pages
-      <div className="cards-container">{renderData()}</div>
-      <div className="pagination">
-        {currentPage > 1 && (
-          <button
-            className="submit navigation-button prev-button"
-            onClick={handlePreviousPage}
-          >
-            Previous
-          </button>
-        )}
-        {currentPage < totalPages && (
-          <button
-            className="submit navigation-button next-button"
-            onClick={handleNextPage}
-          >
-            Next
-          </button>
-        )}
-      </div>
     </div>
   );
-};
-
+}
 export default App;

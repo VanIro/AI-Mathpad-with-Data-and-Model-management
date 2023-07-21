@@ -1,0 +1,59 @@
+{%extends 'dataAdmin/base.html' %}
+{% load static %}
+<!-- <html> -->
+    {%block head%}
+    <head>
+        <title>Models</title>
+        <!-- <link rel="stylesheet" href="css/dashboard.css"> -->
+    </head>
+    {%endblock%}
+    <!-- <body> -->
+        {%block sidebar%}
+            {{block.super}}
+        {%endblock%}
+        {%block content%}
+        <!-- <div id="manage-models-app_container"></div> -->
+        <style>
+            .mlflow-ui-container {
+                position: relative;
+                width: 100%;
+                padding-bottom: 56.25%; /* Set the aspect ratio for responsive scaling (16:9 aspect ratio in this example) */
+                overflow: hidden;
+            }
+
+            .mlflow-ui-container iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        <div class="mlflow-ui-container" height="fit-content">
+            <iframe id="mlflow-iframe" src="http://localhost:5000" width="100%"></iframe>
+        </div>
+
+        <form id="model-repo-upload-form" action="{% url 'dataAdmin:dashboard' %}" method="post">
+            {% csrf_token %}
+        </form>
+        <script>
+            document.getElementById('sidebar_nav').children[3].classList.add('active');
+        </script>
+        <!-- <script src="{% static 'model_app-bundle.js'%}"></script> -->
+        {%endblock%}
+
+        {% block navbar-links %}
+            <div class="collapse navbar-collapse" id="navbarTop">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">MlFlow</a>
+                    </li>
+                </ul>
+            </div>
+        {% endblock %}
+
+        {%block footer%}
+        
+        {%endblock%}
+    <!-- </body> -->
+<!-- </html> -->

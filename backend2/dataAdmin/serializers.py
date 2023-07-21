@@ -1,7 +1,7 @@
 import pickle
 
 from rest_framework import serializers
-from .models import Dataset
+from .models import Dataset, DlModel, DlModelDataset
 
 class PickledListField(serializers.Field):
     def to_representation(self, value):
@@ -13,7 +13,23 @@ class PickledListField(serializers.Field):
         return pickle.dumps(data)
 
 class DatasetSerializer(serializers.ModelSerializer):
+    creator = serializers.CharField(source='creator.username', read_only=True)
+    modifier = serializers.CharField(source='modifier.username', read_only=True)
     pickled_stats = PickledListField()
     class Meta:
         model = Dataset
+        fields = '__all__'
+
+class DlModelSerializer(serializers.ModelSerializer):
+    creator = serializers.CharField(source='creator.username', read_only=True)
+    modifier = serializers.CharField(source='modifier.username', read_only=True)
+    class Meta:
+        model = DlModel
+        fields = '__all__'#['__all__','creator_name','modifier_name']
+
+class DlModelDatasetSerializer(serializers.ModelSerializer):
+    creator = serializers.CharField(source='creator.username', read_only=True)
+    modifier = serializers.CharField(source='modifier.username', read_only=True)
+    class Meta:
+        model = DlModelDataset
         fields = '__all__'

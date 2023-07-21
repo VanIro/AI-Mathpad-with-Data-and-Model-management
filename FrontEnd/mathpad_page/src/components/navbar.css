@@ -26,8 +26,11 @@
     
     font-size: 32px;
     color:rgb(217, 245, 8);
-    
     }
+    .logo > img {
+        max-height: 1.5em;
+    }
+
     .logo:hover {
     
         background-color: #4c9e9e;

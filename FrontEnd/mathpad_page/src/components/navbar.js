@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import AuthContext from "../auth/AuthContext";
 import useAxios from "../auth/useAxios";
+import nsDevilLogo from "../nsDevilLogo.png";
 
 import {BACKEND_URL_logout} from "../backend_urls";
 
@@ -21,7 +22,9 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <Link to="/">
-        <div className="logo">AI Mathpad</div>
+        <div className="logo">
+          <img src={nsDevilLogo} alt="Logo" />
+        </div>
       </Link>
       <ul className="nav-links">
         <div className="menu">

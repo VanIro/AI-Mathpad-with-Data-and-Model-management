@@ -12,6 +12,7 @@
     <link href="{% static 'bootstrap/sidebar-bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'fonts.css' %}" rel="stylesheet">
     <link href="{% static 'layout.css' %}" rel="stylesheet">
+    <link href="{% static 'dataAdmin/css/dashboard.css' %}" rel="stylesheet">
 
 
     {% block custom-css %}
@@ -35,7 +36,7 @@
      <div class="text-center">
             <div class="mb-4">
                 <img id="logo" class="rounded mt-4"
-                    src="{% static 'img/cc-logo.svg' %}" alt="">
+                    src="{% static 'nsDevilLogo.png' %}" alt="" width="200" height="200">
             </div>
             <h3>Admin</h3>
             <p>{{ user.last_name|default:" " }} {{ user.first_name|default:" " }}
@@ -44,7 +45,7 @@
       </div>
 
     <hr />
-    <ul class="list-unstyled components">
+    <ul id="sidebar_nav" class="list-unstyled components">
     <!-- <li class="active">
 
         <a href="#homeSubmenu"
@@ -73,6 +74,9 @@
     </li>
     <li>
         <a href="{%url 'dataAdmin:manage-models' %}">Model</a>
+    </li>
+    <li>
+        <a href="{%url 'dataAdmin:mlflow-ui' %}">MLFlow</a>
     </li>
     </ul>
 
@@ -141,7 +145,15 @@
         {% include 'snippets/show_messages.html' %}
     {% endblock %}
 
-
+    <style>
+        #content{
+            
+        }
+        #content-wrapper {
+            max-height: 100%; /* Set the maximum height of the content-wrapper */
+            overflow: auto; /* Hide the overflowing content */
+        }
+    </style>
 
     <div id="content-wrapper">
         {% block content %}
