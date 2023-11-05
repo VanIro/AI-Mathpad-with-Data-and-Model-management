@@ -15,7 +15,7 @@
 ## filter_widgets
 - Admin interface
   -  filter_widgets/src
-    - Dashboard Interface for filtering the collected annotations, viewing stats/graphs and creating a dataset  
+     - Dashboard Interface for filtering the collected annotations, viewing stats/graphs and creating a dataset  
   -  filter_widgets/src2
     - /App.js
       - View all created datasets    
