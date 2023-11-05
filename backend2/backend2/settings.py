@@ -59,10 +59,11 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'dj_rest_auth',
     'dj_rest_auth.registration',
-    'aiMathpad',
     'corsheaders',
+    'aiMathpad',
     'dataAdmin',
     'bootstrapsidebar',
     'easy_thumbnails',
@@ -159,7 +160,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
+    # 'mongo1':{
+    #     'ENGINE': 'djongo',
+    #     'NAME': 'aiMathpad',
+    # }
 }
 
 
