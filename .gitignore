@@ -14,14 +14,14 @@ FrontEnd/mathpad_page/node_modules/
 # FrontEnd/filter_widgets/
 
 
-# for backend2
-backend2/aiMathpad/__pycache__/
-backend2/backend2/__pycache__/
-backend2/dataAdmin/__pycache__/
-backend2/db.sqlite3
+# for backend
+backend/aiMathpad/__pycache__/
+backend/backend/__pycache__/
+backend/dataAdmin/__pycache__/
+backend/db.sqlite3
 .vscode
-backend2/env/
-# backend2/dl_models
-# backend2/db.sqlite3
-# backend2/media
-# backend2/dataAdmin
+backend/env/
+# backend/dl_models
+# backend/db.sqlite3
+# backend/media
+# backend/dataAdmin

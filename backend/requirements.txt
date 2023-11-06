@@ -10,7 +10,7 @@ geoip2==4.7.0
 mlflow==2.4.1
 munch==3.0.0
 numpy==1.25.0
-opencv_python==4.7.0.72
+opencv-python==4.7.0.72
 Pillow==10.1.0
 pix2tex==0.1.2
 pytz==2023.3

@@ -3,6 +3,7 @@ import './visualization.css'
 import React, { useState, useEffect } from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 import {ResponsiveLine, Axis} from '@nivo/line'
+import VisPlaceholder from './vis_placeholder';
 
 let countryRegionStat = null
 let expressionStat = null
@@ -30,7 +31,6 @@ catch(err){
 
 
 
-import VisPlaceholder from './vis_placeholder';
 
 function Visualization({ data }) {
   // Transform the data into the format expected by ResponsiveBar

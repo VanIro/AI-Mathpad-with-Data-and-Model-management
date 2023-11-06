@@ -31,7 +31,7 @@ def run_mlflow_ui(log_file_dir='mlflow_logs'):
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend2.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

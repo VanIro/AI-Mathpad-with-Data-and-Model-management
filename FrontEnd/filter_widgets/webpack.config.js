@@ -10,7 +10,7 @@ module.exports ={
     },
     output:{
             filename:'[name]-bundle.js',
-            path: path.resolve(__dirname, '../../backend2/static')
+            path: path.resolve(__dirname, '../../backend/static')
     },
     // Resolve configuration to handle the import of compressionWorker.js
     resolve: {

@@ -4,6 +4,7 @@
   "description": "A head for running or installing packages for both projects in this directory",
   "main": "index.js",
   "scripts": {
+    "build-all": "concurrently \"cd mathpad_page && npm run build\" \"cd filter_widgets && npm run build\"",
     "dev-all": "concurrently \"cd mathpad_page && npm run dev\" \"cd filter_widgets && npm run dev\"",
     "install-all": "concurrently \"cd mathpad_page && npm install\" \"cd filter_widgets && npm install\"",
     "install-filter_widgets": "cd filter_widgets && npm install",

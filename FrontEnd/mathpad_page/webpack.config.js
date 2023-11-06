@@ -4,7 +4,7 @@ module.exports = {
   entry: "./src/index.js",
   output: {
     filename: "mathpad-bundle.js",
-    path: path.resolve(__dirname, "../../backend2/static"),
+    path: path.resolve(__dirname, "../../backend/static"),
   },
   module: {
     rules: [
