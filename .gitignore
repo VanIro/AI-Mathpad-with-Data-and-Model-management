@@ -21,6 +21,7 @@ backend/dataAdmin/__pycache__/
 backend/db.sqlite3
 .vscode
 backend/env/
+postgres_data/
 # backend/dl_models
 # backend/db.sqlite3
 # backend/media

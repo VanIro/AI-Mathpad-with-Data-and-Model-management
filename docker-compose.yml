@@ -1,19 +1,37 @@
 version: '3'
 
 services:
+  db_postgres:
+    image: postgres:latest
+    volumes:
+      - ./postgres_data/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: AIMathpad
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - database_network
+
   web:
-    build: .
+    build: 
+      context: .
+      args:
+        - INTERACTIVE_SHELL=true
     # command: python manage.py runserver 0.0.0.0:8000
     # volumes:
     #   - .:/app_dev
     ports:
       - "8000:8000"
-  #   depends_on:
-  #     - db
+    environment:
+      - POSTGRES_DBL=AIMathpad
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - GDAL_LIBRARY_PATH=/usr/lib/libgdal.so.20
+    networks:
+      - database_network
+    depends_on:
+      - db_postgres
 
-  # db:
-  #   image: postgres:latest
-  #   environment:
-  #     POSTGRES_DB: mydatabase
-  #     POSTGRES_USER: myuser
-  #     POSTGRES_PASSWORD: mypassword
+networks:
+  database_network:
+    driver: bridge

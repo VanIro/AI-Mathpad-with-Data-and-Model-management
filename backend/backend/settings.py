@@ -112,6 +112,7 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 
 GEOIP_PATH = BASE_DIR / 'aiMathpad/geoipDatasets'
+GDAL_LIBRARY_PATH=os.environ.get('GDAL_LIBRARY_PATH', '')
 # GDAL_LIBRARY_PATH=r'/home/soy/anaconda3/envs/lict/lib/libgdal.so'
 # GDAL_LIBRARY_PATH=r'C:\Users\GURAGAIN\anaconda3\envs\djangoLict\Library\bin\gdal.dll' #'C:/OSGeo4W64/bin/gdal300.dll'
 
@@ -158,9 +159,17 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': 'db_postgres',  # Set to the PostgreSQL server host (default is 'localhost')
+        'PORT': '5432',           # Set to the PostgreSQL server port (default is '')
     },
+    # {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # },
     # 'mongo1':{
     #     'ENGINE': 'djongo',
     #     'NAME': 'aiMathpad',
