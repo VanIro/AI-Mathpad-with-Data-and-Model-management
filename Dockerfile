@@ -90,6 +90,7 @@ EXPOSE 8000
 # CMD ["python manage.py makemigrations"," && python manage.py makemigrations aiMathpad", " && python manage.py migrate","python", "manage.py", "runserver", "0.0.0.0:8000"]
 # CMD ["python", "manage.py", "makemigrations", "aiMathpad", "&&", "python", "manage.py", "migrate", "&&", "python", "manage.py", "runserver", "0.0.0.0:8000"]
 CMD python manage.py makemigrations aiMathpad && \
+    python manage.py makemigrations dataAdmin && \
     python manage.py migrate && \
     python manage.py runserver 0.0.0.0:8000
 

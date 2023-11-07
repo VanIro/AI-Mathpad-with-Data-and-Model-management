@@ -437,31 +437,34 @@ def dashboard_view(request):
             expression_chars = [Exchar for Exchar in expression_chars if filtered_imgData.filter(**{'exp_type__'+Exchar:True}).exists()]
 
 
-            exp_types_counts = filtered_imgData.values(*ex_chars).annotate(count = Count('exp_type__'+expression_chars[0]))
-            # print('exp_type counts',list(exp_types_counts))
-            
-            if expressionType:
-                expression_chars1 = [Exchar for Exchar in expression_chars 
-                                        if ((Exchar in expressionType)==include_flag and Exchar in expression_chars)
-                                     ]
+            if expression_chars:
+                exp_types_counts = filtered_imgData.values(*ex_chars).annotate(count = Count('exp_type__'+expression_chars[0]))
+                # print('exp_type counts',list(exp_types_counts))
+                
+                if expressionType:
+                    expression_chars1 = [Exchar for Exchar in expression_chars 
+                                            if ((Exchar in expressionType)==include_flag and Exchar in expression_chars)
+                                        ]
+                else:
+                    expression_chars1 = expression_chars
+                # print(include_flag,expression_chars1)
+                simple_exp_type = {'exp_type__'+Exchar:False for Exchar in expression_chars}
+                expression_stat['simple'] = exp_types_counts.get(**simple_exp_type)['count']#filtered_imgData.filter(**simple_exp_type).count()
+
+
+                for i in range(len(expression_chars1)):
+                    expression_stat[expression_chars1[i]] =  dict(
+                                        map(lambda item: (f"{[key.replace('exp_type__','') for key in item if key!='count' and item[key]==True]}",item['count']),
+                                            exp_types_counts.filter(**{'exp_type__'+expression_chars1[i]:True})\
+                                                .values(*['exp_type__'+a for a in expression_chars if a != expression_chars1[i]],'count')
+                                        ))
+                    try:
+                        expression_stat[expression_chars1[i]]['only'] = expression_stat[expression_chars1[i]].pop( '[]' )
+                    except KeyError:
+                        pass
+                    print('filtered_ex_counts',list(expression_stat[expression_chars1[i]]))
             else:
-                expression_chars1 = expression_chars
-            # print(include_flag,expression_chars1)
-            simple_exp_type = {'exp_type__'+Exchar:False for Exchar in expression_chars}
-            expression_stat['simple'] = exp_types_counts.get(**simple_exp_type)['count']#filtered_imgData.filter(**simple_exp_type).count()
-
-
-            for i in range(len(expression_chars1)):
-                expression_stat[expression_chars1[i]] =  dict(
-                                    map(lambda item: (f"{[key.replace('exp_type__','') for key in item if key!='count' and item[key]==True]}",item['count']),
-                                         exp_types_counts.filter(**{'exp_type__'+expression_chars1[i]:True})\
-                                            .values(*['exp_type__'+a for a in expression_chars if a != expression_chars1[i]],'count')
-                                    ))
-                try:
-                    expression_stat[expression_chars1[i]]['only'] = expression_stat[expression_chars1[i]].pop( '[]' )
-                except KeyError:
-                    pass
-                print('filtered_ex_counts',list(expression_stat[expression_chars1[i]]))
+                expression_stat=None
                 
             
             context.update({'expression_stat':expression_stat})
