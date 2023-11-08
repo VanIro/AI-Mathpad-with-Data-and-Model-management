@@ -26,7 +26,7 @@ services:
       - POSTGRES_DBL=AIMathpad
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - GDAL_LIBRARY_PATH=/usr/lib/libgdal.so.20
+      - GDAL_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgdal.so
     networks:
       - database_network
     depends_on:
