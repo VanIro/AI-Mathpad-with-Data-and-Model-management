@@ -18,10 +18,11 @@ services:
       args:
         - INTERACTIVE_SHELL=true
     # command: python manage.py runserver 0.0.0.0:8000
-    # volumes:
-    #   - .:/app_dev
+    volumes:
+      - ./backend:/app/AIMathpad/backend
     ports:
       - "8000:8000"
+      - "5000:5000"
     environment:
       - POSTGRES_DBL=AIMathpad
       - POSTGRES_USER=postgres

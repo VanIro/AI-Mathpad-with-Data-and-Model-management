@@ -105,8 +105,12 @@ def delete_model(sender, instance, **kwargs):
     # mlflow.set_tracking_uri(settings.MLFLOW_TRACKING_URI)
     
     root_path = instance.path
-    print('removing',root_path)
-    shutil.rmtree(root_path)
+    print('removing',root_path,end=' ')
+    try:
+        shutil.rmtree(root_path)
+        print('<-','Done')
+    except Exception as e:
+        print('<-','Failed',e)
 
 
     

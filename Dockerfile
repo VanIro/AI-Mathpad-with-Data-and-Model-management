@@ -85,6 +85,7 @@ COPY --from=frontend-builder /app/backend/static /app/AIMathpad/backend/static
 
 # Expose port 8000 to the outside world
 EXPOSE 8000
+EXPOSE 5000
 
 # Define the command to run on startup
 # CMD ["python manage.py makemigrations"," && python manage.py makemigrations aiMathpad", " && python manage.py migrate","python", "manage.py", "runserver", "0.0.0.0:8000"]
