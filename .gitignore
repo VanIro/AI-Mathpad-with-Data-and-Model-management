@@ -7,7 +7,7 @@ mlflow_logs/
 mlruns/
 
 
-static/*-bundle.js
+static/dataAdmin/*-bundle.js
 # for FrontEnd
 FrontEnd/filter_widgets/node_modules/
 FrontEnd/mathpad_page/node_modules/

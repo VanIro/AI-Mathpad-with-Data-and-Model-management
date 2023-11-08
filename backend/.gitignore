@@ -3,7 +3,7 @@ __pycache__/
 .vscode/
 datasets/
 db.sqlite3
-static/*-bundle.js
+static/dataAdmin/*-bundle.js
 images/
 modelsManage/
 mlflow_logs/
