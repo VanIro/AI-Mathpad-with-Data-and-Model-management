@@ -24,11 +24,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-0y@7upzb+qfth2%q*n6!3iwh%a(yn7f%0!jo9smal4go)o99bh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG',True)
 
 MAX_UPLOAD_MEMORY_SIZE = 1024 * 1024 * 1024* 3
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
+
+if 'HOST_DOMAIN' in os.environ:
+    ALLOWED_HOSTS+=[os.environ['HOST_DOMAIN']]
+print('ALLOWED_HOSTS: ',ALLOWED_HOSTS)
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # Update this with the origin of your frontend application
     'http://127.0.0.1:8000',

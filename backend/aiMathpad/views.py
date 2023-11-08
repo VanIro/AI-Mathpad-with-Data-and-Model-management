@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 from django.http import JsonResponse
+from django.conf import settings
 
 
 import base64
@@ -55,12 +56,18 @@ def store_annot(request):
     cor_exp = request.data['correct_exp']
     rec_exp = make_prediction(img_64)
 
-    # g = GeoIP2(country='dbip-country-lite-2023-06.mmdb', city='dbip-city-lite-2023-06.mmdb')
+    g = GeoIP2(country='dbip-country-lite-2023-06.mmdb', city='dbip-city-lite-2023-06.mmdb')
 
     try:
-        # user_location = g.city(request.META['REMOTE_ADDR'])
-        # city, country = user_location['city'], user_location['country']
         city, country = '', ''
+        if settings.DEBUG:
+            print('current address',request.META['REMOTE_ADDR'])
+            user_location = g.city('103.163.182.141')
+            # print(user_location)
+        else:
+            user_location = g.city(request.META['REMOTE_ADDR'])
+
+        city, country = user_location['city'], user_location['country_name']
     except geoip2_errors.AddressNotFoundError as e:
         print('Ip address info not found in the database')
         city,country = '',''
