@@ -21,14 +21,14 @@ services:
     volumes:
       - ./backend:/app/AIMathpad/backend
     ports: #host:docker<-port mapping
-      - "8000:8000" #backend port
+      - "7000:8000" #backend port
       - "5000:5000" #mlflow ui port
     environment:
       - POSTGRES_DBL=AIMathpad
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - GDAL_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgdal.so
-      - HOST_DOMAIN=192.168.1.65
+      - HOST_DOMAIN=192.168.20.11
       - DEBUG=True
     networks:
       - database_network

@@ -84,7 +84,7 @@ RUN ls /usr/lib/x86_64-linux-gnu && sleep 20
 COPY ./backend /app/AIMathpad/backend
 
 # Copy the built frontend from the frontend-builder stage
-COPY --from=frontend-builder /app/backend/static /app/AIMathpad/backend/static
+# COPY --from=frontend-builder /app/backend/static /app/AIMathpad/backend/static
 
 #Build 
 
