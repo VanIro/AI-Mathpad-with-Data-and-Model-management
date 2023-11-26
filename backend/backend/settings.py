@@ -24,7 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-0y@7upzb+qfth2%q*n6!3iwh%a(yn7f%0!jo9smal4go)o99bh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG',True)
+DEBUG = True#os.environ.get('DEBUG',True)
+print('DEBUG: ',DEBUG,os.environ.get('DEBUG',None))
+
 
 MAX_UPLOAD_MEMORY_SIZE = 1024 * 1024 * 1024* 3
 
@@ -217,7 +219,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'prod_static')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

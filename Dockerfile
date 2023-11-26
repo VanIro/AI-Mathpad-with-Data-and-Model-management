@@ -2,7 +2,7 @@
 FROM node:14 as frontend-builder
 
 # Set the working directory for the frontend
-WORKDIR /app/frontend
+WORKDIR /app/FrontEnd
 
 # Copy frontend dependencies definition
 COPY ./FrontEnd/package*.json ./
@@ -19,8 +19,14 @@ COPY ./FrontEnd .
 
 #install all dependencies for subprojects
 RUN npm run install-all
+
+ARG CACHEBUST=7
 # Build the frontend
 RUN npm run build-all
+RUN /bin/bash
+RUN ls /app/backend/static && sleep 14
+RUN ls / && sleep 15
+RUN ls && sleep 15
 
 # backend (prod)
 FROM python:3.10
@@ -90,7 +96,8 @@ EXPOSE 5000
 # Define the command to run on startup
 # CMD ["python manage.py makemigrations"," && python manage.py makemigrations aiMathpad", " && python manage.py migrate","python", "manage.py", "runserver", "0.0.0.0:8000"]
 # CMD ["python", "manage.py", "makemigrations", "aiMathpad", "&&", "python", "manage.py", "migrate", "&&", "python", "manage.py", "runserver", "0.0.0.0:8000"]
-CMD python manage.py makemigrations aiMathpad && \
+CMD python manage.py collectstatic --noinput && \
+    python manage.py makemigrations aiMathpad && \
     python manage.py makemigrations dataAdmin && \
     python manage.py migrate && \
     python manage.py runserver 0.0.0.0:8000
