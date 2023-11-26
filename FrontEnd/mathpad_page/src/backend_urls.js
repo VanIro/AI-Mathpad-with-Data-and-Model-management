@@ -1,6 +1,8 @@
 // const BASE_URL = "http://localhost:8000/"
-const BASE_URL = "http://localhost:7000/"
 
+
+let obtained_host_url = process.env.HOST_DOMAIN
+const BASE_URL = obtained_host_url? 'http://'+obtained_host_url+':7000' :"http://localhost:7000/"
 
 const BACKEND_URL_login = `${BASE_URL}users/login/`
 const BACKEND_URL_logout =`${BASE_URL}users/logout/`
