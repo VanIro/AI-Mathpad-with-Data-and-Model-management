@@ -6,6 +6,10 @@ module.exports = {
     filename: "mathpad-bundle.js",
     path: path.resolve(__dirname, "../../backend/static"),
   },
+  stats: {
+    builtAt: true,
+    assets: true,
+  },
   module: {
     rules: [
       {
