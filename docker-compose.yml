@@ -30,6 +30,7 @@ services:
       - GDAL_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgdal.so
       - HOST_DOMAIN=192.168.20.11
       - DEBUG=True
+      - hosted_port=7000
     networks:
       - database_network
     depends_on:

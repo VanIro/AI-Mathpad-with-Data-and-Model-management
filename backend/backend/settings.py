@@ -109,7 +109,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-LOGIN_URL = 'http://localhost:8000/users/login'
+LOGIN_URL = 'http://localhost:7000/login'
 
 #Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
