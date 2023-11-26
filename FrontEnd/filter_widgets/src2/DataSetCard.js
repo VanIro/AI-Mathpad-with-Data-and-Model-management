@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import "./DataSetCard.css";
 import useAxios from "../../mathpad_page/src/auth/useAxios";
+import { BASE_URL } from "../src3/backend_urls";
 
 const DataSetCard = (props) => {
   const item = props.item;
@@ -25,7 +26,7 @@ const DataSetCard = (props) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/updateDataset/${item.id}`,
+        `${BASE_URL}updateDataset/${item.id}`,
         {
           method: "POST",
           headers: {

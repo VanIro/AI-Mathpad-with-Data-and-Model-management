@@ -1,4 +1,6 @@
-const BASE_URL = "http://localhost:8000/"
+// const BASE_URL = "http://localhost:8000/"
+const BASE_URL = "http://localhost:7000/"
+
 
 const BACKEND_URL_login = `${BASE_URL}users/login/`
 const BACKEND_URL_logout =`${BASE_URL}users/logout/`
