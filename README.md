@@ -16,3 +16,9 @@ This project provides the ability to:
 - Use of Web worker in frontend for handling computation intensive task(directory compression) without making the browser unresopnsive
 
 
+
+### Infrastructure model
+![Infrastructure main model](.infragenie/infrastructure_main_model.svg)
+- [web component model](.infragenie/web_component_model.svg)
+
+---
